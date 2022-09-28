@@ -1,7 +1,20 @@
 // components/signup.js
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SocialIcon } from 'react-native-elements';
 import firebase from '../database/firebase';
+
+const OrangeButton = ({ onPress, title }) => (
+  <TouchableOpacity onPress={onPress}>
+    <LinearGradient
+      colors={["orange","#e65c00"]}
+      style={styles.appButtonContainer}
+    >  
+      <Text style={styles.appButtonText}>{title}</Text>
+    </LinearGradient>
+  </TouchableOpacity>
+);
 
 export default class Signup extends Component {
   
@@ -21,7 +34,7 @@ export default class Signup extends Component {
   }
   registerUser = () => {
     if(this.state.email === '' && this.state.password === '') {
-      Alert.alert('Enter details to signup!')
+      Alert.alert('Enter your details to sign up!')
     } else {
       this.setState({
         isLoading: true,
@@ -54,36 +67,68 @@ export default class Signup extends Component {
       )
     }    
     return (
-      <View style={styles.container}>  
+      <View style={styles.container}>
+        <Image source={require('../assets/read-logo.png')} style={styles.logo} />
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
+          placeholderTextColor="blue"
+          color= 'blue'
           value={this.state.displayName}
           onChangeText={(val) => this.updateInputVal(val, 'displayName')}
         />      
         <TextInput
           style={styles.inputStyle}
           placeholder="Email"
+          placeholderTextColor="green"
+          color= 'green'
           value={this.state.email}
           onChangeText={(val) => this.updateInputVal(val, 'email')}
         />
         <TextInput
           style={styles.inputStyle}
           placeholder="Password"
+          placeholderTextColor="orange"
+          color= 'orange'
           value={this.state.password}
           onChangeText={(val) => this.updateInputVal(val, 'password')}
           maxLength={15}
           secureTextEntry={true}
         />   
-        <Button
-          color="#3740FE"
-          title="Signup"
+        <TextInput
+          style={styles.inputStyle}
+          placeholder="(Birthday would go here?)"
+          placeholderTextColor="blue"
+          color= 'blue'
+        /> 
+        <View style={styles.screenContainer}>
+          <OrangeButton 
+          title="Create an Account" 
+          size="sm" 
           onPress={() => this.registerUser()}
+          />
+        </View>
+
+        <Text style={{textAlign: 'center', bottom: 20}}>
+            Or sign up with:
+          </Text>
+        
+        <SocialIcon
+        title='Sign Up With Facebook'
+        button type='facebook'
+        style={{bottom: 20}}
         />
+
+        <SocialIcon
+        title='Sign Up With Google'
+        button type='google'
+        style={{bottom: 20}}
+        />
+
         <Text 
           style={styles.loginText}
           onPress={() => this.props.navigation.navigate('Login')}>
-          Already Registered? Click here to login
+          Already registered? Tap here to Log In
         </Text>                          
       </View>
     );
@@ -96,19 +141,21 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     padding: 35,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   inputStyle: {
     width: '100%',
     marginBottom: 15,
     paddingBottom: 15,
-    alignSelf: "center",
+    alignSelf: "stretch",
     borderColor: "#ccc",
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    bottom: 80,
+    fontSize: 18
   },
   loginText: {
     color: '#3740FE',
-    marginTop: 25,
+    marginBottom: 20,
     textAlign: 'center'
   },
   preloader: {
@@ -120,5 +167,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff'
+  },
+  logo: {
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: 'contain',
+    left: 20,
+    bottom: 60,
+  },
+
+  appButtonContainer: {
+    elevation: 8,
+    backgroundColor: "#009688",
+    borderRadius: 100,
+    paddingVertical: 15,
+    paddingHorizontal: 12,
+    bottom: 60,
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
   }
+
 });
