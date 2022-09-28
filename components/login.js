@@ -39,7 +39,15 @@ export default class Login extends Component {
         })
         this.props.navigation.navigate('Dashboard')
       })
-      .catch(error => this.setState({ errorMessage: error.message }))
+      .catch(error => {
+        Alert.alert('Credentials are incorrect.');
+        this.setState({
+          isLoading: false,
+          email: '', 
+          password: ''
+        })
+        console.log(error.message);
+      })
     }
   }
   render() {
