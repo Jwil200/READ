@@ -1,4 +1,16 @@
 {
-  "name": "ReadProject",
-  "displayName": "ReadProject"
+  "expo": {
+    "name": "read-app",
+    "slug": "read-app",
+    "version": "1.0.0",
+    "sdkVersion": "46.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "android": {
+      "package": "com.anonymous.readapp"
+    }
+  }
 }
