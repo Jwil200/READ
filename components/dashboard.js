@@ -1,37 +1,41 @@
 // components/dashboard.js
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
-import firebase from '../database/firebase';
-require('firebase/auth')
+import { StyleSheet, View, Text } from 'react-native';
+import { Header, Divider, Tile } from "@rneui/themed";
+import BookTile from "./bookTile.js";
+import { bookData } from "./books.js";
+//import firebase from '../database/firebase';
+//require('firebase/auth')
 
 export default class Dashboard extends Component {
   constructor() {
     super();
-    this.state = { 
-      uid: ''
-    }
+    this.state = {};
   }
-  signOut = () => {
-    firebase.auth().signOut().then(() => {
-      this.props.navigation.navigate('Login')
-    })
-    .catch(error => this.setState({ errorMessage: error.message }))
-  }  
+
   render() {
-    this.state = { 
-      displayName: firebase.auth().currentUser.displayName,
-      uid: firebase.auth().currentUser.uid
-    }    
+
+
+    let booksRender = [];
+    for(i = 0; i < bookData.length; i++) {
+      booksRender.push(<BookTile key={"book" + i}/>);
+    }
+
     return (
       <View style={styles.container}>
         <Text style = {styles.textStyle}>
           Hello, {this.state.displayName}
         </Text>
-        <Button
-          color="#3740FE"
-          title="Logout"
-          onPress={() => this.signOut()}
-        />
+        <View 
+          style={{
+            flexDirection:"row",
+            justifyContent: 'space-between',
+            height:400,
+            width:'100%'
+          }}
+        >
+          {booksRender}
+        </View>
       </View>
     );
   }
