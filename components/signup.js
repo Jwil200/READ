@@ -1,8 +1,6 @@
 // components/signup.js
-//import React, { Component } from 'react';
+import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import React, { useEffect, useState } from 'react'
-//import { auth } from '../firebase'
 import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
@@ -130,7 +128,7 @@ const Signup = () => {
 
 }
   
-export default Signup
+export default Signup;
 
 //Style sheet to customize indiviual parts.
 const styles = StyleSheet.create({
