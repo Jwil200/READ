@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
-import { Tile } from "@rneui/themed";
+import { Tile, LinearProgress } from "@rneui/themed";
 
-export default class BookTile extends Component {
-  constructor() {
-    super();
-    this.state = {}
-  }
-  render() { 
-    this.state = {}
-    return (
-        <Tile
-            imageSrc={{
-                uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
-            }}
-            width={'30%'}
-            height={220}
-        />
-    );
-  }
+const BookTile = (props) => {
+  return (
+    <Tile
+      imageSrc={{
+          uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+      }}
+      imageProps={{
+        resizeMode:"stretch"
+      }}
+      width={'100%'}
+      height={220}
+    >
+      <LinearProgress
+        value={props.progress}
+        variant="determinate"
+      />
+    </Tile>
+  );
 }
+export default BookTile;

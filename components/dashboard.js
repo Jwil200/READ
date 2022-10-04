@@ -1,9 +1,11 @@
 // components/dashboard.js
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "./bookTile.js";
 import { bookData } from "./books.js";
+
+// Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';
 //require('firebase/auth')
 
@@ -15,27 +17,20 @@ export default class Dashboard extends Component {
 
   render() {
 
-
-    let booksRender = [];
-    for(i = 0; i < bookData.length; i++) {
-      booksRender.push(<BookTile key={"book" + i}/>);
-    }
+    const Item = ({ item }) => (
+      <View style={styles.item}>
+        <BookTile key={"i" + item._id} progress={item.progress}/>
+      </View>
+    );
 
     return (
       <View style={styles.container}>
-        <Text style = {styles.textStyle}>
-          Hello, {this.state.displayName}
-        </Text>
-        <View 
-          style={{
-            flexDirection:"row",
-            justifyContent: 'space-between',
-            height:400,
-            width:'100%'
-          }}
-        >
-          {booksRender}
-        </View>
+        <FlatList
+          data={bookData}
+          numColumns={3}
+          renderItem={Item}
+          keyExtractor={item => item._id}
+        />
       </View>
     );
   }
@@ -46,11 +41,17 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 35,
+    padding: 10,
+    paddingTop: 35,
     backgroundColor: '#fff'
   },
   textStyle: {
     fontSize: 15,
     marginBottom: 20
+  },
+  item: {
+    width: "32.5%",
+    alginItems: "center",
+    padding: 5
   }
 });
