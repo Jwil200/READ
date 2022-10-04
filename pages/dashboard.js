@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
 import { bookData } from "../assets/books.js";
+import { Navbar } from "../components/navbar.js";
 
 // Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';
@@ -42,6 +43,10 @@ const styles = StyleSheet.create({
   divider: {
     width: '98%',
     marginVertical: 5,
+  },
+  emptyText: {
+    color: "grey",
+    marginTop: 10
   }
 });
 
@@ -51,45 +56,81 @@ const Item = ({ item }) => (
   </View>
 );
 
+const ComponentItem = ({ item }) => (
+  <View>{item.jsx}</View>
+);
+
 const Dashboard = () => {
   let recentData = bookData.filter(e => e.isRecent);
   let favoriteData = bookData.filter(e => e.isFavorite);
 
-  return (
-    <ScrollView>
+  let componentList = [];
+
+  componentList.push({
+    _id: 1,
+    jsx: 
       <View style={styles.container}>
         <Text style={styles.title}>Recent</Text>
         <Divider style={styles.divider} />
-        <FlatList style={styles.grid}
-          data={recentData}
-          numColumns={3}
-          renderItem={Item}
-          keyExtractor={item => "r" + item._id}
-        />
+        {
+          (recentData.length == 0)
+          ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
+          : <FlatList style={styles.grid}
+              data={recentData}
+              numColumns={3}
+              renderItem={Item}
+              keyExtractor={item => "r" + item._id}
+              listKey="r"
+            />
+        }
       </View>
-
+  });
+  componentList.push({
+    _id: 2,
+    jsx: 
       <View style={styles.container}>
         <Text style={styles.title}>Favorites</Text>
         <Divider style={styles.divider} />
-        <FlatList style={styles.grid}
-          data={favoriteData}
-          numColumns={3}
-          renderItem={Item}
-          keyExtractor={item => "r" + item._id}
-        />
+        {
+          (favoriteData.length == 0)
+          ? <Text style={styles.emptyText}>You don't have anything favorited.</Text>
+          : <FlatList style={styles.grid}
+              data={favoriteData}
+              numColumns={3}
+              renderItem={Item}
+              keyExtractor={item => "f" + item._id}
+              listKey="f"
+            />
+        }
       </View>
-
+  });
+  componentList.push({
+    _id: 3,
+    jsx:
       <View style={styles.container}>
         <Text style={styles.title}>All</Text>
         <Divider style={styles.divider} />
-        <FlatList
-          data={bookData}
-          numColumns={3}
-          renderItem={Item}
-          keyExtractor={item => item._id}
-        />
+        {
+          (bookData.length == 0)
+          ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
+          : <FlatList style={styles.grid}
+              data={bookData}
+              numColumns={3}
+              renderItem={Item}
+              keyExtractor={item => "a" + item._id}
+              listKey="a"
+            />
+        }
       </View>
-    </ScrollView>
+  });
+
+  return (
+    <FlatList
+      data={componentList}
+      renderItem={ComponentItem}
+      keyExtractor={item => item._id}
+      ListFooterComponent={Navbar}
+    />
   );
 }
 export default Dashboard;

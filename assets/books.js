@@ -4,7 +4,7 @@ export const bookData = [
         title: "test",
         progress: 0.85,
         isRecent: false, // Could change this to a data.
-        isFavorite: true
+        isFavorite: false
     },
     {
         _id: 2,
@@ -32,6 +32,6 @@ export const bookData = [
         title: "And so, more book has arrived.",
         progress: 0.01,
         isRecent: true,
-        isFavorite: true,
+        isFavorite: false,
     }
 ];

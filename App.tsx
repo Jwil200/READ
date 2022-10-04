@@ -5,13 +5,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
+import VoiceTest from './pages/voiceTest';
 
 const Stack = createStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName="VoiceTest"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -42,6 +43,14 @@ function MyStack() {
          { title: 'Dashboard' },
          {headerLeft: null} 
        }
+       />
+      <Stack.Screen 
+        name="VoiceTest" 
+        component={VoiceTest} 
+        options={
+          {title:'VoiceTest'},
+          {headerLeft: null} 
+        }
       />
     </Stack.Navigator>
   );
