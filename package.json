@@ -6,6 +6,7 @@
     "@react-navigation/stack": "^6.2.3",
     "@rneui/themed": "^4.0.0-rc.6",
     "expo": "~46.0.9",
+    "expo-linear-gradient": "~11.4.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "firebase": "^9.9.4",

@@ -1,7 +1,21 @@
 // components/signup.js
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
+import { Text, View, TextInput, Alert, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SocialIcon } from 'react-native-elements';
+import styles from './styles'
 import firebase from '../database/firebase';
+
+const OrangeButton = ({ onPress, title }) => (
+  <TouchableOpacity onPress={onPress}>
+    <LinearGradient
+      colors={["orange","#e65c00"]}
+      style={styles.appButtonContainer}
+    >  
+      <Text style={styles.appButtonText}>{title}</Text>
+    </LinearGradient>
+  </TouchableOpacity>
+);
 
 export default class Signup extends Component {
   
@@ -21,7 +35,7 @@ export default class Signup extends Component {
   }
   registerUser = () => {
     if(this.state.email === '' && this.state.password === '') {
-      Alert.alert('Enter details to signup!')
+      Alert.alert('Enter your details to sign up!')
     } else {
       this.setState({
         isLoading: true,
@@ -54,71 +68,70 @@ export default class Signup extends Component {
       )
     }    
     return (
-      <View style={styles.container}>  
+      <View style={styles.container}>
+        <Image source={require('../assets/read-logo.png')} style={styles.logo} />
         <TextInput
           style={styles.inputStyle}
           placeholder="Name"
+          placeholderTextColor="blue"
+          color= 'blue'
           value={this.state.displayName}
           onChangeText={(val) => this.updateInputVal(val, 'displayName')}
         />      
         <TextInput
           style={styles.inputStyle}
           placeholder="Email"
+          placeholderTextColor="green"
+          color= 'green'
           value={this.state.email}
           onChangeText={(val) => this.updateInputVal(val, 'email')}
         />
         <TextInput
           style={styles.inputStyle}
           placeholder="Password"
+          placeholderTextColor="orange"
+          color= 'orange'
           value={this.state.password}
           onChangeText={(val) => this.updateInputVal(val, 'password')}
           maxLength={15}
           secureTextEntry={true}
         />   
-        <Button
-          color="#3740FE"
-          title="Signup"
+        <TextInput
+          style={styles.inputStyle}
+          placeholder="(Birthday would go here?)"
+          placeholderTextColor="blue"
+          color= 'blue'
+        /> 
+        <View style={styles.screenContainer}>
+          <OrangeButton 
+          title="Create an Account" 
+          size="sm" 
           onPress={() => this.registerUser()}
+          />
+        </View>
+
+        <Text style={{textAlign: 'center', bottom: 20}}>
+            Or sign up with:
+          </Text>
+        
+        <SocialIcon
+        title='Sign Up With Facebook'
+        button type='facebook'
+        style={{bottom: 20}}
         />
+
+        <SocialIcon
+        title='Sign Up With Google'
+        button type='google'
+        style={{bottom: 20}}
+        />
+
         <Text 
           style={styles.loginText}
           onPress={() => this.props.navigation.navigate('Login')}>
-          Already Registered? Click here to login
+          Already registered? Tap here to log in
         </Text>                          
       </View>
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 35,
-    backgroundColor: '#fff'
-  },
-  inputStyle: {
-    width: '100%',
-    marginBottom: 15,
-    paddingBottom: 15,
-    alignSelf: "center",
-    borderColor: "#ccc",
-    borderBottomWidth: 1
-  },
-  loginText: {
-    color: '#3740FE',
-    marginTop: 25,
-    textAlign: 'center'
-  },
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff'
-  }
-});

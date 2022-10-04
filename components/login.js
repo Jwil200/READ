@@ -1,8 +1,23 @@
 // components/login.js
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
+import { Text, View, TextInput, Alert, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SocialIcon } from 'react-native-elements';
+import styles from './styles'
 import firebase from '../database/firebase';
 require('firebase/auth')
+
+//find a way to put this in a stylesheet
+const OrangeButton = ({ onPress, title }) => (
+  <TouchableOpacity onPress={onPress}>
+    <LinearGradient
+      colors={["orange","#e65c00"]}
+      style={styles.appButtonContainer}
+    >  
+      <Text style={styles.appButtonText}>{title}</Text>
+    </LinearGradient>
+  </TouchableOpacity>
+);
 
 export default class Login extends Component {
   
@@ -21,7 +36,7 @@ export default class Login extends Component {
   }
   userLogin = () => {
     if(this.state.email === '' && this.state.password === '') {
-      Alert.alert('Enter details to signin!')
+      Alert.alert('Enter your details to log in!')
     } else {
       this.setState({
         isLoading: true,
@@ -60,64 +75,56 @@ export default class Login extends Component {
     }    
     return (
       <View style={styles.container}>  
+      <Image source={require('../assets/read-logo.png')} style={styles.logo} />
         <TextInput
           style={styles.inputStyle}
           placeholder="Email"
+          placeholderTextColor="green"
+          color= 'green'
           value={this.state.email}
           onChangeText={(val) => this.updateInputVal(val, 'email')}
         />
         <TextInput
           style={styles.inputStyle}
           placeholder="Password"
+          placeholderTextColor="orange"
+          color= 'orange'
           value={this.state.password}
           onChangeText={(val) => this.updateInputVal(val, 'password')}
           maxLength={15}
           secureTextEntry={true}
         />   
-        <Button
-          color="#3740FE"
-          title="Signin"
+
+        <View style={styles.screenContainer}>
+          <OrangeButton 
+          title="Log In" 
+          size="sm" 
           onPress={() => this.userLogin()}
-        />   
+          />
+        </View>
+
+        <Text style={{textAlign: 'center', bottom: 20}}>
+          Or log in with:
+        </Text>
+
+        <SocialIcon
+        title='Facebook'
+        button type='facebook'
+        style={{bottom: 20}}
+        />
+
+        <SocialIcon
+        title='Google'
+        button type='google'
+        style={{bottom: 20}}
+        />
+
         <Text 
           style={styles.loginText}
           onPress={() => this.props.navigation.navigate('Signup')}>
-          Don't have account? Click here to signup
+          Don't have an account? Tap here to sign up
         </Text>                          
       </View>
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 35,
-    backgroundColor: '#fff'
-  },
-  inputStyle: {
-    width: '100%',
-    marginBottom: 15,
-    paddingBottom: 15,
-    alignSelf: "center",
-    borderColor: "#ccc",
-    borderBottomWidth: 1
-  },
-  loginText: {
-    color: '#3740FE',
-    marginTop: 25,
-    textAlign: 'center'
-  },
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff'
-  }
-});
