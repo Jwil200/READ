@@ -38,6 +38,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: '100%',
     paddingTop: 10
+  },
+  divider: {
+    width: '98%',
+    marginVertical: 5,
   }
 });
 
@@ -55,6 +59,7 @@ const Dashboard = () => {
     <ScrollView>
       <View style={styles.container}>
         <Text style={styles.title}>Recent</Text>
+        <Divider style={styles.divider} />
         <FlatList style={styles.grid}
           data={recentData}
           numColumns={3}
@@ -65,6 +70,7 @@ const Dashboard = () => {
 
       <View style={styles.container}>
         <Text style={styles.title}>Favorites</Text>
+        <Divider style={styles.divider} />
         <FlatList style={styles.grid}
           data={favoriteData}
           numColumns={3}
@@ -75,6 +81,7 @@ const Dashboard = () => {
 
       <View style={styles.container}>
         <Text style={styles.title}>All</Text>
+        <Divider style={styles.divider} />
         <FlatList
           data={bookData}
           numColumns={3}
