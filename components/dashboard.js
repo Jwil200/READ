@@ -9,32 +9,6 @@ import { bookData } from "./books.js";
 //import firebase from '../database/firebase';
 //require('firebase/auth')
 
-export default class Dashboard extends Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-
-  render() {
-
-    const Item = ({ item }) => (
-      <View style={styles.item}>
-        <BookTile key={"i" + item._id} progress={item.progress}/>
-      </View>
-    );
-
-    return (
-      <View style={styles.container}>
-        <FlatList
-          data={bookData}
-          numColumns={3}
-          renderItem={Item}
-          keyExtractor={item => item._id}
-        />
-      </View>
-    );
-  }
-}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -45,13 +19,30 @@ const styles = StyleSheet.create({
     paddingTop: 35,
     backgroundColor: '#fff'
   },
-  textStyle: {
-    fontSize: 15,
-    marginBottom: 20
-  },
   item: {
-    width: "32.5%",
+    width: "31.5%",
     alginItems: "center",
-    padding: 5
+    margin: 3,
+    backgroundColor: '#e9eef1'
   }
 });
+
+const Item = ({ item }) => (
+  <View style={styles.item}>
+    <BookTile key={"i" + item._id} progress={item.progress}/>
+  </View>
+);
+
+const Dashboard = () => {
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={bookData}
+        numColumns={3}
+        renderItem={Item}
+        keyExtractor={item => item._id}
+      />
+    </View>
+  );
+}
+export default Dashboard;

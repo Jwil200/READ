@@ -11,7 +11,7 @@ const BookTile = (props) => {
         resizeMode:"stretch"
       }}
       width={'100%'}
-      height={220}
+      height={200}
     >
       <LinearProgress
         value={props.progress}
