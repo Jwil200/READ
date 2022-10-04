@@ -13,7 +13,7 @@ export default class Dashboard extends Component {
   }
   signOut = () => {
     firebase.auth().signOut().then(() => {
-      this.props.navigation.navigate('Login')
+      navigation.navigate('Login')
     })
     .catch(error => this.setState({ errorMessage: error.message }))
   }  
