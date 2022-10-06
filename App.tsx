@@ -12,7 +12,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName="VoiceTest"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
