@@ -1,7 +1,19 @@
 import React, { Component, useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
-import MicRecorder from "mic-recorder-to-mp3";
-import axios from "axios";
+import LiveAudioStream from 'react-native-live-audio-stream';
+
+const options = {
+    sampleRate: 32000,  // default is 44100 but 32000 is adequate for accurate voice recognition
+    channels: 1,        // 1 or 2, default 1
+    bitsPerSample: 16,  // 8 or 16, default 16
+    audioSource: 6,     // android only (see below)
+    bufferSize: 4096    // default is 2048
+};
+
+LiveAudioStream.init(options);
+LiveAudioStream.on('data', data => {
+    console.log("Something is happening!!!");
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -14,40 +26,9 @@ const styles = StyleSheet.create({
 });
 
 const VoiceTest = () => {
-    const recorder = useRef(null) //Recorder
-    const audioPlayer = useRef(null) //Ref for the HTML Audio Tag
-    const [blobURL, setBlobUrl] = useState(null)
-    const [audioFile, setAudioFile] = useState(null)
-    const [isRecording, setIsRecording] = useState(null)
-
-    useEffect(() => {
-        recorder.current = new MicRecorder({bitRate: 128});
-    }, []); 
-    
-    const startRecording = () => {
-        recorder.current.start().then(() => {
-          ;
-    }
-
-    const stopRecording = () => {
-        recorder.current.stop()
-        .getMp3()
-        .then(([buffer, blob]) => {
-            const file = new File(buffer, "audio.mp3", {
-                type: blob.type,
-                lastModified: Date.now()
-            });
-            const newBlobUrl = URL.createObjectURL(blob);
-            setBlobUrl(newBlobUrl);
-            setIsRecording(false);
-            setAudioFile(file);
-        })
-        .catch(e => console.log(e));
-    }
-
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Hello!</Text>
+            <Button title="Solid" type="solid" loading="true" />
         </View>
     );
 }
