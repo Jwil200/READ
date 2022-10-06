@@ -1,0 +1,13 @@
+Installation For Mac 
+####
+Step 1: brew install portaudio
+Step 2: pip install pyaudio
+Step 3: pip install websockets
+####
+Run the python file in terminal
+    cd <folder> 
+    python3 liveterm.py
+####
+    The output has been changed to wait for the entire sentence to be read before printing. This allows for a complete sentence
+    to be outputed rather than word by word. Can be changed if needed. 
+
