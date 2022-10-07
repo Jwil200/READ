@@ -11,6 +11,11 @@
     ],
     "android": {
       "package": "com.anonymous.readapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "be8fa635-6fa1-4769-817e-7a907c6e9773"
+      }
     }
   }
 }
