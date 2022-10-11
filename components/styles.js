@@ -7,8 +7,8 @@ export default StyleSheet.create({
       flex: 1,
       display: "flex",
       flexDirection: "column",
-      justifyContent: "center",
-      padding: 35,
+      //justifyContent: "center",
+      padding: 30,
       backgroundColor: '#fff',
     },
     inputStyle: {
@@ -19,7 +19,7 @@ export default StyleSheet.create({
       borderColor: "#ccc",
       borderBottomWidth: 1,
       bottom: 80,
-      fontSize: 18
+      fontSize: 18,
     },
     loginText: {
       color: '#3740FE',
@@ -59,6 +59,24 @@ export default StyleSheet.create({
       fontWeight: "bold",
       alignSelf: "center",
       textTransform: "uppercase"
-    }
+    },
+
+    dropdown: {
+      right: 30,
+      bottom: 50,
+      height: 50,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+    },
+    label: {
+      position: 'absolute',
+      backgroundColor: 'white',
+      //left: 0,
+      //zIndex: 999,
+      paddingHorizontal: 8,
+      fontSize: 18,
+    },
   
   });
