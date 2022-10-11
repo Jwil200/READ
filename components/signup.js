@@ -1,7 +1,7 @@
 // components/signup.js
 import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import { Text, View, TextInput, Alert, ActivityIndicator, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from './styles'
@@ -9,7 +9,7 @@ import firebase from '../database/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 
-const OrangeButton = ({ onPress, title }) => (
+const OrangeButton = ({ title }) => (
   <TouchableOpacity onPress={registerUser}>
     <LinearGradient
       colors={["orange","#e65c00"]}
@@ -44,7 +44,7 @@ const DropdownComponent = () => {
     return null;
   };
   return (
-    <View style={styles.container}>
+    <View>
       {renderLabel()}
       <Dropdown
         style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
@@ -94,7 +94,7 @@ const Signup = () => {
         })
         
         
-        navigation.navigate('Login')
+        navigation.navigate('Welcome')
         //displays username to terminal for testing
         console.log(user.displayName)
       })
@@ -108,7 +108,7 @@ const Signup = () => {
       behavior="padding"
     >
       
-      <View style={styles.container}>  
+      <View style={styles.container1}>  
         <Image source={require('../assets/read-logo.png')} style={styles.logo} />
         <TextInput
           style={styles.inputStyle}
@@ -153,7 +153,6 @@ const Signup = () => {
           <OrangeButton 
           title="Create an Account" 
           size="sm" 
-          onPress={() => registerUser()}
         />
         </View>
 

@@ -3,13 +3,22 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    container: {
+    container1: {
       flex: 1,
       display: "flex",
       flexDirection: "column",
-      //justifyContent: "center",
+      justifyContent: "center",
       padding: 30,
       backgroundColor: '#fff',
+    },
+    container2: {
+      flex: 1,
+      display: "flex",
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 10,
+      paddingTop: 35,
+      backgroundColor: '#fff'
     },
     inputStyle: {
       width: '100%',
@@ -62,8 +71,7 @@ export default StyleSheet.create({
     },
 
     dropdown: {
-      right: 30,
-      bottom: 50,
+      bottom: 100,
       height: 50,
       borderColor: 'gray',
       borderWidth: 0.5,
@@ -72,11 +80,6 @@ export default StyleSheet.create({
     },
     label: {
       position: 'absolute',
-      backgroundColor: 'white',
-      //left: 0,
-      //zIndex: 999,
-      paddingHorizontal: 8,
-      fontSize: 18,
     },
   
   });

@@ -1,6 +1,6 @@
 // components/login.js
 import React, { Component, useEffect, useState  } from 'react';
-import { Text, View, TextInput, Alert, ActivityIndicator, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
@@ -10,7 +10,7 @@ import {signInWithEmailAndPassword} from 'firebase/auth';
 
 
 //find a way to put this in a stylesheet
-const OrangeButton = ({ onPress, title }) => (
+const OrangeButton = ({ title }) => (
   <TouchableOpacity onPress={loginUser}>
     <LinearGradient
       colors={["orange","#e65c00"]}
@@ -50,7 +50,7 @@ const Login = () => {
     >
 
 
-    <View style={styles.container}>  
+    <View style={styles.container1}>  
     <Image source={require('../assets/read-logo.png')} style={styles.logo} />
       <TextInput
         style={styles.inputStyle}
@@ -76,7 +76,6 @@ const Login = () => {
         <OrangeButton 
         title="Log In" 
         size="sm" 
-        onPress={() => loginUser()}
         />
       </View>
 
