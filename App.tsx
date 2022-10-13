@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Login from './components/login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
+import Welcome from './components/afterSignup';
 
 const Stack = createStackNavigator();
 
@@ -40,6 +41,14 @@ function MyStack() {
        component={Dashboard} 
        options={
          { title: 'Dashboard' },
+         {headerLeft: null} 
+       }
+      />
+      <Stack.Screen 
+       name="Welcome" 
+       component={Welcome} 
+       options={
+         { title: 'Welcome' },
          {headerLeft: null} 
        }
       />

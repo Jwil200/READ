@@ -3,13 +3,22 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-    container: {
+    container1: {
       flex: 1,
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
-      padding: 35,
+      padding: 30,
       backgroundColor: '#fff',
+    },
+    container2: {
+      flex: 1,
+      display: "flex",
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 10,
+      paddingTop: 35,
+      backgroundColor: '#fff'
     },
     inputStyle: {
       width: '100%',
@@ -19,7 +28,7 @@ export default StyleSheet.create({
       borderColor: "#ccc",
       borderBottomWidth: 1,
       bottom: 80,
-      fontSize: 18
+      fontSize: 18,
     },
     loginText: {
       color: '#3740FE',
@@ -59,6 +68,18 @@ export default StyleSheet.create({
       fontWeight: "bold",
       alignSelf: "center",
       textTransform: "uppercase"
-    }
+    },
+
+    dropdown: {
+      bottom: 100,
+      height: 50,
+      borderColor: 'gray',
+      borderWidth: 0.5,
+      borderRadius: 8,
+      paddingHorizontal: 8,
+    },
+    label: {
+      position: 'absolute',
+    },
   
   });
