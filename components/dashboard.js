@@ -1,9 +1,10 @@
 // components/dashboard.js
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "./bookTile.js";
 import { bookData } from "./books.js";
+//import { NavigationHelpersContext } from '@react-navigation/native';
 
 // Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';
@@ -29,7 +30,14 @@ const styles = StyleSheet.create({
 
 const Item = ({ item }) => (
   <View style={styles.item}>
-    <BookTile key={"i" + item._id} progress={item.progress}/>
+    <BookTile 
+    key={"i" + item._id} 
+    id={item._id}
+    title= {item.title}
+    progress={item.progress}
+    isRecent={item.isRecent}
+    isFavorite={item.isFavorite}
+    />
   </View>
 );
 

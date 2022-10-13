@@ -6,6 +6,7 @@ import Login from './components/login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
 import Welcome from './components/afterSignup';
+import BookPreview from './components/bookPreview';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,14 @@ function MyStack() {
        component={Welcome} 
        options={
          { title: 'Welcome' },
+         {headerLeft: null} 
+       }
+      />
+      <Stack.Screen 
+       name="BookPreview" 
+       component={BookPreview} 
+       options={
+         { title: 'Book Preview' },
          {headerLeft: null} 
        }
       />

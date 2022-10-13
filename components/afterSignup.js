@@ -1,6 +1,6 @@
 // components/afterSignup.js, what the user sees after signing up
-import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React from 'react';
+import { View, Text} from 'react-native';
 import { useNavigation } from '@react-navigation/core'
 import styles from './styles'
 
