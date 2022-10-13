@@ -1,13 +1,15 @@
 // components/signup.js
 import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SocialIcon } from 'react-native-elements';
+import { Dropdown } from 'react-native-element-dropdown';
+import styles from '../assets/styles'
 import firebase from '../database/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-const OrangeButton = ({ onPress, title }) => (
+
+const OrangeButton = ({ title }) => (
   <TouchableOpacity onPress={registerUser}>
     <LinearGradient
       colors={["orange","#e65c00"]}
@@ -17,6 +19,54 @@ const OrangeButton = ({ onPress, title }) => (
     </LinearGradient>
   </TouchableOpacity>
 );
+
+const options = [
+  { value: '1', label: '6 and under' },
+  { value: '2', label: '7-12' },
+  { value: '3', label: '13-17' },
+  { value: '4', label: '18-26' },
+  { value: '5', label: '25-39' },
+  { value: '6', label: '40+' },
+
+];
+   
+const DropdownComponent = () => {
+  const [value, setValue] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
+
+  const renderLabel = () => {
+    if (value || isFocus) {
+      return (
+        <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+        </Text>
+      );
+    }
+    return null;
+  };
+  return (
+    <View>
+      {renderLabel()}
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        data={options}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Age Range' : '...'}
+        searchPlaceholder="Search..."
+        value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setValue(item.value);
+          setIsFocus(false);
+        }}
+        
+      />
+    </View>
+  );
+};
 
 const Signup = () => {
   const [email, setEmail] = useState('')
@@ -44,22 +94,21 @@ const Signup = () => {
         })
         
         
-        navigation.navigate('Login')
+        navigation.navigate('Welcome')
         //displays username to terminal for testing
         console.log(user.displayName)
       })
       .catch(error => alert(error.message))
     } 
   }
-  
 
   return (//Each component functionality
     <KeyboardAvoidingView
-      style={styles.container}
+      style={{flex: 1}}
       behavior="padding"
     >
       
-      <View style={styles.container}>  
+      <View style={styles.container1}>  
         <Image source={require('../assets/read-logo.png')} style={styles.logo} />
         <TextInput
           style={styles.inputStyle}
@@ -86,36 +135,26 @@ const Signup = () => {
           onChangeText={text => setPassword(text)}
           maxLength={15}
           secureTextEntry={true}
-        />   
-        <TextInput
+        />  
+        <Text 
           style={styles.inputStyle}
-          placeholder="(Birthday would go here?)"
-          placeholderTextColor="blue"
-          color= 'blue'
-        /> 
+        >
+          <Text
+          style={{ color: "blue" }}
+          >
+            Age
+          </Text>
+        </Text>
+
+        <DropdownComponent/>
+        
+
         <View style={styles.screenContainer}>
           <OrangeButton 
           title="Create an Account" 
           size="sm" 
-          onPress={() => registerUser()}
         />
         </View>
-
-        <Text style={{textAlign: 'center', bottom: 20}}>
-            Or sign up with:
-          </Text>
-        
-        <SocialIcon
-        title='Sign Up With Facebook'
-        button type='facebook'
-        style={{bottom: 20}}
-        />
-
-        <SocialIcon
-        title='Sign Up With Google'
-        button type='google'
-        style={{bottom: 20}}
-        />
 
         <Text 
           style={styles.loginText}
@@ -129,64 +168,3 @@ const Signup = () => {
 }
   
 export default Signup;
-
-//Style sheet to customize indiviual parts.
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    padding: 35,
-    backgroundColor: '#fff',
-  },
-  inputStyle: {
-    width: '100%',
-    marginBottom: 15,
-    paddingBottom: 15,
-    alignSelf: "stretch",
-    borderColor: "#ccc",
-    borderBottomWidth: 1,
-    bottom: 80,
-    fontSize: 18
-  },
-  loginText: {
-    color: '#3740FE',
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-  preloader: {
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#fff'
-  },
-  logo: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'contain',
-    left: 20,
-    bottom: 60,
-  },
-
-  appButtonContainer: {
-    elevation: 8,
-    backgroundColor: "#009688",
-    borderRadius: 100,
-    paddingVertical: 15,
-    paddingHorizontal: 12,
-    bottom: 60,
-  },
-  appButtonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
-  },
-})

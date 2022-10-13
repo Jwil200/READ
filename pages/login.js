@@ -1,6 +1,6 @@
 // components/login.js
 import React, { Component, useEffect, useState  } from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
@@ -10,7 +10,7 @@ import {signInWithEmailAndPassword} from 'firebase/auth';
 
 
 //find a way to put this in a stylesheet
-const OrangeButton = ({ onPress, title }) => (
+const OrangeButton = ({ title }) => (
   <TouchableOpacity onPress={loginUser}>
     <LinearGradient
       colors={["orange","#e65c00"]}
@@ -44,7 +44,13 @@ const Login = () => {
     }
   }
   return (
-    <View style={styles.container}>  
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior="padding"
+    >
+
+
+    <View style={styles.container1}>  
     <Image source={require('../assets/read-logo.png')} style={styles.logo} />
       <TextInput
         style={styles.inputStyle}
@@ -70,24 +76,23 @@ const Login = () => {
         <OrangeButton 
         title="Log In" 
         size="sm" 
-        onPress={() => loginUser()}
         />
       </View>
 
-      <Text style={{textAlign: 'center', bottom: 20}}>
+      <Text style={{textAlign: 'center'}}>
         Or log in with:
       </Text>
 
       <SocialIcon
       title='Facebook'
       button type='facebook'
-      style={{bottom: 20}}
+      //style={{bottom: 10}}
       />
 
       <SocialIcon
       title='Google'
       button type='google'
-      style={{bottom: 20}}
+      //style={{bottom: 10}}
       />
 
       <Text 
@@ -96,6 +101,7 @@ const Login = () => {
         Don't have an account? Tap here to sign up
       </Text>                          
     </View>
+    </KeyboardAvoidingView>
   );
 
 }

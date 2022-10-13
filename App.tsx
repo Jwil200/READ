@@ -7,13 +7,14 @@ import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
 import Store from './pages/store';
 import Settings from './pages/settings';
+import Welcome from './pages/afterSignup';
 
 const Stack = createStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName="Login"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -58,6 +59,14 @@ function MyStack() {
        component={Settings} 
        options={
          { title: 'Settings' },
+         {headerLeft: null} 
+       }
+       />
+      <Stack.Screen 
+       name="Welcome" 
+       component={Welcome} 
+       options={
+         { title: 'Welcome' },
          {headerLeft: null} 
        }
       />
