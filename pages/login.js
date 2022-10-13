@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, TextInput, Button, Alert, ActivityIndicator, Im
 import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
-import styles from './styles'
+import styles from '../assets/styles'
 import firebase from '../database/firebase';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
