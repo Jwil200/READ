@@ -1,17 +1,21 @@
 import React, { Component, useEffect, useState  } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { LogBox } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
+import VoiceTest from './components/voiceTest';
 
+LogBox.ignoreLogs(['new NativeEventEmitter']);
+LogBox.ignoreAllLogs();
 
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="VoiceTest"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -45,6 +49,15 @@ function MyStack() {
          { title: 'Dashboard' },
          {headerLeft: null} 
        }
+      />
+
+      <Stack.Screen 
+        name="VoiceTest" 
+        component={VoiceTest} 
+        options={
+          { title: 'Voice' },
+          { headerLeft: null } 
+        }
       />
       
     </Stack.Navigator>
