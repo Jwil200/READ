@@ -1,29 +1,9 @@
 import React, { Component, useEffect, useState  } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../read-project/components/login';
-import Signup from '../read-project/components/signup';
-import Dashboard from '../read-project/components/dashboard';
-
-/*
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>tesssst</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-*/
+import Login from './components/login';
+import Signup from './components/signup';
+import Dashboard from './components/dashboard';
 
 
 const Stack = createNativeStackNavigator();

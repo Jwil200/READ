@@ -1,7 +1,7 @@
 // components/signup.js
 import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
 import auth from '@react-native-firebase/auth';

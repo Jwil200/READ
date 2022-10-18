@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "read-project",
     "name": "read-project",
     "slug": "read-project",
     "version": "1.0.0",
