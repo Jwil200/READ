@@ -1,14 +1,6 @@
 import React, { Component, useEffect, useState  } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
-import { Button, ThemeProvider } from '@rneui/themed';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SocialIcon } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/core'
 import Login from '../read-project/components/login';
 import Signup from '../read-project/components/signup';
 import Dashboard from '../read-project/components/dashboard';
