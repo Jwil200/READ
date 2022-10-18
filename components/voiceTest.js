@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, PermissionsAndroid, LogBox } from 'react-native';
-import { Button } from '@rneui/themed';
+import { Button, Icon } from '@rneui/themed';
 import { Buffer } from 'buffer';
 import LiveAudioStream from 'react-native-live-audio-stream';
 
@@ -72,7 +72,12 @@ const VoiceTest = () => {
 
     return (
         <View style={styles.container}>
-            <Button title="Solid" onPress={() => toggleListening()}/>
+            <Button title="Solid" onPress={() => toggleListening()}>
+                <Icon 
+                    name={isListening ? "microphone" : "microphone-slash"} 
+                    type="font-awesome"
+                />
+            </Button>
         </View>
     );
 }
