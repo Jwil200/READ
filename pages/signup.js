@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import styles from './styles';
+import styles from '../assets/styles';
 
 
 const OrangeButton = ({ onPress, title }) => (

@@ -4,7 +4,7 @@ import { Text, View, TextInput, Button, Alert, Image, TouchableOpacity} from 're
 import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
-import styles from './styles'
+import styles from '../assets/styles'
 import auth from '@react-native-firebase/auth';
 
 

@@ -2,10 +2,10 @@ import React, { Component, useEffect, useState  } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { LogBox } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from './components/login';
-import Signup from './components/signup';
-import Dashboard from './components/dashboard';
-import VoiceTest from './components/voiceTest';
+import Login from './pages/login';
+import Signup from './pages/signup';
+import Dashboard from './pages/dashboard';
+import VoiceTest from './pages/voiceTest';
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreAllLogs();
