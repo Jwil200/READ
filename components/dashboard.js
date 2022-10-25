@@ -1,9 +1,8 @@
 // components/dashboard.js
 import React, { Component, useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
-import { bookData } from "../components/books.js";
 import Navbar from "../components/navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -59,68 +58,64 @@ const ComponentItem = ({ item }) => (
 );
 
 const Dashboard = ({ navigation }) => {
-  const[books, setBooks] = useState();
-  const[loading, setLoading] = useState(true);
-  const[favBooks, setFav] = useState();
-  const[isRecent, setRecent]= useState();
-  const[user, getUser] = useState();
+  const[bookData, setBooks] = useState([]);
+  const[favorite, setFavorite] = useState([]);
+  const[recent, setRecent] = useState([]);
+  const[fetches, setFetches] = useState(0);
 
-  let recentData = bookData.filter(e => e.isRecent);
-  let favoriteData = bookData.filter(e => e.isFavorite);
+  const user = auth().currentUser;
 
-  const userCred = async () => {//Get Current User Credentials
-    getUser(auth().currentUser);
-  }
+  let recentData = bookData.filter(e => recent.includes(e._id));
+  let favoriteData = bookData.filter(e => favorite.includes(e._id));
 
-  const getFavBooks = async() => {//Get Favorite books
-    //const user = auth().currentUser;
-    const favList = [];
+  const add = () => {
+    setFetches(fetches + 1);
+  };
+
+  const getFavoriteBooks = async () => {
+    const list = [];
     await firestore()
     .collection('Users')
     .doc(user.uid)
     .collection('Favorites').get()
     .then(querySnapshot => {
-      console.log('Total number of entries', querySnapshot.size);
-      querySnapshot.forEach(doc =>{
-        const{Name, Author} = doc.data();
-        favList.push({
-          bookName: Name,
-          authorName: Author,
+      querySnapshot.forEach(doc => {
+        list.push({
+          _id: doc.id
         })
       })
     });
-    setFav(favList);//copies favList into favBooks
+    setFavorite(list);
+    add();
   }
 
-  const getRecentBooks = async() => {//Gets all Recent Books
-    const recentList = [];
+  const getRecentBooks = async() => {
+    const list = [];
     await firestore()
     .collections('Users')
     .doc(user.uid)
     .collections('Recent').get()
     .then(querySnapshot => {
-      console.log('Total entries: ', querySnapshot.size);
-      querySnapshot.forEach(doc =>{
-        const{ Name, Author} = doc.data();
-        recentList.push({
-          bookName: Name,
-          authorName: Author,
+      querySnapshot.forEach(doc => {
+        list.push({
+          _id: doc.id
         })
       })
     });
-    setRecent(recentList);//copies recentList into isRecent
+    setRecent(list);
+    add();
   }
 
-  const getBooks = async() =>{//Gets all books from database
+  const getBooks = async() => {
     const list = [];
     await firestore()
     .collection('Books')
     .get()
     .then(querySnapshot => {
-      console.log('Total users: ', querySnapshot.size);//outputs the number of documents found in collection
       querySnapshot.forEach(doc => {
-        const {Name, Author, Description} = doc.data();
+        const { Name, Author, Description } = doc.data();
         list.push({
+          _id: doc.id,
           bookName: Name,
           authorName: Author,
           bookDes: Description,
@@ -128,26 +123,22 @@ const Dashboard = ({ navigation }) => {
         })
       })
     });
-    //console.log('list size: ', list.size);// for testing
-    //console.log('Lists: ',list);//prints out list to console
-
-    setBooks(list);//Copies into books
-    if(loading){
-      setLoading(false);
-    } 
+    setBooks(list);
+    add();
   }
   
 
   useEffect(() => {
-    getUser();
+    console.log("Book Data");
+    console.log(...bookData.map(e => e.bookName));
+    console.log("Favorites");
+    console.log(...favoriteData);
+    console.log("Recent")
+    console.log(...recentData);
     getBooks();
-    getFavBooks();
-    //getComponents();
+    getFavoriteBooks();
+    getRecentBooks();
   }, []);
-  
-  console.log('Books', books);//for testing
-  console.log('Favorite Books', favBooks);
-  console.log('Recent Books:', isRecent);
 
   let componentList = [];
   componentList.push({
@@ -198,7 +189,7 @@ const Dashboard = ({ navigation }) => {
           (bookData.length == 0)
           ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
           : <FlatList style={styles.grid}
-              data={books}
+              data={bookData}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "a" + item._id}
@@ -209,18 +200,24 @@ const Dashboard = ({ navigation }) => {
   });
 
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 0.9}}>
-        <FlatList
-          data={componentList}
-          renderItem={ComponentItem}
-          keyExtractor={item => item._id}
-        />
+    (fetches < 3)
+    ? 
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size="large"/>
       </View>
-      <View style={{flex: 0.1}}>
-        <Navbar nav={navigation}></Navbar>
+    :
+      <View style={{flex: 1}}>
+        <View style={{flex: 0.9}}>
+          <FlatList
+            data={componentList}
+            renderItem={ComponentItem}
+            keyExtractor={item => item._id}
+          />
+        </View>
+        <View style={{flex: 0.1}}>
+          <Navbar nav={navigation}></Navbar>
+        </View>
       </View>
-    </View>
   );
 }
 export default Dashboard;
