@@ -1,9 +1,10 @@
 // components/dashboard.js
-import React from 'react';
-import { StyleSheet, View, Text, FlatList } from 'react-native';
+import React, { useState  } from 'react';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "./bookTile.js";
 import { bookData } from "./books.js";
+import { MaterialIcons } from '@expo/vector-icons';
 //import { NavigationHelpersContext } from '@react-navigation/native';
 
 // Not using firebase at the moment, all content stored in books.js
@@ -22,7 +23,7 @@ const styles = StyleSheet.create({
   },
   item: {
     width: "31.5%",
-    alginItems: "center",
+    alignItems: "flex-end",
     margin: 3,
     backgroundColor: '#e9eef1'
   }
@@ -30,6 +31,15 @@ const styles = StyleSheet.create({
 
 const Item = ({ item }) => (
   <View style={styles.item}>
+    <TouchableOpacity
+      onPress={() => item.isFavorite ? item.isFavorite = false : item.isFavorite = true}
+    >
+    <MaterialIcons
+      name={item.isFavorite ? 'favorite' : 'favorite-outline'}
+      size={32}
+      color={'red'}
+    />
+    </TouchableOpacity>
     <BookTile 
     key={"i" + item._id} 
     id={item._id}
@@ -38,6 +48,7 @@ const Item = ({ item }) => (
     isRecent={item.isRecent}
     isFavorite={item.isFavorite}
     />
+    
   </View>
 );
 
@@ -47,10 +58,11 @@ const Dashboard = () => {
       <FlatList
         data={bookData}
         numColumns={3}
-        renderItem={Item}
         keyExtractor={item => item._id}
+        renderItem={ Item }    
       />
     </View>
+    
   );
 }
 export default Dashboard;

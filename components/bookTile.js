@@ -20,6 +20,9 @@ const BookTile = (props) => {
         value={props.progress}
         variant="determinate"
       />
+
+      
+      
     </Tile>
   );
 }

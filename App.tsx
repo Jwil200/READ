@@ -32,34 +32,33 @@ function MyStack() {
       <Stack.Screen 
         name="Login" 
         component={Login} 
-        options={
-          {title: 'Login'},
-          {headerLeft: null} 
-        }
+        options={{
+          title: 'Login',
+          headerLeft: null, 
+        }}
       />
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
-       options={
-         { title: 'Dashboard' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Dashboard' ,
+         headerLeft: null,
+       }}
       />
       <Stack.Screen 
        name="Welcome" 
        component={Welcome} 
-       options={
-         { title: 'Welcome' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Welcome to READ!' ,
+          headerLeft: null
+       }}
       />
       <Stack.Screen 
        name="BookPreview" 
        component={BookPreview} 
-       options={
-         { title: 'Book Preview' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Book Preview',
+       }}
       />
     </Stack.Navigator>
   );
