@@ -49,7 +49,13 @@ const styles = StyleSheet.create({
 
 const Item = ({ item }) => (
   <View style={styles.item}>
-    <BookTile key={"i" + item._id} progress={item.progress}/>
+    <BookTile 
+      key={"i" + item._id} 
+      progress={item.progress} 
+      title={item.bookName}
+      author={item.authorName}
+      description={item.bookDes}
+    />
   </View>
 );
 
@@ -119,6 +125,7 @@ const Dashboard = ({ navigation }) => {
           bookName: Name,
           authorName: Author,
           bookDes: Description,
+          progress: 0.5,
           //coverUrl: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.mobileread.com%2Fforums%2Fshowthread.php%3Ft%3D222754&psig=AOvVaw00gGvqXjxv9l21L1AnzPTq&ust=1666400839332000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCKDEkYOR8PoCFQAAAAAdAAAAABAF',
         })
       })
