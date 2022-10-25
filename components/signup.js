@@ -19,6 +19,56 @@ const OrangeButton = ({ onPress, title }) => (
     </LinearGradient>
   </TouchableOpacity>
 );
+/*
+React-Native dependencies needed
+const options = [
+  { value: '1', label: '6 and under' },
+  { value: '2', label: '7-12' },
+  { value: '3', label: '13-17' },
+  { value: '4', label: '18-26' },
+  { value: '5', label: '25-39' },
+  { value: '6', label: '40+' },
+
+];
+   
+const DropdownComponent = () => {
+  const [value, setValue] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
+
+  const renderLabel = () => {
+    if (value || isFocus) {
+      return (
+        <Text style={[styles.label, isFocus && { color: 'blue' }]}>
+        </Text>
+      );
+    }
+    return null;
+  };
+  return (
+    <View>
+      {renderLabel()}
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        data={options}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Age Range' : '...'}
+        searchPlaceholder="Search..."
+        value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setValue(item.value);
+          setIsFocus(false);
+        }}
+        
+      />
+    </View>
+  );
+};
+*/
 
 const Signup = () => {
   const [email, setEmail] = useState('')
@@ -26,6 +76,7 @@ const Signup = () => {
   const [displayname, setName] = useState('')
 
   const navigation = useNavigation()
+  
 
   registerUser = () => {
     if(email === '' && password === '') {
@@ -40,7 +91,8 @@ const Signup = () => {
         
         firestore()//Creates new entry to the database
           .collection('Users')
-          .add({
+          .doc(currentuser.uid)//Sets name of document with userID instead of random generate
+          .set({
             email: currentuser.email,
             name: displayname,
             age: 18,
@@ -66,79 +118,80 @@ const Signup = () => {
 }
   
 
-  return (//Each component functionality
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior="padding"
-    >
-      
-      <View style={styles.container}>  
-        <Image source={require('../assets/read-logo.png')} style={styles.logo} />
-        <TextInput
-          style={styles.inputStyle}
-          placeholder="Name"
-          placeholderTextColor="blue"
-          color= 'blue'
-          value={displayname}
-          onChangeText={text => setName(text)}
-        />      
-        <TextInput
-          style={styles.inputStyle}
-          placeholder="Email"
-          placeholderTextColor="green"
-          color= 'green'
-          value={email}
-          onChangeText={text => setEmail(text)}
-        />
-        <TextInput
-          style={styles.inputStyle}
-          placeholder="Password"
-          placeholderTextColor="orange"
-          color= 'orange'
-          value={password}
-          onChangeText={text => setPassword(text)}
-          maxLength={15}
-          secureTextEntry={true}
-        />   
-        <TextInput
-          style={styles.inputStyle}
-          placeholder="(Birthday would go here?)"
-          placeholderTextColor="blue"
-          color= 'blue'
-        /> 
-        <View style={styles.screenContainer}>
-          <OrangeButton 
-          title="Create an Account" 
-          size="sm" 
-          onPress={() => registerUser()}
-        />
-        </View>
+return (//Each component functionality
+<KeyboardAvoidingView
+  style={styles.container1}
+  behavior="padding"
+>
+  
+  <View style={styles.container1}>  
+    <Image source={require('../assets/read-logo.png')} style={styles.logo} />
+    <TextInput
+      style={styles.inputStyle}
+      placeholder="Name"
+      placeholderTextColor="blue"
+      color= 'blue'
+      value={displayname}
+      onChangeText={text => setName(text)}
+    />      
+    <TextInput
+      style={styles.inputStyle}
+      placeholder="Email"
+      placeholderTextColor="green"
+      color= 'green'
+      value={email}
+      onChangeText={text => setEmail(text)}
+    />
+    <TextInput
+      style={styles.inputStyle}
+      placeholder="Password"
+      placeholderTextColor="orange"
+      color= 'orange'
+      value={password}
+      onChangeText={text => setPassword(text)}
+      maxLength={15}
+      secureTextEntry={true}
+    />   
+    <TextInput
+      style={styles.inputStyle}
+      placeholder="(Birthday would go here?)"
+      placeholderTextColor="blue"
+      color= 'blue'
+    /> 
+    <View style={styles.screenContainer}>
+      <OrangeButton 
+      title="Create an Account" 
+      size="sm" 
+      onPress={() => registerUser()}
+    />
+    </View>
 
-        <Text style={{textAlign: 'center', bottom: 20}}>
-            Or sign up with:
-          </Text>
-        
-        <SocialIcon
-        title='Sign Up With Facebook'
-        button type='facebook'
-        style={{bottom: 20}}
-        />
+    <Text style={{textAlign: 'center', bottom: 20}}>
+        Or sign up with:
+      </Text>
+    
+    <SocialIcon
+    title='Sign Up With Facebook'
+    button type='facebook'
+    style={{bottom: 20}}
+    />
 
-        <SocialIcon
-        title='Sign Up With Google'
-        button type='google'
-        style={{bottom: 20}}
-        />
+    <SocialIcon
+    title='Sign Up With Google'
+    button type='google'
+    style={{bottom: 20}}
+    />
 
-        <Text 
-          style={styles.loginText}
-          onPress={() => navigation.navigate('Login')}>
-          Already registered? Tap here to Log In
-        </Text>                          
-      </View>
-    </KeyboardAvoidingView>
-  );
+    <Text 
+      style={styles.loginText}
+      onPress={() => navigation.navigate('Login')}>
+      Already registered? Tap here to Log In
+    </Text>                          
+  </View>
+</KeyboardAvoidingView>
+);
 
 };
-  
+
 export default Signup;
+

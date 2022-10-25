@@ -4,6 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
+import Welcome from './components/afterSignup';
+import BookPreview from './components/bookPreview';
+import Settings from './components/settings';
 
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +42,15 @@ function MyStack() {
       />
 
       <Stack.Screen 
+       name="BookPreview" 
+       component={BookPreview} 
+       options={
+         { title: 'Book Preview' },
+         {headerLeft: null} 
+       }
+      />
+
+      <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
        options={
@@ -46,7 +58,23 @@ function MyStack() {
          {headerLeft: null} 
        }
       />
-      
+      <Stack.Screen 
+       name="Welcome" 
+       component={Welcome} 
+       options={
+         { title: 'Welcome' },
+         {headerLeft: null} 
+       }
+      />
+             <Stack.Screen 
+       name="Settings" 
+       component={Settings} 
+       options={
+         { title: 'Settings' },
+         {headerLeft: null} 
+       }
+      />
+
     </Stack.Navigator>
   );
 }
