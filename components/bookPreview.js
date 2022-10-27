@@ -17,8 +17,6 @@ const OrangeButton = ({ title }) => (
   </TouchableOpacity>
 );
 
-
-
 const BookPreview = (props) => {
     const book = props.route.params.props;
   return (
