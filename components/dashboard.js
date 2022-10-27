@@ -1,5 +1,5 @@
 // components/dashboard.js
-import React, { Component } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
@@ -52,7 +52,14 @@ const styles = StyleSheet.create({
 
 const Item = ({ item }) => (
   <View style={styles.item}>
-    <BookTile key={"i" + item._id} progress={item.progress}/>
+    <BookTile 
+     key={"i" + item._id} 
+     id={item._id}
+     title= {item.title}
+     progress={item.progress}
+     isRecent={item.isRecent}
+     isFavorite={item.isFavorite}
+ />
   </View>
 );
 
