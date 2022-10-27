@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/core'
 import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Dropdown } from 'react-native-element-dropdown';
-import styles from './styles'
+import styles from './styles';
 import firebase from '../database/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 

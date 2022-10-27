@@ -6,6 +6,8 @@ import Login from './components/login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
 import Welcome from './components/afterSignup';
+import BookPreview from './components/bookPreview';
+import Settings from './components/settings';
 
 const Stack = createStackNavigator();
 
@@ -31,26 +33,41 @@ function MyStack() {
       <Stack.Screen 
         name="Login" 
         component={Login} 
-        options={
-          {title: 'Login'},
-          {headerLeft: null} 
-        }
+        options={{
+          title: 'Login',
+          headerLeft: null, 
+        }}
       />
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
-       options={
-         { title: 'Dashboard' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Dashboard' ,
+         headerLeft: null,
+       }}
       />
       <Stack.Screen 
        name="Welcome" 
        component={Welcome} 
-       options={
-         { title: 'Welcome' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Welcome to READ!' ,
+          headerLeft: null
+       }}
+      />
+      <Stack.Screen 
+       name="BookPreview" 
+       component={BookPreview} 
+       options={{
+          title: 'Book Preview',
+       }}
+      />
+      <Stack.Screen 
+       name="Settings" 
+       component={Settings} 
+       options={{
+          title: 'Settings' ,
+         headerLeft: null 
+       }}
       />
     </Stack.Navigator>
   );

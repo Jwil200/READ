@@ -20,6 +20,33 @@ export default StyleSheet.create({
       paddingTop: 35,
       backgroundColor: '#fff'
     },
+    bookPreviewContainer:{
+      padding: 10 
+    },
+    bookTitle:{
+      fontSize: 26,
+      paddingBottom: 10
+    },
+    bookPreviewImage:{
+      alignItems: 'center'
+    },
+    bookPreviewProgress:{
+      alignSelf: 'center', 
+      fontWeight: 'bold',
+      paddingBottom: 5
+    },
+    bookPreviewDescription:{
+      //alignSelf: 'flex-end',
+      //position: 'absolute',
+     // width: 200,
+      //paddingTop: 80
+      
+    },
+    icon: {
+      //position: 'absolute',
+      //bottom: 160,
+      //right: 5,
+    },
     inputStyle: {
       width: '100%',
       marginBottom: 15,
@@ -61,6 +88,13 @@ export default StyleSheet.create({
       paddingVertical: 15,
       paddingHorizontal: 12,
       bottom: 60,
+    },
+    appButtonContainer2:{
+      elevation: 8,
+      backgroundColor: "#009688",
+      borderRadius: 100,
+      paddingVertical: 15,
+      paddingHorizontal: 12,
     },
     appButtonText: {
       fontSize: 18,
