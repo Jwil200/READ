@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, PermissionsAndroid, LogBox } from 'react-native
 import { Button, Icon } from '@rneui/themed';
 import { Buffer } from 'buffer';
 import LiveAudioStream from 'react-native-live-audio-stream';
+import { ASSEMBLY_AI_API_KEY } from "@env";
 
 const requestRecordPermissions = async () => {
     try {
@@ -33,11 +34,27 @@ const requestRecordPermissions = async () => {
             console.log(LiveAudioStream);
             LiveAudioStream.init(options);
 
-            LiveAudioStream.on('data', data => {
-                // base64-encoded audio data chunks
-                var chunk = Buffer.from(data, 'base64');
-                console.log("Listening to voice...");
-            });
+            //const ws = new WebSocket("wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000");
+            
+            // We put this in open so that way we are only performing any actions if the
+            // websocket was successfully opened.
+            //ws.onopen = () => {
+                LiveAudioStream.on('data', data => {
+                    // base64-encoded audio data chunks
+                    var chunk = Buffer.from(data, 'base64');
+                    console.log("Listening to voice...");
+                    console.log(chunk.toString("utf8"));
+                    //ws.send(JSON.stringify({ "audio_data": chunk.toString("utf8") }));
+                });
+            //};
+
+            //ws.onerror = (e) => {
+                // If an error occurs the view should probably update.
+                // Update a state in order to give a notifcation or use some sort
+                // of live notif.
+                // Also close the LiveAudioStream and disable it from opening again 
+                // if possible.
+            //};
         } else {
             console.log("Microphone permission denied.");
         }
@@ -48,6 +65,7 @@ const requestRecordPermissions = async () => {
 
 
 const VoiceTest = () => {
+    const API_KEY = process.env.ASSEMBLY_AI_API_KEY;
     const isInitialMount = useRef(true);
     const [isListening, setListening] = useState(false);
 
