@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/core'
 import { Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
+import { Dropdown } from 'react-native-element-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import styles from './styles';
@@ -19,8 +20,8 @@ const OrangeButton = ({ onPress, title }) => (
     </LinearGradient>
   </TouchableOpacity>
 );
-/*
-React-Native dependencies needed
+
+//React-Native dependencies needed
 const options = [
   { value: '1', label: '6 and under' },
   { value: '2', label: '7-12' },
@@ -68,7 +69,7 @@ const DropdownComponent = () => {
     </View>
   );
 };
-*/
+
 
 const Signup = () => {
   const [email, setEmail] = useState('')
@@ -76,9 +77,8 @@ const Signup = () => {
   const [displayname, setName] = useState('')
 
   const navigation = useNavigation()
-  
 
-  registerUser = () => {
+  registerUser = async() => {
     if(email === '' && password === '') {
       Alert.alert('Enter your details to sign up!')
     }
@@ -88,8 +88,9 @@ const Signup = () => {
       .then(async userCredentials => {
         const currentuser = userCredentials.user;//gets current users credentials
         console.log('User account created & signed in!');
+        const db = firestore();
         
-        firestore()//Creates new entry to the database
+        db//Creates new entry to the database
           .collection('Users')
           .doc(currentuser.uid)//Sets name of document with userID instead of random generate
           .set({
@@ -98,7 +99,14 @@ const Signup = () => {
             age: 18,
             password: password,
             userID: currentuser.uid,
-          })
+          });
+        /*
+        const users = db.collection('Users');
+        const DocumentSnapshot = await users.doc(currentuser.uid).get();
+        const ref = DocumentSnapshot.ref;
+        await ref.collection('Favorite').add()
+        await ref.collection('Recent').add()*/
+
         console.log(currentuser);
         navigation.navigate('Login')
  })
@@ -152,12 +160,18 @@ return (//Each component functionality
       maxLength={15}
       secureTextEntry={true}
     />   
-    <TextInput
-      style={styles.inputStyle}
-      placeholder="(Birthday would go here?)"
-      placeholderTextColor="blue"
-      color= 'blue'
-    /> 
+<Text 
+          style={styles.inputStyle}
+        >
+          <Text
+          style={{ color: "blue" }}
+          >
+            Age
+          </Text>
+        </Text>
+
+        <DropdownComponent/>
+
     <View style={styles.screenContainer}>
       <OrangeButton 
       title="Create an Account" 

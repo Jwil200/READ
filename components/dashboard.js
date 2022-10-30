@@ -7,6 +7,7 @@ import Navbar from "../components/navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
+
 const styles = StyleSheet.create({
   screen: {
     height: '100%',
@@ -67,54 +68,17 @@ const Dashboard = ({ navigation }) => {
   const[bookData, setBooks] = useState([]);
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
-  const[fetches, setFetches] = useState(0);
+  const[isMount, setMount] = useState(false);
+  
+  const db = firestore();
+  const currentUid = auth().currentUser.uid;
 
-  const user = auth().currentUser;
-
-  let recentData = bookData.filter(e => recent.includes(e._id));
-  let favoriteData = bookData.filter(e => favorite.includes(e._id));
-
-  const add = () => {
-    setFetches(fetches + 1);
-  };
-
-  const getFavoriteBooks = async () => {
-    const list = [];
-    await firestore()
-    .collection('Users')
-    .doc(user.uid)
-    .collection('Favorites').get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        list.push({
-          _id: doc.id
-        })
-      })
-    });
-    setFavorite(list);
-    add();
-  }
-
-  const getRecentBooks = async() => {
-    const list = [];
-    await firestore()
-    .collections('Users')
-    .doc(user.uid)
-    .collections('Recent').get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        list.push({
-          _id: doc.id
-        })
-      })
-    });
-    setRecent(list);
-    add();
-  }
+  //let recentData = bookData.filter(e => recent.includes(e._id));
+  //let favoriteData = bookData.filter(e => favorite.includes(e._id));
 
   const getBooks = async() => {
     const list = [];
-    await firestore()
+    await db
     .collection('Books')
     .get()
     .then(querySnapshot => {
@@ -131,23 +95,66 @@ const Dashboard = ({ navigation }) => {
       })
     });
     setBooks(list);
-    add();
+    console.log('Book List', bookData);
+
   }
-  
+
+  const getFavoriteBooks = async () => {
+    const list = [];
+    await db
+    .collection('Users/' + currentUid + '/Favorites')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author} = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+        })
+      })
+    });
+    setFavorite(list);
+    //console.log('fav list', list);
+  }
+
+  const getRecentBooks = async() => {
+    const list = [];
+    await db
+    .collection('Users/' + currentUid + '/Favorites')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+        })
+      })
+    });
+    setRecent(list);
+    //console.log('recent list: ', recent)
+  }
 
   useEffect(() => {
+    console.log('First');
+    getBooks();
+    console.log('second');
+    getFavoriteBooks();
+    console.log('third');
+    getRecentBooks();
     console.log("Book Data");
     console.log(...bookData.map(e => e.bookName));
     console.log("Favorites");
-    console.log(...favoriteData);
+    //console.log(...favorite.map(e => e.bookName));
     console.log("Recent")
-    console.log(...recentData);
-    getBooks();
-    getFavoriteBooks();
-    getRecentBooks();
+    //console.log(...recent.map(e => e.bookName));
+    setMount(true);
   }, []);
 
   let componentList = [];
+
   componentList.push({
     _id: 1,
     jsx: 
@@ -155,10 +162,10 @@ const Dashboard = ({ navigation }) => {
         <Text style={styles.title}>Recent</Text>
         <Divider style={styles.divider} />
         {
-          (recentData.length == 0)
+          (recent.length == 0)
           ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
           : <FlatList style={styles.grid}
-              data={recentData}
+              data={recent}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "r" + item._id}
@@ -174,10 +181,10 @@ const Dashboard = ({ navigation }) => {
         <Text style={styles.title}>Favorites</Text>
         <Divider style={styles.divider} />
         {
-          (favoriteData.length == 0)
+          (favorite.length == 0)
           ? <Text style={styles.emptyText}>You don't have anything favorited.</Text>
           : <FlatList style={styles.grid}
-              data={favoriteData}
+              data={favorite}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "f" + item._id}
@@ -207,7 +214,7 @@ const Dashboard = ({ navigation }) => {
   });
 
   return (
-    (fetches < 3)
+    (!isMount)
     ? 
       <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
         <ActivityIndicator size="large"/>
