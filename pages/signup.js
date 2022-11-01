@@ -15,7 +15,7 @@ const OrangeButton = ({ title }) => (
       colors={["orange","#e65c00"]}
       style={styles.appButtonContainer}
     >  
-      <Text style={styles.appButtonText}>{title}</Text>
+    <Text style={styles.appButtonText}>{title}</Text>
     </LinearGradient>
   </TouchableOpacity>
 );

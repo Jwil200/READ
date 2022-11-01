@@ -8,13 +8,14 @@ import Dashboard from './pages/dashboard';
 import Store from './pages/store';
 import Settings from './pages/settings';
 import Welcome from './pages/afterSignup';
+import BookPreview from './pages/bookPreview';
 
 const Stack = createStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Dashboard"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -33,18 +34,18 @@ function MyStack() {
       <Stack.Screen 
         name="Login" 
         component={Login} 
-        options={
-          {title: 'Login'},
-          {headerLeft: null} 
-        }
+        options={{
+          title: 'Login',
+          headerLeft: null, 
+        }}
       />
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
-       options={
-         { title: 'Dashboard' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Dashboard' ,
+         headerLeft: null,
+       }}
       />
       <Stack.Screen 
        name="Store" 
@@ -65,10 +66,17 @@ function MyStack() {
       <Stack.Screen 
        name="Welcome" 
        component={Welcome} 
-       options={
-         { title: 'Welcome' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Welcome to READ!' ,
+          headerLeft: null
+       }}
+      />
+      <Stack.Screen 
+       name="BookPreview" 
+       component={BookPreview} 
+       options={{
+          title: 'Book Preview',
+       }}
       />
     </Stack.Navigator>
   );
