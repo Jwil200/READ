@@ -52,7 +52,8 @@ const Item = ({ item }) => (
   <View style={styles.item}>
     <BookTile 
       key={"i" + item._id} 
-      progress={item.progress} 
+      progress={item.progress}
+      coverUrl={item.coverUrl} 
       title={item.bookName}
       author={item.authorName}
       description={item.bookDes}
@@ -83,58 +84,62 @@ const Dashboard = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, Description } = doc.data();
+        const { Name, Author, Description, Cover } = doc.data();
+        //console.log('Book cover' , Cover);
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
           bookDes: Description,
           progress: 0.5,
+          coverUrl:  Cover
           //coverUrl: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.mobileread.com%2Fforums%2Fshowthread.php%3Ft%3D222754&psig=AOvVaw00gGvqXjxv9l21L1AnzPTq&ust=1666400839332000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCKDEkYOR8PoCFQAAAAAdAAAAABAF',
         })
       })
     });
     setBooks(list);
-    console.log('Book List', bookData);
+    //console.log(cover);
 
   }
 
   const getFavoriteBooks = async () => {
     const list = [];
     await db
-    .collection('Users/' + currentUid + '/Favorites')
+    .collection('Users/' + currentUid + '/Favorite')
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author} = doc.data();
+        const { Name, Author, } = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
+          coverUrl : 'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
         })
       })
     });
     setFavorite(list);
-    //console.log('fav list', list);
+    console.log('fav list', list);
   }
 
   const getRecentBooks = async() => {
     const list = [];
     await db
-    .collection('Users/' + currentUid + '/Favorites')
+    .collection('Users/' + currentUid + '/Recent')
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author } = doc.data();
+        const { Name, Author, } = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
+          coverUrl: 'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
         })
       })
     });
     setRecent(list);
-    //console.log('recent list: ', recent)
+    console.log('recent list: ', recent)
   }
 
   useEffect(() => {

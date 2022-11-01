@@ -33,7 +33,7 @@ const BookPreview = (props) => {
         <View style={styles.bookPreviewImage}>
           <Tile  
           imageSrc={{
-              uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+              uri: book.coverUrl//'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
           }}
           imageProps={{
             resizeMode:"cover",

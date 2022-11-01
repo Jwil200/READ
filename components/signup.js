@@ -76,6 +76,7 @@ const Signup = () => {
   const [password, setPassword] = useState('')
   const [displayname, setName] = useState('')
 
+
   const navigation = useNavigation()
 
   registerUser = async() => {
@@ -89,7 +90,7 @@ const Signup = () => {
         const currentuser = userCredentials.user;//gets current users credentials
         console.log('User account created & signed in!');
         const db = firestore();
-        
+        console.log(currentuser.uid);
         db//Creates new entry to the database
           .collection('Users')
           .doc(currentuser.uid)//Sets name of document with userID instead of random generate
@@ -99,15 +100,34 @@ const Signup = () => {
             age: 18,
             password: password,
             userID: currentuser.uid,
-          });
-        /*
-        const users = db.collection('Users');
-        const DocumentSnapshot = await users.doc(currentuser.uid).get();
-        const ref = DocumentSnapshot.ref;
-        await ref.collection('Favorite').add()
-        await ref.collection('Recent').add()*/
+            newUser: 'True',
+          })
+          
+        db
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Favorite')
+          .add({
+            Created: 'True'
+          })
 
-        console.log(currentuser);
+          db
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Recent')
+          .add({
+            Created: 'True'
+          })
+
+          db
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Settings')
+          .add({
+            Created: 'True'
+          })
+
+        //console.log(currentuser);//checks if user was created
         navigation.navigate('Login')
  })
   .catch(error => {//Error if email is already in use

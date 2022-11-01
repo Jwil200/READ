@@ -4,10 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 
 const BookTile = (props) => {
   const navigation = useNavigation()
+  const test = props.coverUrl
+  console.log('COverURL', test)
   return (
     <Tile
       imageSrc={{
-          uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+          uri: props.coverUrl//'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
       }}
       imageProps={{
         resizeMode:"stretch"
