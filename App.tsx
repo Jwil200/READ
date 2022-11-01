@@ -2,19 +2,20 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Login from './components/login';
-import Signup from './components/signup';
-import Dashboard from './components/dashboard';
-import Welcome from './components/afterSignup';
-import BookPreview from './components/bookPreview';
-import Settings from './components/settings';
+import Login from './pages/login';
+import Signup from './pages/signup';
+import Dashboard from './pages/dashboard';
+import Store from './pages/store';
+import Settings from './pages/settings';
+import Welcome from './pages/afterSignup';
+import BookPreview from './pages/bookPreview';
 
 const Stack = createStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Dashboard"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -47,6 +48,22 @@ function MyStack() {
        }}
       />
       <Stack.Screen 
+       name="Store" 
+       component={Store} 
+       options={
+         { title: 'Store' },
+         {headerLeft: null} 
+       }
+      />
+      <Stack.Screen 
+       name="Settings" 
+       component={Settings} 
+       options={
+         { title: 'Settings' },
+         {headerLeft: null} 
+       }
+       />
+      <Stack.Screen 
        name="Welcome" 
        component={Welcome} 
        options={{
@@ -59,14 +76,6 @@ function MyStack() {
        component={BookPreview} 
        options={{
           title: 'Book Preview',
-       }}
-      />
-      <Stack.Screen 
-       name="Settings" 
-       component={Settings} 
-       options={{
-          title: 'Settings' ,
-         headerLeft: null 
        }}
       />
     </Stack.Navigator>

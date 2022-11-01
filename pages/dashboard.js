@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
-import { bookData } from "../components/books.js";
+import { bookData } from "../assets/books.js";
 import Navbar from "../components/navbar";
 
 // Not using firebase at the moment, all content stored in books.js

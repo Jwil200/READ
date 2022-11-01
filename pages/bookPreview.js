@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
-import styles from './styles';
+import styles from '../assets/styles';
 
 const OrangeButton = ({ title }) => (
   <TouchableOpacity //onPress={loginUser}>
