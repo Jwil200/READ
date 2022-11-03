@@ -141,33 +141,39 @@ const Store = ({ navigation }) => {
 
   const [filteredDataSource, setFilteredDataSource] = useState(componentList);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = filteredDataSource;
-        setFilteredDataSource(response);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-}, [filteredDataSource]);
-
   const searchFilterFunction = (text) => {
     if (text) {
-      const newData = bookStoreData.filter(function (item) {
+      const newData = bookStoreData.filter(function (item) { //Create an array of newData that filters library data
         const itemData = item.title
           ? item.title.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
-      setFilteredDataSource(newData);
-      //console.log(filteredDataSource);
+
+      const filteredList = [];
+
+      filteredList.push({ //Populate the filtered list with the book componenets
+        _id: 1,
+        jsx:
+        <View style={styles.container}>
+        {
+          (newData.length == 0)
+          ? <Text style={styles.emptyText}>Book not available.</Text>
+          : <FlatList style={styles.grid}
+              data={newData}
+              numColumns={3}
+              renderItem={Item}
+              keyExtractor={item => "a" + item._id}
+              listKey="a"
+            />
+        }
+      </View>
+      });
+      setFilteredDataSource(filteredList); //Update state variables
       setSearch(text);
     } else {
-      setFilteredDataSource(componentList);
+      setFilteredDataSource(componentList); //On clear, go back to og component list
       setSearch(text);
     }
   };
