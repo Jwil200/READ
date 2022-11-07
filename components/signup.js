@@ -31,10 +31,17 @@ const options = [
   { value: '6', label: '40+' },
 
 ];
-   
-const DropdownComponent = () => {
+
+
+const Signup = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [displayname, setName] = useState('')
   const [value, setValue] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+
+
+  const navigation = useNavigation()
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -43,42 +50,7 @@ const DropdownComponent = () => {
         </Text>
       );
     }
-    return null;
-  };
-  return (
-    <View>
-      {renderLabel()}
-      <Dropdown
-        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
-        data={options}
-        search
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        placeholder={!isFocus ? 'Age Range' : '...'}
-        searchPlaceholder="Search..."
-        value={value}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={item => {
-          setValue(item.value);
-          setIsFocus(false);
-        }}
-        
-      />
-    </View>
-  );
-};
-
-
-const Signup = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [displayname, setName] = useState('')
-
-
-  const navigation = useNavigation()
-
+  }
   registerUser = async() => {
     if(email === '' && password === '') {
       Alert.alert('Enter your details to sign up!')
@@ -97,38 +69,50 @@ const Signup = () => {
           .set({
             email: currentuser.email,
             name: displayname,
-            age: 18,
+            age: value,
             password: password,
             userID: currentuser.uid,
             newUser: 'True',
           })
           
-        db
+        db//add a Favorite subcollection
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Favorite')
-          .add({
+          .doc('Temp')
+          .set({
             Created: 'True'
           })
 
-          db
+          db// adds a Recent subcollection
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Recent')
-          .add({
+          .doc('Temp')
+          .set({
             Created: 'True'
           })
 
-          db
+          db//add a settings subcollection
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Settings')
-          .add({
+          .doc('Temp')
+          .set({
             Created: 'True'
           })
 
+          db// a settings subcollection
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Favorite')
+          .doc('Temp')
+          .delete()
+
+
+
         //console.log(currentuser);//checks if user was created
-        navigation.navigate('Login')
+        navigation.navigate('Welcome')
  })
   .catch(error => {//Error if email is already in use
     if (error.code === 'auth/email-already-in-use') {
@@ -189,9 +173,27 @@ return (//Each component functionality
             Age
           </Text>
         </Text>
-
-        <DropdownComponent/>
-
+        <View>
+      {renderLabel()}
+      <Dropdown
+        style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
+        data={options}
+        search
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        placeholder={!isFocus ? 'Age Range' : '...'}
+        searchPlaceholder="Search..."
+        value={value}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setValue(item.value);
+          setIsFocus(false);
+        }}
+        
+      />
+    </View>
     <View style={styles.screenContainer}>
       <OrangeButton 
       title="Create an Account" 

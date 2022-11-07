@@ -70,6 +70,7 @@ const Dashboard = ({ navigation }) => {
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
   const[isMount, setMount] = useState(false);
+  const[filter, setFilter] = useState([]);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
@@ -77,6 +78,29 @@ const Dashboard = ({ navigation }) => {
   //let recentData = bookData.filter(e => recent.includes(e._id));
   //let favoriteData = bookData.filter(e => favorite.includes(e._id));
 
+  const filterBooks = async() => {
+    const list = [];
+    await db 
+    .collection('Books')
+    .where('Genre', 'array-contains-any', ['Children'])
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        console.log('data', doc.data())  
+        const { Name, Author, Description, Cover } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover,
+        })
+      })
+    });
+    setFilter(list)
+    console.log('flitered books', list);
+  }
   const getBooks = async() => {
     const list = [];
     await db
@@ -85,21 +109,17 @@ const Dashboard = ({ navigation }) => {
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const { Name, Author, Description, Cover } = doc.data();
-        //console.log('Book cover' , Cover);
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
           bookDes: Description,
           progress: 0.5,
-          coverUrl:  Cover
-          //coverUrl: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.mobileread.com%2Fforums%2Fshowthread.php%3Ft%3D222754&psig=AOvVaw00gGvqXjxv9l21L1AnzPTq&ust=1666400839332000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCKDEkYOR8PoCFQAAAAAdAAAAABAF',
+          coverUrl:  Cover,
         })
       })
     });
     setBooks(list);
-    //console.log(cover);
-
   }
 
   const getFavoriteBooks = async () => {
@@ -109,17 +129,19 @@ const Dashboard = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, } = doc.data();
+        const { Name, Author, Description, Cover } = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
-          coverUrl : 'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover
+          //coverUrl : 'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
         })
       })
     });
     setFavorite(list);
-    console.log('fav list', list);
   }
 
   const getRecentBooks = async() => {
@@ -129,32 +151,25 @@ const Dashboard = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, } = doc.data();
+        const { Name, Author, Description, Cover } = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
-          coverUrl: 'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover
         })
       })
     });
     setRecent(list);
-    console.log('recent list: ', recent)
   }
 
   useEffect(() => {
-    console.log('First');
     getBooks();
-    console.log('second');
     getFavoriteBooks();
-    console.log('third');
     getRecentBooks();
-    console.log("Book Data");
-    console.log(...bookData.map(e => e.bookName));
-    console.log("Favorites");
-    //console.log(...favorite.map(e => e.bookName));
-    console.log("Recent")
-    //console.log(...recent.map(e => e.bookName));
+    filterBooks();
     setMount(true);
   }, []);
 
@@ -170,7 +185,7 @@ const Dashboard = ({ navigation }) => {
           (recent.length == 0)
           ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
           : <FlatList style={styles.grid}
-              data={recent}
+              data={filter}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "r" + item._id}

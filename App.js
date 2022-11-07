@@ -7,6 +7,10 @@ import Dashboard from './components/dashboard';
 import Welcome from './components/afterSignup';
 import BookPreview from './components/bookPreview';
 import Settings from './components/settings';
+import Store from './components/store';
+import BookStorePreview from './components/bookStorePreview';
+import Cart from './components/cart.js';
+
 
 
 const Stack = createNativeStackNavigator();
@@ -74,7 +78,33 @@ function MyStack() {
          {headerLeft: null} 
        }
       />
-
+      <Stack.Screen 
+       name="Store" 
+       component={Store} 
+       options= {({ navigation }) => ({
+        title: "Book Store", 
+          headerRight: () => (
+            <Button
+              onPress={() => navigation.navigate("Cart")}
+              title="Cart"
+              color="#fff"
+            />
+          )})}
+      />
+      <Stack.Screen 
+       name="BookStorePreview" 
+       component={BookStorePreview} 
+       options={{
+          title: 'Book Preview',
+       }}
+      />
+      <Stack.Screen 
+        name="Cart" 
+        component={Cart} 
+        options={{
+            title: 'Your Cart',
+        }}
+      />
     </Stack.Navigator>
   );
 }

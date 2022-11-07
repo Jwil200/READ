@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 const BookTile = (props) => {
   const navigation = useNavigation()
   const test = props.coverUrl
-  console.log('COverURL', test)
   return (
     <Tile
       imageSrc={{
