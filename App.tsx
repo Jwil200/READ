@@ -1,8 +1,9 @@
 // App.js
 import * as React from 'react';
-import { Button } from 'react-native';
+import { Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { Icon } from 'react-native-elements';
 import Login from './components/login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
@@ -45,10 +46,15 @@ function MyStack() {
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
-       options={{
-          title: 'Dashboard' ,
-         headerLeft: null,
-       }}
+       options= {({ navigation }) => ({
+        title: "Dashboard", 
+          headerRight: () => (
+            <Icon
+                style={{ paddingRight: 10}}
+                name='filter-alt'
+                color='#fff' 
+            />
+          )})}
       />
       <Stack.Screen 
        name="Welcome" 
@@ -79,11 +85,17 @@ function MyStack() {
        options= {({ navigation }) => ({
         title: "Book Store", 
           headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate("Cart")}
-              title="Cart"
-              color="#fff"
+            <View style={{ flexDirection:"row", padding: 10}}>
+            <Icon
+                style={{ paddingRight: 10}}
+                name='filter-alt'
+                color='#fff' 
             />
+            <Icon
+              name='shopping-cart'
+              onPress={() => navigation.navigate("Cart")}
+              color='#fff' />
+            </View>
           )})}
       />
       <Stack.Screen 
