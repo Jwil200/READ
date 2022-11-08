@@ -1,15 +1,13 @@
 // components/store.js *Based from dashboard.js at the moment
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
+import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
 import { colors, SearchBar} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 import Navbar from "../components/navbar";
-
-// Not using firebase at the moment, all content stored in books.js
-//import firebase from '../database/firebase';
-//require('firebase/auth')
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const styles = StyleSheet.create({
   screen: {
@@ -55,8 +53,12 @@ const Item = ({ item }) => (
   <View style={styles.item}>
     <BookStoreTile 
      key={"i" + item._id} 
+     progress={item.progress}
+     coverUrl={item.coverUrl} 
+     author={item.authorName}
      id={item._id}
-     title= {item.title}
+     description={item.bookDes}
+     title= {item.bookName}
      isRecent={item.isRecent}
      rating={item.rating}
      isAddedtoCart={item.isAddedtoCart}
@@ -73,16 +75,58 @@ const ComponentItem = ({ item }) => (
 const Store = ({ navigation }) => {
   let recentData = bookStoreData.filter(e => e.isRecent);
   let ratingData = bookStoreData.filter(e => e.rating > 3.00);
-
+  const[bookData, setBooks] = useState([]);
+  const[search, setSearch] = useState('');
+  const[isMount, setMount] = useState(false); 
+  
+  
   let componentList = [];
   
-  const [search, setSearch] = useState('');
+
+  const db = firestore();
+  //const currentUid = auth().currentUser.uid;
+  const getInitialscreen = () => {
+    setFilteredDataSource(componentList)
+  }
+
+  const getBooks = async() => {
+    const list = [];
+    await db
+    .collection('Books')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author, Description, Cover } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover,
+        })
+      })
+    });
+    setBooks(list);
+    console.log(bookData)
+  }
+
+  useEffect(() => {
+    getBooks();
+    getInitialscreen();
+    if(filteredDataSource.length == 0){
+      getInitialscreen();
+    }
+    else{
+      //console.log('book list', filteredDataSource)
+      setMount(true);
+    }
+    //console.log('book list', filteredDataSource)
+  }, []);
   
   componentList.push({
     _id: 1,
     jsx: 
-      <View>
-        
       <View style={styles.container}>
         <Text style={styles.title}>New</Text>
         <Divider style={styles.divider} />
@@ -98,7 +142,6 @@ const Store = ({ navigation }) => {
             />
         }
         </View>
-      </View>
   });
   componentList.push({
     _id: 2,
@@ -126,10 +169,10 @@ const Store = ({ navigation }) => {
         <Text style={styles.title}>All</Text>
         <Divider style={styles.divider} />
         {
-          (bookStoreData.length == 0)
+          (bookData.length == 0)
           ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
           : <FlatList style={styles.grid}
-              data={bookStoreData}
+              data={bookData}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "a" + item._id}
@@ -143,15 +186,15 @@ const Store = ({ navigation }) => {
 
   const searchFilterFunction = (text) => {
     if (text) {
-      const newData = bookStoreData.filter(function (item) { //Create an array of newData that filters library data
-        const itemData = item.title
-          ? item.title.toUpperCase()
+      const newData = bookData.filter(function (item) { //Create an array of newData that filters library data
+        const itemData = item.bookName
+          ? item.bookName.toUpperCase()
           : ''.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
 
-      const filteredList = [];
+      let filteredList = [];
 
       filteredList.push({ //Populate the filtered list with the book componenets
         _id: 1,
@@ -179,6 +222,12 @@ const Store = ({ navigation }) => {
   };
 
   return (
+    (!isMount)
+    ? 
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size="large"/>
+      </View>
+    :
     <View style={{flex: 1}}>
       <View style={{flex: 0.9}}>
         <SearchBar round 

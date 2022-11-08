@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState  } from 'react';
+import React, { Component, useEffect, useState, Button  } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/login';
@@ -70,7 +70,7 @@ function MyStack() {
          {headerLeft: null} 
        }
       />
-             <Stack.Screen 
+      <Stack.Screen 
        name="Settings" 
        component={Settings} 
        options={
@@ -79,6 +79,13 @@ function MyStack() {
        }
       />
       <Stack.Screen 
+        name="Store" 
+          component={Store} 
+          options={
+            { title: 'Store' },
+            {headerLeft: null} 
+         }
+      /*
        name="Store" 
        component={Store} 
        options= {({ navigation }) => ({
@@ -89,7 +96,7 @@ function MyStack() {
               title="Cart"
               color="#fff"
             />
-          )})}
+          )})}*/
       />
       <Stack.Screen 
        name="BookStorePreview" 

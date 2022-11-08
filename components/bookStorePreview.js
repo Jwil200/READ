@@ -31,7 +31,7 @@ const BookStorePreview = (props) => {
         <View style={styles.bookPreviewImage}>
           <Tile  
           imageSrc={{
-              uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+              uri: book.coverUrl//'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
           }}
           imageProps={{
             resizeMode:"cover",
@@ -45,9 +45,7 @@ const BookStorePreview = (props) => {
       <Text style={styles.bookPreviewProgress}>Rating: {book.rating}/5</Text>
 
       <Text>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. {"\n"}
+      {book.description}{"\n"}
       </Text>
     
       {book.isAddedtoCart ? 

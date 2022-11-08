@@ -83,7 +83,14 @@ const Signup = () => {
           .set({
             Created: 'True'
           })
-
+          db//add user library
+          .collection
+          .doc(currentuser.uid)
+          .collection('Library')
+          .doc('Temp')
+          .set({
+            Created: 'True'
+          })
           db// adds a Recent subcollection
           .collection('Users')
           .doc(currentuser.uid)

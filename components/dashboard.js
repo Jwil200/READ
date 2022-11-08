@@ -99,8 +99,9 @@ const Dashboard = ({ navigation }) => {
       })
     });
     setFilter(list)
-    console.log('flitered books', list);
+    //console.log('flitered books', list);
   }
+
   const getBooks = async() => {
     const list = [];
     await db
@@ -182,7 +183,7 @@ const Dashboard = ({ navigation }) => {
         <Text style={styles.title}>Recent</Text>
         <Divider style={styles.divider} />
         {
-          (recent.length == 0)
+          (filter.length == 0)
           ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
           : <FlatList style={styles.grid}
               data={filter}
