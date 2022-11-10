@@ -52,6 +52,7 @@ const Item = ({ item }) => (
   <View style={styles.item}>
     <BookTile 
       key={"i" + item._id} 
+      age={item.age}
       progress={item.progress}
       coverUrl={item.coverUrl} 
       title={item.bookName}
@@ -70,7 +71,7 @@ const Dashboard = ({ navigation }) => {
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
   const[isMount, setMount] = useState(false);
-  const[filter, setFilter] = useState([]);
+  //const[filter, setFilter] = useState([]);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
@@ -78,7 +79,7 @@ const Dashboard = ({ navigation }) => {
   //let recentData = bookData.filter(e => recent.includes(e._id));
   //let favoriteData = bookData.filter(e => favorite.includes(e._id));
 
-  const filterBooks = async() => {
+  const filterBooks = async() => {//filter test code
     const list = [];
     await db 
     .collection('Books')
@@ -87,7 +88,7 @@ const Dashboard = ({ navigation }) => {
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
         console.log('data', doc.data())  
-        const { Name, Author, Description, Cover } = doc.data();
+        const { Name, Author, Description, Cover, Age } = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
@@ -95,11 +96,34 @@ const Dashboard = ({ navigation }) => {
           bookDes: Description,
           progress: 0.5,
           coverUrl:  Cover,
+          age: Age
         })
       })
     });
     setFilter(list)
     //console.log('flitered books', list);
+  }
+
+  const getLibraryBooks = async() =>{
+    const list = [];
+    await db
+    .collection('Users/' + currentUid + '/Favorite')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author, Description, Cover } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover
+        })
+      })
+    });
+    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
+    setBooks(tempList);
   }
 
   const getBooks = async() => {
@@ -120,7 +144,8 @@ const Dashboard = ({ navigation }) => {
         })
       })
     });
-    setBooks(list);
+    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
+    setBooks(tempList);
   }
 
   const getFavoriteBooks = async () => {
@@ -138,11 +163,11 @@ const Dashboard = ({ navigation }) => {
           bookDes: Description,
           progress: 0.5,
           coverUrl:  Cover
-          //coverUrl : 'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
         })
       })
     });
-    setFavorite(list);
+    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove test code
+    setFavorite(tempList);
   }
 
   const getRecentBooks = async() => {
@@ -163,14 +188,16 @@ const Dashboard = ({ navigation }) => {
         })
       })
     });
-    setRecent(list);
+    let tempList = list.filter( e => e._id !== "Temp" ); //bootleg solution to remvove temp file
+    setRecent(tempList);
   }
 
   useEffect(() => {
-    getBooks();
+    getLibraryBooks();
+    //getBooks();//test code
     getFavoriteBooks();
     getRecentBooks();
-    filterBooks();
+    //filterBooks();//test code
     setMount(true);
   }, []);
 
@@ -183,10 +210,10 @@ const Dashboard = ({ navigation }) => {
         <Text style={styles.title}>Recent</Text>
         <Divider style={styles.divider} />
         {
-          (filter.length == 0)
+          (recent.length == 0)
           ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
           : <FlatList style={styles.grid}
-              data={filter}
+              data={recent}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "r" + item._id}

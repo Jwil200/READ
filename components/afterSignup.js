@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/core'
 import styles from './styles'
 
 const Welcome = () => {
-    const navigation = useNavigation()
+  const navigation = useNavigation()
   return (
     <View style={styles.container2}>
       <Text

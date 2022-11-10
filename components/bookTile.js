@@ -8,7 +8,7 @@ const BookTile = (props) => {
   return (
     <Tile
       imageSrc={{
-          uri: props.coverUrl//'http://tile.loc.gov/storage-services/service/rbc/rbc0001/2003/2003juv81093/0001r.jpg'
+          uri: props.coverUrl
       }}
       imageProps={{
         resizeMode:"stretch"

@@ -83,14 +83,16 @@ const Signup = () => {
           .set({
             Created: 'True'
           })
-          db//add user library
-          .collection
+
+          db//add user library subcollection
+          .collection('Users')
           .doc(currentuser.uid)
           .collection('Library')
           .doc('Temp')
           .set({
             Created: 'True'
           })
+
           db// adds a Recent subcollection
           .collection('Users')
           .doc(currentuser.uid)
@@ -100,7 +102,7 @@ const Signup = () => {
             Created: 'True'
           })
 
-          db//add a settings subcollection
+          db// adds Settings subcollection
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Settings')
@@ -108,16 +110,7 @@ const Signup = () => {
           .set({
             Created: 'True'
           })
-
-          db// a settings subcollection
-          .collection('Users')
-          .doc(currentuser.uid)
-          .collection('Favorite')
-          .doc('Temp')
-          .delete()
-
-
-
+          
         //console.log(currentuser);//checks if user was created
         navigation.navigate('Welcome')
  })

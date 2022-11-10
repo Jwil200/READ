@@ -1,5 +1,5 @@
 // components/store.js *Based from dashboard.js at the moment
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
@@ -78,16 +78,15 @@ const Store = ({ navigation }) => {
   const[bookData, setBooks] = useState([]);
   const[search, setSearch] = useState('');
   const[isMount, setMount] = useState(false); 
+  //const[initialScreen, setInitial] = useRef(true);
   
   
   let componentList = [];
   
 
   const db = firestore();
-  //const currentUid = auth().currentUser.uid;
-  const getInitialscreen = () => {
-    setFilteredDataSource(componentList)
-  }
+
+
 
   const getBooks = async() => {
     const list = [];
@@ -107,20 +106,14 @@ const Store = ({ navigation }) => {
         })
       })
     });
+    //console.log('Book list', list)
     setBooks(list);
     console.log(bookData)
   }
 
   useEffect(() => {
     getBooks();
-    getInitialscreen();
-    if(filteredDataSource.length == 0){
-      getInitialscreen();
-    }
-    else{
-      //console.log('book list', filteredDataSource)
-      setMount(true);
-    }
+    setMount(true);
     //console.log('book list', filteredDataSource)
   }, []);
   
@@ -143,44 +136,44 @@ const Store = ({ navigation }) => {
         }
         </View>
   });
-  componentList.push({
-    _id: 2,
-    jsx: 
-      <View style={styles.container}>
-        <Text style={styles.title}>Popular</Text>
-        <Divider style={styles.divider} />
-        {
-          (ratingData.length == 0)
-          ? <Text style={styles.emptyText}>No books :(</Text>
-          : <FlatList style={styles.grid}
-              data={ratingData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "f" + item._id}
-              listKey="f"
-            />
-        }
-      </View>
-  });
-  componentList.push({
-    _id: 3,
-    jsx:
-      <View style={styles.container}>
-        <Text style={styles.title}>All</Text>
-        <Divider style={styles.divider} />
-        {
-          (bookData.length == 0)
-          ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
-          : <FlatList style={styles.grid}
-              data={bookData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "a" + item._id}
-              listKey="a"
-            />
-        }
-      </View>
-  });
+    componentList.push({
+      _id: 2,
+      jsx: 
+        <View style={styles.container}>
+          <Text style={styles.title}>Popular</Text>
+          <Divider style={styles.divider} />
+          {
+            (ratingData.length == 0)
+            ? <Text style={styles.emptyText}>No books :(</Text>
+            : <FlatList style={styles.grid}
+                data={ratingData}
+                numColumns={3}
+                renderItem={Item}
+                keyExtractor={item => "f" + item._id}
+                listKey="f"
+              />
+          }
+        </View>
+    });
+    componentList.push({
+      _id: 3,
+      jsx:
+        <View style={styles.container}>
+          <Text style={styles.title}>All</Text>
+          <Divider style={styles.divider} />
+          {
+            (bookData.length == 0)
+            ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
+            : <FlatList style={styles.grid}
+                data={bookData}
+                numColumns={3}
+                renderItem={Item}
+                keyExtractor={item => "a" + item._id}
+                listKey="a"
+              />
+          }
+        </View>
+    });
 
   const [filteredDataSource, setFilteredDataSource] = useState(componentList);
 
