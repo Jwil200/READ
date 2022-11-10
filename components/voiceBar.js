@@ -1,6 +1,8 @@
 import React, { Component, useRef, useEffect, useState } from 'react';
-import { Animated, StyleSheet, View, Text } from 'react-native';
+import { Animated, StyleSheet, View, Text, PermissionsAndroid } from 'react-native';
 import { Divider, Button } from '@rneui/themed';
+import LiveAudioStream from 'react-native-live-audio-stream';
+import { ASSEMBLY_AI_API_KEY } from "@env";
 
 const styles = StyleSheet.create({
     container: {
@@ -29,16 +31,113 @@ const styles = StyleSheet.create({
     }
 });
 
+const requestRecordPermissions = async (textArray, setPosition) => {
+    try {
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+            {
+                title: "App Record Permission",
+                message:
+                    "Read App needs access to your microphone " +
+                    "so you can use voice to text.",
+                buttonNeutral: "Ask Me Later",
+                buttonNegative: "Cancel",
+                buttonPositive: "OK"
+            }
+        );
+        console.log(granted);
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("Initializing audio stream.");
+            const options = {
+                sampleRate: 16000, // default 44100
+                channels: 1, // 1 or 2, default 1
+                bitsPerSample: 16, // 8 or 16, default 16
+                audioSource: 6, // android only (see below)
+                bufferSize: 4096 * 2 // default is 2048
+            }
+
+            console.log(LiveAudioStream);
+            LiveAudioStream.init(options);
+
+            const ws = new WebSocket("wss://api.assemblyai.com/v2/realtime/ws?sample_rate=16000", "", {
+                headers: {
+                    Authorization: `${ASSEMBLY_AI_API_KEY}`
+                }
+            });
+            
+            // We put this in open so that way we are only performing any actions if the
+            // websocket was successfully opened.
+            ws.onopen = () => {
+                LiveAudioStream.on('data', data => {
+                    // base64-encoded audio data chunks
+                    ws.send(JSON.stringify({ "audio_data": data }));
+                });
+            };
+
+            let position = 0;
+
+            ws.onmessage = (e) => {
+                let data = JSON.parse(e.data);
+                switch (data.message_type) {
+                    case "PartialTranscript":
+                        let texts = data.words.map(w => w.text);
+                        let text = (texts.length == 0) ? "" : texts[texts.length - 1];
+                        if (textArray[position].toLowerCase() === text) {
+                            position++;
+                            setPosition(position);
+                        }
+                        else if (!(text === "")) {
+                            console.log(`Got: ${text} | Looking For: ${textArray[position].toLowerCase()}`);
+                        }
+                        console.log(`Text: ${texts}`);
+                        break;
+                    case "SessionBegins":
+                        console.log("Established connection to AssemblyAI");
+                        break;
+                    case "FinalTranscript":
+                        if (!(data.text === ""))
+                            console.log(`Final: ${data.text}`);
+                        break;
+                    default:
+                        if (data.message_type === undefined)
+                            console.log(`Error: ${data.error}`)
+                        else
+                            console.log(`Unknown Message Type: ${data.message_type}`);
+                }
+            };
+            //ws.onerror = (e) => {
+                // If an error occurs the view should probably update.
+                // Update a state in order to give a notifcation or use some sort
+                // of live notif.
+                // Also close the LiveAudioStream and disable it from opening again 
+                // if possible.
+            //};
+        } else {
+            console.log("Microphone permission denied.");
+        }
+    } catch (err) {
+        console.warn(err);
+    }
+};
+
 const VoiceBar = (props) => {
-    // Default Props
-    let [text, error, correct] = [props.text, props.error, props.correct];
-    if (text === undefined) text = "N/A";
-    if (error === undefined) error = 0;
-    if (error === undefined) correct = 0;
+    const isInitialMount = useRef(true);
+    const textArray = useRef(props.textArray).current;
 
     const [isListening, setListening] = useState(false);
+    const [position, setPosition] = useState(0);
+
     const colorAnim = useRef(new Animated.Value(1)).current;
-    const anim = (error && correct) ? 0 : (error ? 1 : (correct ? 2 : 0));
+    const anim = 1;
+
+    if (isListening) LiveAudioStream.start(); else LiveAudioStream.stop();
+
+    useEffect(() => {
+        if (isInitialMount.current) {
+            requestRecordPermissions(textArray, setPosition);
+            isInitialMount.current = false;
+        }
+    }, []);
 
     useEffect(() => {
         if (anim == 0)
@@ -73,7 +172,7 @@ const VoiceBar = (props) => {
         <View style={styles.container}>
             <Button 
                 style={styles.button}
-                onPress={() => setListening(!isListening)}
+                onPress={() => { setListening(!isListening); }}
                 icon={{
                     name: isListening ? "microphone" : "microphone-slash",
                     type: 'font-awesome',
@@ -90,7 +189,7 @@ const VoiceBar = (props) => {
             />
             <Animated.Text 
                 style={{...styles.text, ...animatedColor}}
-            >{text}</Animated.Text>
+            >{textArray[position]}</Animated.Text>
         </View>
     );
 };
