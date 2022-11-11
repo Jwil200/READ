@@ -71,8 +71,9 @@ const ComponentItem = ({ item }) => (
 );
 
 
-
 const Store = ({ navigation }) => {
+  let isInitialMount = useRef(true);
+
   let recentData = bookStoreData.filter(e => e.isRecent);
   let ratingData = bookStoreData.filter(e => e.rating > 3.00);
   const[bookData, setBooks] = useState([]);
@@ -82,11 +83,8 @@ const Store = ({ navigation }) => {
   
   
   let componentList = [];
-  
 
   const db = firestore();
-
-
 
   const getBooks = async() => {
     const list = [];
@@ -106,36 +104,56 @@ const Store = ({ navigation }) => {
         })
       })
     });
-    //console.log('Book list', list)
     setBooks(list);
-    console.log(bookData)
   }
 
-  useEffect(() => {
-    getBooks();
-    setMount(true);
-    //console.log('book list', filteredDataSource)
-  }, []);
-  
-  componentList.push({
-    _id: 1,
-    jsx: 
+  if (search) {
+    const newData = bookData.filter(function (item) { //Create an array of newData that filters library data
+      const itemData = item.bookName
+        ? item.bookName.toUpperCase()
+        : ''.toUpperCase();
+      const textData = search.toUpperCase();
+      return itemData.indexOf(textData) > -1;
+    });
+
+    componentList.push({ //Populate the filtered list with the book componenets
+      _id: 1,
+      jsx:
       <View style={styles.container}>
-        <Text style={styles.title}>New</Text>
-        <Divider style={styles.divider} />
-        {
-          (recentData.length == 0)
-          ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
-          : <FlatList style={styles.grid}
-              data={recentData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "r" + item._id}
-              listKey="r"
-            />
-        }
+      {
+        (newData.length == 0)
+        ? <Text style={styles.emptyText}>Book not available.</Text>
+        : <FlatList style={styles.grid}
+            data={newData}
+            numColumns={3}
+            renderItem={Item}
+            keyExtractor={item => "a" + item._id}
+            listKey="a"
+          />
+      }
+      </View>
+    });
+  }
+  else {
+    componentList.push({
+      _id: 1,
+      jsx: 
+        <View style={styles.container}>
+          <Text style={styles.title}>New</Text>
+          <Divider style={styles.divider} />
+          {
+            (recentData.length == 0)
+            ? <Text style={styles.emptyText}>No books have been added recently.</Text>
+            : <FlatList style={styles.grid}
+                data={recentData}
+                numColumns={3}
+                renderItem={Item}
+                keyExtractor={item => "r" + item._id}
+                listKey="r"
+              />
+          }
         </View>
-  });
+    });
     componentList.push({
       _id: 2,
       jsx: 
@@ -144,7 +162,7 @@ const Store = ({ navigation }) => {
           <Divider style={styles.divider} />
           {
             (ratingData.length == 0)
-            ? <Text style={styles.emptyText}>No books :(</Text>
+            ? <Text style={styles.emptyText}>No Popular books currently.</Text>
             : <FlatList style={styles.grid}
                 data={ratingData}
                 numColumns={3}
@@ -163,7 +181,7 @@ const Store = ({ navigation }) => {
           <Divider style={styles.divider} />
           {
             (bookData.length == 0)
-            ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
+            ? <Text style={styles.emptyText}>The store is empty...</Text>
             : <FlatList style={styles.grid}
                 data={bookData}
                 numColumns={3}
@@ -174,48 +192,21 @@ const Store = ({ navigation }) => {
           }
         </View>
     });
-
-  const [filteredDataSource, setFilteredDataSource] = useState(componentList);
-
-  const searchFilterFunction = (text) => {
-    if (text) {
-      const newData = bookData.filter(function (item) { //Create an array of newData that filters library data
-        const itemData = item.bookName
-          ? item.bookName.toUpperCase()
-          : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      let filteredList = [];
-
-      filteredList.push({ //Populate the filtered list with the book componenets
-        _id: 1,
-        jsx:
-        <View style={styles.container}>
-        {
-          (newData.length == 0)
-          ? <Text style={styles.emptyText}>Book not available.</Text>
-          : <FlatList style={styles.grid}
-              data={newData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "a" + item._id}
-              listKey="a"
-            />
-        }
-      </View>
-      });
-      setFilteredDataSource(filteredList); //Update state variables
-      setSearch(text);
-    } else {
-      setFilteredDataSource(componentList); //On clear, go back to og component list
-      setSearch(text);
+  }
+  
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      getBooks();
     }
-  };
+  }, []);
 
+
+
+  //console.log(componentList == filteredDataSource);
+  console.log(isInitialMount.current);
   return (
-    (!isMount)
+    (!isInitialMount)
     ? 
       <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
         <ActivityIndicator size="large"/>
@@ -234,11 +225,11 @@ const Store = ({ navigation }) => {
             backgroundColor: 'white',
           }} 
           value={search}
-          onChangeText={(text) => searchFilterFunction(text)}
-          onClear={(text) => searchFilterFunction('')}
+          onChangeText={(text) => setSearch(text)}
+          onClear={(text) => setSearch('')}
         />
         <FlatList
-          data={filteredDataSource}
+          data={componentList}
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />

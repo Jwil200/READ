@@ -1,6 +1,6 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React,  { Component, useEffect, useState  } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
@@ -9,7 +9,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
 
-const OrangeButton = ({ title }) => (
+const OrangeButton = ({ onPress, title }) => (
   <TouchableOpacity onPress={addBook}>
     <LinearGradient
       colors={["orange","#e65c00"]}
@@ -25,6 +25,9 @@ const BookStorePreview = (props) => {
     const book = props.route.params.props;
     const db = firestore();
     const currentUid = auth().currentUser.uid;
+    console.log(book.title);
+    const[isCheck, setCheck] = useState(false);
+    console.log(isCheck);
 
     const removeBook = async() => {//removes selected book from users library subcollection
       await db
@@ -35,28 +38,48 @@ const BookStorePreview = (props) => {
         console.log('Book removed from your library!!')
       })
     }
-    const checkForBook = async() => {//checks to see if the book is in users library
-      await db
+
+    const doesDocExist = async() => {
+      return firestore()
       .collection('Users/' + currentUid + '/Library')
       .doc(book.title)
-    }
-
-    const addBook = async () => {//add selected book to user sub library
-      await db
-      .collection('Users/' + currentUid + '/Library')
-      .doc(book.title)
-      .set({
-        age: book.age,
-        author: book.author,
-        cover: book.coverUrl,
-        description: book.description,
-        name: book.title,
-
-      })
-      .then(()=>{
-        console.log("Book added to your library!!");
+      .get()
+      .then((doc) => {
+          setCheck(doc.exists)
+          return doc.exists
       })
     }
+
+    addBook = async () => {//add selected book to user sub library
+      let doesbookExist = await doesDocExist();
+      if(isCheck == false) {
+        console.log('name: ', book._id);
+        console.log('age: ', book.age);
+        console.log('cover url: ', book.coverUrl);
+        console.log('description: ', book.description);
+        console.log('Author: ', book.author);
+        await db
+        .collection('Users/' + currentUid + '/Library')
+        .doc(book.title)
+        .set({
+          Author: book.author,
+          Cover: book.coverUrl,
+          Description: book.description,
+          Name: book.title,
+          Progress: 0,
+        })
+        .then(()=>{
+          console.log("Book added to your library!!");
+          Alert.alert('Book added to your library!!')
+        })
+      }else{
+        Alert.alert('Book is already in your library')
+      }
+  }
+
+  useEffect(() => {
+    doesDocExist();
+  }, [])
       
   return (
     <View style={styles.bookPreviewContainer}>

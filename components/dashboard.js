@@ -2,6 +2,7 @@
 import React, { Component, useEffect, useState, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
+import { useFocusEffect } from '@react-navigation/native';
 import BookTile from "../components/bookTile.js";
 import Navbar from "../components/navbar";
 import firestore from '@react-native-firebase/firestore';
@@ -52,7 +53,6 @@ const Item = ({ item }) => (
   <View style={styles.item}>
     <BookTile 
       key={"i" + item._id} 
-      age={item.age}
       progress={item.progress}
       coverUrl={item.coverUrl} 
       title={item.bookName}
@@ -75,9 +75,6 @@ const Dashboard = ({ navigation }) => {
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
-
-  //let recentData = bookData.filter(e => recent.includes(e._id));
-  //let favoriteData = bookData.filter(e => favorite.includes(e._id));
 
   const filterBooks = async() => {//filter test code
     const list = [];
@@ -107,7 +104,7 @@ const Dashboard = ({ navigation }) => {
   const getLibraryBooks = async() =>{
     const list = [];
     await db
-    .collection('Users/' + currentUid + '/Favorite')
+    .collection('Users/' + currentUid + '/Library')
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
@@ -122,31 +119,13 @@ const Dashboard = ({ navigation }) => {
         })
       })
     });
+    console.log('list:', list)
     let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
+    console.log('tempList: ', tempList);
     setBooks(tempList);
   }
 
-  const getBooks = async() => {
-    const list = [];
-    await db
-    .collection('Books')
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover } = doc.data();
-        list.push({
-          _id: doc.id,
-          bookName: Name,
-          authorName: Author,
-          bookDes: Description,
-          progress: 0.5,
-          coverUrl:  Cover,
-        })
-      })
-    });
-    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
-    setBooks(tempList);
-  }
+ 
 
   const getFavoriteBooks = async () => {
     const list = [];
@@ -193,13 +172,16 @@ const Dashboard = ({ navigation }) => {
   }
 
   useEffect(() => {
-    getLibraryBooks();
-    //getBooks();//test code
-    getFavoriteBooks();
-    getRecentBooks();
-    //filterBooks();//test code
-    setMount(true);
-  }, []);
+
+    const unsubscribe = navigation.addListener('focus', () => {
+      getLibraryBooks();
+      setMount(true);
+    });
+    return () => {
+      unsubscribe;
+    };
+  }, [navigation]);
+
 
   let componentList = [];
 
