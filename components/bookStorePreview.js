@@ -1,7 +1,6 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React,  { Component, useEffect, useState  } from 'react';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
 import styles from './styles';
@@ -25,21 +24,11 @@ const BookStorePreview = (props) => {
     const book = props.route.params.props;
     const db = firestore();
     const currentUid = auth().currentUser.uid;
-    console.log(book.title);
     const[isCheck, setCheck] = useState(false);
     console.log(isCheck);
+    console.log(book.title);
 
-    const removeBook = async() => {//removes selected book from users library subcollection
-      await db
-      .collection('Users/' + currentUid + '/Library')
-      .doc(book.title)
-      .delete()
-      .then(() => {
-        console.log('Book removed from your library!!')
-      })
-    }
-
-    const doesDocExist = async() => {
+    const doesDocExist = async() => {//Checks to see if book is in users library
       return firestore()
       .collection('Users/' + currentUid + '/Library')
       .doc(book.title)
@@ -58,6 +47,7 @@ const BookStorePreview = (props) => {
         console.log('cover url: ', book.coverUrl);
         console.log('description: ', book.description);
         console.log('Author: ', book.author);
+        console.log('Content: ', book.content)
         await db
         .collection('Users/' + currentUid + '/Library')
         .doc(book.title)
@@ -67,9 +57,9 @@ const BookStorePreview = (props) => {
           Description: book.description,
           Name: book.title,
           Progress: 0,
+          Content: book.content,
         })
         .then(()=>{
-          console.log("Book added to your library!!");
           Alert.alert('Book added to your library!!')
         })
       }else{

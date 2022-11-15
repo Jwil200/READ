@@ -58,6 +58,7 @@ const Item = ({ item }) => (
       title={item.bookName}
       author={item.authorName}
       description={item.bookDes}
+      contetn={item.content}
     />
   </View>
 );
@@ -108,14 +109,15 @@ const Dashboard = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover } = doc.data();
+        const { Name, Author, Description, Cover, Content, Progress } = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
           bookDes: Description,
-          progress: 0.5,
-          coverUrl:  Cover
+          progress: Progress,
+          coverUrl:  Cover,
+          content: Content
         })
       })
     });

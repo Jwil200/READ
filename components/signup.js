@@ -23,13 +23,11 @@ const OrangeButton = ({ onPress, title }) => (
 
 //React-Native dependencies needed
 const options = [
-  { value: '1', label: '6 and under' },
-  { value: '2', label: '7-12' },
-  { value: '3', label: '13-17' },
-  { value: '4', label: '18-26' },
-  { value: '5', label: '25-39' },
-  { value: '6', label: '40+' },
-
+  { value: '3', label: '3 and under' },
+  { value: '7', label: '4-7' },
+  { value: '11', label: '8-11' },
+  { value: '16', label: '12-15' },
+  { value: '18', label: '16+' },
 ];
 
 

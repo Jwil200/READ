@@ -4,6 +4,7 @@ import { Header, Divider, Tile, Switch} from "@rneui/themed";
 import { Button } from 'react-native-elements/dist/buttons/Button.js';
 import { useNavigation, NavigationContainer, Darktheme } from '@react-navigation/core';
 import { colors, SearchBar} from 'react-native-elements';
+import auth from '@react-native-firebase/auth';
 
 const styles = StyleSheet.create({
   colorchange: {
@@ -98,8 +99,18 @@ tinylogo9:{
 });
 
 
+
 const Settings = ({navigation}) => {
-    const settingOptions=[
+
+  const userSignOut = async() =>{
+    auth()
+  .signOut()
+  .then(() => {
+    console.log('User signed out!')
+  
+  });
+  }
+  const settingOptions=[
     {title: "Account Settings"},
     {title: "Purchase Settings"},
     {title: "Audio Settings"},
@@ -174,7 +185,11 @@ const Settings = ({navigation}) => {
         alignSelf: "auto",
         bottom:120
         }}
-         onPress={() => navigation.navigate('Login')}
+         onPress={() => {
+          userSignOut()
+          navigation.navigate('Login');
+          }
+        }
          />
         <Text style={{bottom:400,margin:160,fontSize:17}}> {'\u00A9'}Read 2022 </Text>
 
