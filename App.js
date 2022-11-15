@@ -10,11 +10,6 @@ import VoiceTest from './pages/voiceTest';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 LogBox.ignoreAllLogs();
 
-import {decode, encode} from 'base-64';
-
-if (!global.btoa) {  global.btoa = encode }
-if (!global.atob) { global.atob = decode }
-
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
