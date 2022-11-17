@@ -8,9 +8,9 @@ import styles from './styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const OrangeButton = ({ title }) => (
-  <TouchableOpacity //onPress={loginUser}>
-    ><LinearGradient
+const OrangeButton = ({ title, onPress }) => (
+  <TouchableOpacity onPress= {onPress}>
+    <LinearGradient
       colors={["orange","#e65c00"]}
       style={styles.appButtonContainer2}
     >  
@@ -25,6 +25,7 @@ const BookPreview = (props) => {
   const book = props.route.params.props;
   const db = firestore();
   const currentUid = auth().currentUser.uid;
+  const navigation = useNavigation();
   console.log('Book details', book)
   const removeBook = async() => {//removes selected book from users library subcollection
     await db
@@ -71,10 +72,12 @@ const BookPreview = (props) => {
           <OrangeButton 
           title="Begin Reading" 
           size="sm" 
+          onPress ={() => navigation.navigate('VoiceTest', {props})}
           /> :
           <OrangeButton 
           title="Continue Reading" 
           size="sm" 
+          onPress ={() => navigation.navigate('VoiceTest', {props})}
             />
 
         }

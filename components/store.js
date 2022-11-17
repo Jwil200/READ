@@ -85,30 +85,25 @@ const Store = ({ navigation }) => {
   const currentUid = auth().currentUser.uid;
   const db = firestore();
 
-  const getUserData = async() =>{
+  const getUserData = async() =>{//work in progress
     const list = []
     await db 
     .collection('Users')
     .doc(currentUid)
     .get()
-    .then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc){
-        console.log('User Data exists', documentSnapshot.exists)
-        var data = doc.data();
-        var Name = data.Name;
-        var Age = data.age;
-        list.push({
-          name: Name,
-          age: Age,
-        })
-        
-        });
-      });
-      setUserData(list);
-    }
+    .then(documentSnapshot => {
+      console.log('User exists: ', documentSnapshot.exists);
+      let data = documentSnapshot.data()
+      console.log(data.age);
+      setUserData(data)
+      if (documentSnapshot.exists) {
+        console.log('User data: ', documentSnapshot.data());
+      }
+    });
+  }
   
 
-  const getBooks = async() => {
+  const getBooks = async() => {//Gets the books from the books Collection
     const list = [];
     await db
     .collection('Books')
@@ -121,7 +116,6 @@ const Store = ({ navigation }) => {
           bookName: Name,
           authorName: Author,
           bookDes: Description,
-          progress: 0,
           coverUrl:  Cover,
           age: Age,
           content: Content,
@@ -129,7 +123,10 @@ const Store = ({ navigation }) => {
       })
     });
     setBooks(list);
-    const list2 = list.filter(list => list.age < userData.age);
+    console.log('User Age', userData);
+    console.log('list', list)
+    console.log('')
+    const list2 = list.filter(e => e.age < userData.age);
     console.log('book list', list2)
     setJfu(list2);
   }
@@ -224,7 +221,6 @@ const Store = ({ navigation }) => {
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      console.log('GetUserData')
       getUserData();
       console.log('GetBooks')
       getBooks();
