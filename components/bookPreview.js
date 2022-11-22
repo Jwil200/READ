@@ -1,6 +1,6 @@
 // components/bookPreview.js, what the user is taken to when they tap on a book.
 import React from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
@@ -40,7 +40,7 @@ const BookPreview = (props) => {
     Alert.alert("Book Removed from your Library")
   }
   return (
-    <View style={styles.bookPreviewContainer}>
+    <ScrollView style={styles.bookPreviewContainer}>
 
       <View>
         <Text
@@ -88,7 +88,7 @@ const BookPreview = (props) => {
       onPress={removeBook}>
       Remove Book?
     </Text> 
-    </View>
+    </ScrollView>
   );
 }
 export default BookPreview;

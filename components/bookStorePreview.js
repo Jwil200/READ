@@ -1,6 +1,6 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React,  { Component, useEffect, useState  } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
 import styles from './styles';
@@ -47,7 +47,7 @@ const BookStorePreview = (props) => {
     const addBook = async () => {//add selected book to user sub library
       let doesbookExist = await doesDocExist();
       if(isCheck == false) {
-        console.log('name: ', book._id);
+        console.log('name: ', book._id);//check book if book details
         console.log('age: ', book.age);
         console.log('cover url: ', book.coverUrl);
         console.log('description: ', book.description);
@@ -78,7 +78,7 @@ const BookStorePreview = (props) => {
   }, [])
       
   return (
-    <View style={styles.bookPreviewContainer}>
+    <ScrollView style={styles.bookPreviewContainer}>
 
       <View>
         <Text
@@ -119,7 +119,7 @@ const BookStorePreview = (props) => {
             />
         }
 
-    </View>
+    </ScrollView>
   );
 
 }

@@ -54,7 +54,7 @@ const Signup = () => {
       Alert.alert('Enter your details to sign up!')
     }
     else {
-      auth()
+      await auth()
       .createUserWithEmailAndPassword(email, password)
       .then(async userCredentials => {
         const currentuser = userCredentials.user;//gets current users credentials
@@ -196,7 +196,6 @@ return (//Each component functionality
       <OrangeButton 
       title="Create an Account" 
       size="sm" 
-      onPress={() => registerUser()}
     />
     </View>
 

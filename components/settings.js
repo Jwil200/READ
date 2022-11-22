@@ -1,5 +1,5 @@
 import React, { Component,useState  } from 'react';
-import { StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme} from 'react-native';
+import { ScrollView, StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme} from 'react-native';
 import { Header, Divider, Tile, Switch} from "@rneui/themed";
 import { Button } from 'react-native-elements/dist/buttons/Button.js';
 import { useNavigation, NavigationContainer, Darktheme } from '@react-navigation/core';
@@ -107,6 +107,7 @@ const Settings = ({navigation}) => {
   .signOut()
   .then(() => {
     console.log('User signed out!')
+  
   });
   }
   const settingOptions=[
@@ -123,7 +124,7 @@ const Settings = ({navigation}) => {
     ]
   return (
 
-    <View style={styles.colorchange}>
+    <ScrollView style={styles.colorchange}>
  
       <Image source={require('../assets/settingsicon.png')}
         style={styles.tinylogo}
@@ -162,10 +163,10 @@ const Settings = ({navigation}) => {
         {settingOptions.map(({title})=>
         <View key={title}>
             <View style={{
-                paddingHorizontal:20,
+                paddingHorizontal:15,
                 paddingBottom:20,
-                paddingTop:20,
-                paddingLeft:75
+                paddingTop:15,
+                paddingLeft:80
                       }
             }>
             <Text style={{fontSize:17}}>{title}</Text>
@@ -180,9 +181,9 @@ const Settings = ({navigation}) => {
         backgroundColor: 'blue',
         borderColor: 'transparent',
         borderWidth: 0,
-        margin:160,
+        margin:140,
         alignSelf: "auto",
-        bottom:120
+        bottom:100
         }}
          onPress={() => {
           userSignOut()
@@ -190,9 +191,9 @@ const Settings = ({navigation}) => {
           }
         }
          />
-        <Text style={{bottom:400,margin:160,fontSize:17}}> {'\u00A9'}Read 2022 </Text>
 
-    </View>
+
+    </ScrollView>
   );
   
       

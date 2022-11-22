@@ -28,12 +28,12 @@ const Login = () => {
 
   const navigation = useNavigation()
 
-  loginUser = () => {
+  loginUser = async() => {
     if(email === '' && password === '') {
       Alert.alert('Please enter your credentials')
     }
     else {
-      auth()
+      await auth()
       .signInWithEmailAndPassword(email, password)
       .then(async userCredentials => {
         const user = userCredentials.user;
