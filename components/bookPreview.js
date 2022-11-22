@@ -34,6 +34,8 @@ const BookPreview = (props) => {
     .delete()
     .then(() => {
       console.log('Book removed from your library!!')
+      navigation.navigate('Dashboard');
+
     })
     Alert.alert("Book Removed from your Library")
   }
@@ -72,12 +74,12 @@ const BookPreview = (props) => {
           <OrangeButton 
           title="Begin Reading" 
           size="sm" 
-          onPress ={() => navigation.navigate('VoiceTest', {props})}
+          onPress ={() => navigation.navigate('Dashboard', {props})}
           /> :
           <OrangeButton 
           title="Continue Reading" 
           size="sm" 
-          onPress ={() => navigation.navigate('VoiceTest', {props})}
+          onPress ={() => navigation.navigate('Dashboard', {props})}
             />
 
         }

@@ -107,7 +107,6 @@ const Settings = ({navigation}) => {
   .signOut()
   .then(() => {
     console.log('User signed out!')
-  
   });
   }
   const settingOptions=[

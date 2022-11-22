@@ -10,7 +10,7 @@ import Settings from './components/settings';
 import Store from './components/store';
 import BookStorePreview from './components/bookStorePreview';
 import Cart from './components/cart.js';
-import VoiceTest from './components/voiceTest';
+//import VoiceTest from './components/voiceTest';
 
 
 
@@ -101,14 +101,7 @@ function MyStack() {
             />
           )})}*/
       />
-      <Stack.Screen 
-        name="VoiceTest" 
-        component={VoiceTest} 
-        options={
-          {title: 'VoiceTest'},
-          {headerLeft: null} 
-        }
-      />
+ 
       <Stack.Screen 
        name="BookStorePreview" 
        component={BookStorePreview} 

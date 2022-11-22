@@ -6,10 +6,11 @@ import { Tile } from "@rneui/themed";
 import styles from './styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/core';
 
 
-const OrangeButton = ({ onPress, title }) => (
-  <TouchableOpacity onPress={addBook}>
+const OrangeButton = ({ title, onPress }) => (
+  <TouchableOpacity onPress= {onPress}>
     <LinearGradient
       colors={["orange","#e65c00"]}
       style={styles.appButtonContainer2}
@@ -24,6 +25,7 @@ const BookStorePreview = (props) => {
     const book = props.route.params.props;
     const db = firestore();
     const currentUid = auth().currentUser.uid;
+    const navigation = useNavigation();
     const[isCheck, setCheck] = useState(false);
     console.log(isCheck);
     console.log(book.title);
@@ -38,8 +40,11 @@ const BookStorePreview = (props) => {
           return doc.exists
       })
     }
+    const dashboard = () =>{
+      navigation.navigate('Dashboard');
+    }
 
-    addBook = async () => {//add selected book to user sub library
+    const addBook = async () => {//add selected book to user sub library
       let doesbookExist = await doesDocExist();
       if(isCheck == false) {
         console.log('name: ', book._id);
@@ -48,6 +53,7 @@ const BookStorePreview = (props) => {
         console.log('description: ', book.description);
         console.log('Author: ', book.author);
         console.log('Content: ', book.content)
+        console.log('Progress: ', book.Progress)
         await db
         .collection('Users/' + currentUid + '/Library')
         .doc(book.title)
@@ -100,14 +106,16 @@ const BookStorePreview = (props) => {
       {book.description}{"\n"}
       </Text>
     
-      {book.isAddedtoCart ? 
+      {(isCheck) ? 
           <OrangeButton 
-          title="Remove from Library" 
+          title="View in Library" 
           size="sm"
+          onPress = {() => dashboard()}
           /> :
           <OrangeButton 
           title="Add to Library" 
           size="sm" 
+          onPress = {() => addBook()}
             />
         }
 

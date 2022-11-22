@@ -75,35 +75,22 @@ const Store = ({ navigation }) => {
   let isInitialMount = useRef(true);
 
   let recentData = bookStoreData.filter(e => e.isRecent);
-  let ratingData = bookStoreData.filter(e => e.rating > 3.00);
   const[bookData, setBooks] = useState([]);
-  const[userData, setUserData] = useState([]);
-  const[jfuBooks, setJfu] = useState([]);
+  const[justForYou, setJustForYou] = useState([]);
   const[search, setSearch] = useState('');
 
   let componentList = [];
   const currentUid = auth().currentUser.uid;
   const db = firestore();
 
-  const getUserData = async() =>{//work in progress
-    const list = []
-    await db 
-    .collection('Users')
-    .doc(currentUid)
-    .get()
-    .then(documentSnapshot => {
-      console.log('User exists: ', documentSnapshot.exists);
-      let data = documentSnapshot.data()
-      console.log(data.age);
-      setUserData(data)
-      if (documentSnapshot.exists) {
-        console.log('User data: ', documentSnapshot.data());
-      }
-    });
+  const getJustForYou = (newlist, age) =>{
+    let data = newlist;
+    //console.log('data: ', data)
+    let newData = data.filter((data) => data.age < age)
+    setJustForYou(newData);
   }
-  
 
-  const getBooks = async() => {//Gets the books from the books Collection
+    const getBooks = async() => {//Gets the books from the books Collection
     const list = [];
     await db
     .collection('Books')
@@ -122,13 +109,23 @@ const Store = ({ navigation }) => {
         })
       })
     });
+    console.log('Current User', currentUid)
+    let data = [];
+    await db 
+    .collection('Users')
+    .doc(currentUid)
+    .get()
+    .then(documentSnapshot => {
+      console.log('User exists: ', documentSnapshot.exists);
+      if (documentSnapshot.exists) {
+        console.log('User data: ', documentSnapshot.data());
+        let data = documentSnapshot.data();
+        console.log('User Age ', data.age)
+        getJustForYou(list, data.age);
+      }
+    });
     setBooks(list);
-    console.log('User Age', userData);
-    console.log('list', list)
-    console.log('')
-    const list2 = list.filter(e => e.age < userData.age);
-    console.log('book list', list2)
-    setJfu(list2);
+
   }
 
   if (search) {
@@ -185,10 +182,10 @@ const Store = ({ navigation }) => {
           <Text style={styles.title}>Just for You</Text>
           <Divider style={styles.divider} />
           {
-            (setJfu.length == 0)
+            (justForYou.length == 0)
             ? <Text style={styles.emptyText}>No Popular books currently.</Text>
             : <FlatList style={styles.grid}
-                data={setJfu}
+                data={justForYou}
                 numColumns={3}
                 renderItem={Item}
                 keyExtractor={item => "f" + item._id}
@@ -221,9 +218,8 @@ const Store = ({ navigation }) => {
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
-      getUserData();
-      console.log('GetBooks')
       getBooks();
+
     }
   }, []);
 
