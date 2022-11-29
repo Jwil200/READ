@@ -13,6 +13,7 @@ import Settings from './components/settings';
 import Store from './components/store';
 import BookStorePreview from './components/bookStorePreview';
 import Cart from './components/cart.js';
+import FilterModal from './components/filterModal';
 
 const Stack = createStackNavigator();
 
@@ -79,10 +80,19 @@ function MyStack() {
          headerLeft: null 
        }}
       />
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen 
+        name="FilterModal"
+        component={FilterModal}
+        options={{
+          title: null,
+         headerLeft: null
+         }}  />
+      </Stack.Group>
       <Stack.Screen 
        name="Store" 
        component={Store} 
-       options= {({ navigation }) => ({
+       options= {({ navigation, route }) => ({
         title: "Book Store", 
           headerRight: () => (
             <View style={{ flexDirection:"row", padding: 10}}>
@@ -90,6 +100,7 @@ function MyStack() {
                 style={{ paddingRight: 10}}
                 name='filter-alt'
                 color='#fff' 
+                //onPress={() => navigation.navigate("FilterModal")}
             />
             <Icon
               name='shopping-cart'
