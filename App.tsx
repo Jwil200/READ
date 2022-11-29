@@ -80,15 +80,7 @@ function MyStack() {
          headerLeft: null 
        }}
       />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen 
-        name="FilterModal"
-        component={FilterModal}
-        options={{
-          title: null,
-         headerLeft: null
-         }}  />
-      </Stack.Group>
+      
       <Stack.Screen 
        name="Store" 
        component={Store} 
