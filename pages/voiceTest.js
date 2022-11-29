@@ -1,24 +1,76 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, PermissionsAndroid } from 'react-native';
+import { StyleSheet, Text, View, PermissionsAndroid, FlatList } from 'react-native';
 import { Button, Icon } from '@rneui/themed';
 import VoiceBar from "../components/voiceBar";
 import Word from "../components/word";
+import firestore from '@react-native-firebase/firestore';
 
-const textContent = "This is a string of text.";
-const textArray = textContent.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase().split(" ");
+let j = 0;
 
-const VoiceTest = () => {
+const Item = ({ item }) => (
+    <View style={styles.sub_body}>
+        {item.content.split(" ").map(e => <Word key={"w"+(j++)} text={e}/>)}
+    </View>
+);
+
+const VoiceTest = (props) => {
+    const [fullText, setFullText] = useState([]);
+    const isInitialMount = useRef(true);
+
+    let name = "Doing my Chores"; // Replace instances of name with props.name
+
+    const getText = async () => {
+        let content = [];
+        await firestore()
+        .collection("Books")
+        .where("Name", "==", name)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                const { Content } = doc.data();
+                content = Content;
+            })
+        });
+        setFullText(content.filter(e => !(e === "")));
+    }
+
+    useEffect(() => {
+        if (isInitialMount.current) {
+            getText();
+            isInitialMount.current = false;
+        }
+    }, []);
+
+    let textArray = [];
+    fullText.forEach(e => {
+        e.split(" ").forEach(f => {
+            textArray.push(f.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase());
+        }); 
+    });
+
     let i = 0;
 
+    const fullTextObject = fullText.map(e => {
+        return {
+            _id: "p" + (i++),
+            content: e
+        }
+    });
+
     return (
-        <View style={styles.container}>
+        <View>
             <View style={styles.main_body_container}>
-                {textContent.split(" ").map(e => <Word key={"w"+(i++)} text={e}/>)}
+                <FlatList
+                    data={fullTextObject}
+                    numColumns={1}
+                    renderItem={Item}
+                    keyExtractor={item => item._id}
+                />
             </View>
             <View style={styles.voice_box_container}>
                 <VoiceBar 
-                    textArray={textArray}
+                    textArray={textArray.filter(e => !(e === ""))}
                 />
             </View>
         </View>
@@ -26,19 +78,20 @@ const VoiceTest = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
     main_body_container: {
-        flex: 0.9,
-        backgroundColor: '#fff',
+        backgroundColor: '#fff'
+    },
+    sub_body: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
         padding: 20
     },
     voice_box_container: {
-        flex: 0.1,
-        backgroundColor: '#fff',
+        height: '10%',
+        width: '100%',
+        position: 'absolute',
         alignItems: 'center',
+        bottom: 0
     },
 });
 

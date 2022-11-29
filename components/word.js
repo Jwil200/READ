@@ -15,10 +15,15 @@ const Word = (props) => {
     const [wordSearch, setWordSearch] = useState("");
 
     let word = props.text.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
-    let pronunciation = "Unable to get pronunciation at this time.";
+    let pronunciationJSX = <Text>Unable to get pronunciation at this time.</Text>;
 
     if (!wordSearch) { // Not sure if this works.
         // Make call to API here and set pronunciation.
+        pronunciation = "";
+        pronunciationJSX = <View>
+            <Text>{word}</Text>
+            <Text>{pronunciation}</Text>
+        </View>;
     }
 
     return (
@@ -33,7 +38,7 @@ const Word = (props) => {
                 isVisible={!(wordSearch === "")}
                 onBackdropPress={() => setWordSearch("")}
             >
-                <Text>{pronunciation}</Text>
+                {pronunciationJSX}
             </Dialog>
         </View>
     );
