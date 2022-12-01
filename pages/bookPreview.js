@@ -1,6 +1,6 @@
 // components/bookPreview.js, what the user is taken to when they tap on a book.
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
@@ -20,6 +20,7 @@ const OrangeButton = ({ title }) => (
 const BookPreview = (props) => {
     const book = props.route.params.props;
   return (
+    <ScrollView>
     <View style={styles.bookPreviewContainer}>
 
       <View>
@@ -64,6 +65,7 @@ const BookPreview = (props) => {
 
         }
     </View>
+    </ScrollView>
   );
 }
 export default BookPreview;
