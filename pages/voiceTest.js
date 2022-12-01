@@ -18,6 +18,8 @@ const VoiceTest = (props) => {
     const [fullText, setFullText] = useState([]);
     const isInitialMount = useRef(true);
 
+    console.log(fullText);
+
     let name = "Doing my Chores"; // Replace instances of name with props.name
 
     const getText = async () => {
