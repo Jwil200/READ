@@ -3,10 +3,10 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Dashboard from './dashboard';
-import Store from './store';
-import Settings from './settings';
-import Cart from './cart'
+import Dashboard from '../pages/dashboard';
+import Store from '../pages/store';
+import Settings from '../pages/settings';
+import Cart from '../pages/cart';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

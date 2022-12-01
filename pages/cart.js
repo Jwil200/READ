@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
 import BookStoreTile from "../components/bookStoreTile.js";
-
+import Navbar from "../components/navbar";
 
 // Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';

@@ -21,18 +21,31 @@ export default StyleSheet.create({
       backgroundColor: '#fff'
     },
     bookPreviewContainer:{
-      padding: 10     
+      padding: 10 
     },
     bookTitle:{
       fontSize: 26,
       paddingBottom: 10
     },
-    bookPreviewText:{
-      alignSelf: 'flex-end',
-      position: 'absolute',
-      width: 200,
-      paddingTop: 80
+    bookPreviewImage:{
+      alignItems: 'center'
+    },
+    bookPreviewProgress:{
+      alignSelf: 'center', 
+      fontWeight: 'bold',
+      paddingBottom: 5
+    },
+    bookPreviewDescription:{
+      //alignSelf: 'flex-end',
+      //position: 'absolute',
+     // width: 200,
+      //paddingTop: 80
       
+    },
+    icon: {
+      //position: 'absolute',
+      //bottom: 160,
+      //right: 5,
     },
     inputStyle: {
       width: '100%',

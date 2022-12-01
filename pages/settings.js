@@ -1,5 +1,5 @@
 import React, { Component,useState  } from 'react';
-import { StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme} from 'react-native';
+import { StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme, ScrollView} from 'react-native';
 import { Header, Divider, Tile, Switch} from "@rneui/themed";
 import { Button } from 'react-native-elements/dist/buttons/Button.js';
 import { useNavigation, NavigationContainer, Darktheme } from '@react-navigation/core';
@@ -112,7 +112,7 @@ const Settings = ({navigation}) => {
     {title: "Contact Us"},
     ]
   return (
-
+    <ScrollView>
     <View style={styles.colorchange}>
  
       <Image source={require('../assets/settingsicon.png')}
@@ -179,6 +179,7 @@ const Settings = ({navigation}) => {
         <Text style={{bottom:400,margin:160,fontSize:17}}> {'\u00A9'}Read 2022 </Text>
 
     </View>
+    </ScrollView>
   );
   
       

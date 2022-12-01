@@ -1,12 +1,10 @@
 // components/store.js *Based from dashboard.js at the moment
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView, } from 'react-native';
+import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
-import { colors, SearchBar, Button, Icon} from 'react-native-elements';
+import { colors, SearchBar, Button} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
-import FilterModal from './filterModal.js';
-
 
 // Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';
@@ -219,19 +217,12 @@ const Store = ({ navigation, route }) => {
           onChangeText={(text) => searchFilterFunction(text)}
           onClear={() => searchFilterFunction('')}
         />
-          <Icon
-                style={{ paddingRight: 360 , paddingTop:5}}
-                name='filter-alt'
-                color='black' 
-                onPress={() => navigation.navigate("FilterModal")}
-            />
         <FlatList
           data={filteredDataSource}
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
       </View>
-
     </View>
   );
 }

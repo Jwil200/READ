@@ -4,19 +4,17 @@ import { Button, View , Image} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
-import Login from './components/login';
-import Signup from './components/signup';
-import Dashboard from './components/dashboard';
-import Welcome from './components/afterSignup';
-import BookPreview from './components/bookPreview';
-import Settings from './components/settings';
-import Store from './components/store';
-import BookStorePreview from './components/bookStorePreview';
-import Cart from './components/cart.js';
-import TabBar from './components/TabBar';
+import Login from './pages/login';
+import Signup from './pages/signup';
+import Dashboard from './pages/dashboard';
+import Store from './pages/store';
+import Settings from './pages/settings';
+import Welcome from './pages/afterSignup';
+import BookPreview from './pages/bookPreview';
+import BookStorePreview from './pages/bookStorePreview';
+import Cart from './pages/cart.js';
 import FilterModal from './components/filterModal';
-
-
+import TabBar from './components/TabBar';
 
 const Stack = createStackNavigator();
 
@@ -73,6 +71,7 @@ function MyStack() {
        component={BookPreview} 
        options={{
           title: 'Book Preview',
+          headerBackTitle:'Dashboard'
        }}
       />
       <Stack.Screen
@@ -93,7 +92,7 @@ function MyStack() {
          headerLeft: null 
        }}
       />
-       <Stack.Group screenOptions={{ presentation: 'modal' }}>
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen 
         name="FilterModal"
         component={FilterModal}
@@ -105,7 +104,7 @@ function MyStack() {
       <Stack.Screen 
        name="Store" 
        component={Store} 
-       options= {({ navigation }) => ({
+       options= {({ navigation, route }) => ({
         title: "Book Store", 
           headerRight: () => (
             <View style={{ flexDirection:"row", padding: 10}}>
@@ -113,6 +112,7 @@ function MyStack() {
                 style={{ paddingRight: 10}}
                 name='filter-alt'
                 color='#fff' 
+                onPress={() => navigation.navigate("FilterModal")}
             />
             <Icon
               name='shopping-cart'
@@ -126,6 +126,7 @@ function MyStack() {
        component={BookStorePreview} 
        options={{
           title: 'Book Preview',
+          headerBackTitle:'Back',
        }}
       />
       <Stack.Screen 

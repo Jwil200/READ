@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Tile, LinearProgress } from "@rneui/themed";
+import { useNavigation } from '@react-navigation/native';
 
 const BookTile = (props) => {
+  const navigation = useNavigation()
   return (
     <Tile
       imageSrc={{
@@ -12,11 +14,15 @@ const BookTile = (props) => {
       }}
       width={'100%'}
       height={200}
+      onPress={() => navigation.navigate('BookPreview', {props})}
     >
       <LinearProgress
         value={props.progress}
         variant="determinate"
       />
+
+      
+      
     </Tile>
   );
 }

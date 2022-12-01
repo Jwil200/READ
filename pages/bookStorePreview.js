@@ -1,10 +1,10 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
-import styles from './styles';
+import styles from '../assets/styles'
 
 const OrangeButton = ({ title }) => (
   <TouchableOpacity //onPress={loginUser}>
@@ -20,6 +20,7 @@ const OrangeButton = ({ title }) => (
 const BookStorePreview = (props) => {
     const book = props.route.params.props;
   return (
+    <ScrollView>
     <View style={styles.bookPreviewContainer}>
 
       <View>
@@ -62,6 +63,7 @@ const BookStorePreview = (props) => {
         }
 
     </View>
+    </ScrollView>
   );
 }
 export default BookStorePreview;

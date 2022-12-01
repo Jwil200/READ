@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, View, FlatList } from "react-native";
 import { Button, CheckBox } from "react-native-elements";
-import styles from './styles'
+import styles from '../assets/styles'
 import { bookStoreData } from "./storeBooks";
 import { useNavigation } from "@react-navigation/native";
 
