@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
-import { colors, SearchBar} from 'react-native-elements';
+import { colors, SearchBar, Button} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 import Navbar from "../components/navbar";
 
@@ -70,7 +70,8 @@ const ComponentItem = ({ item }) => (
 
 
 
-const Store = ({ navigation }) => {
+const Store = ({ navigation, route }) => {
+  
   let recentData = bookStoreData.filter(e => e.isRecent);
   let ratingData = bookStoreData.filter(e => e.rating > 3.00);
 
@@ -78,67 +79,88 @@ const Store = ({ navigation }) => {
   
   const [search, setSearch] = useState('');
   
-  componentList.push({
-    _id: 1,
-    jsx: 
-      <View>
-        
-      <View style={styles.container}>
-        <Text style={styles.title}>New</Text>
-        <Divider style={styles.divider} />
-        {
-          (recentData.length == 0)
-          ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
-          : <FlatList style={styles.grid}
-              data={recentData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "r" + item._id}
-              listKey="r"
-            />
-        }
+  //useEffect(() =>{ taking out this broken lol
+  if (typeof route.params !== 'undefined'){ //push the filtered data if there is any
+    componentList.push({ 
+      _id: 1,
+      jsx:
+      <View style={styles.componentContainer}>
+      {
+        <FlatList style={styles.grid}
+            data={route.params.filteredData}
+            numColumns={3}
+            renderItem={Item}
+            keyExtractor={item => "a" + item._id}
+            listKey="a"
+          />
+      }
+    </View>
+    });
+  } else { //else push default data
+    componentList.push({
+      _id: 1,
+      jsx: 
+        <View>
+          
+        <View style={styles.container}>
+          <Text style={styles.title}>New</Text>
+          <Divider style={styles.divider} />
+          {
+            (recentData.length == 0)
+            ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
+            : <FlatList style={styles.grid}
+                data={recentData}
+                numColumns={3}
+                renderItem={Item}
+                keyExtractor={item => "r" + item._id}
+                listKey="r"
+              />
+          }
+          </View>
         </View>
-      </View>
-  });
-  componentList.push({
-    _id: 2,
-    jsx: 
-      <View style={styles.container}>
-        <Text style={styles.title}>Popular</Text>
-        <Divider style={styles.divider} />
-        {
-          (ratingData.length == 0)
-          ? <Text style={styles.emptyText}>No books :(</Text>
-          : <FlatList style={styles.grid}
-              data={ratingData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "f" + item._id}
-              listKey="f"
-            />
-        }
-      </View>
-  });
-  componentList.push({
-    _id: 3,
-    jsx:
-      <View style={styles.container}>
-        <Text style={styles.title}>All</Text>
-        <Divider style={styles.divider} />
-        {
-          (bookStoreData.length == 0)
-          ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
-          : <FlatList style={styles.grid}
-              data={bookStoreData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "a" + item._id}
-              listKey="a"
-            />
-        }
-      </View>
-  });
-
+    });
+    componentList.push({
+      _id: 2,
+      jsx: 
+        <View style={styles.container}>
+          <Text style={styles.title}>Popular</Text>
+          <Divider style={styles.divider} />
+          {
+            (ratingData.length == 0)
+            ? <Text style={styles.emptyText}>No books :(</Text>
+            : <FlatList style={styles.grid}
+                data={ratingData}
+                numColumns={3}
+                renderItem={Item}
+                keyExtractor={item => "f" + item._id}
+                listKey="f"
+              />
+          }
+        </View>
+    });
+    componentList.push({
+      _id: 3,
+      jsx:
+        <View style={styles.container}>
+          <Text style={styles.title}>All</Text>
+          <Divider style={styles.divider} />
+          {
+            (bookStoreData.length == 0)
+            ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
+            : <FlatList style={styles.grid}
+                data={bookStoreData}
+                numColumns={3}
+                renderItem={Item}
+                keyExtractor={item => "a" + item._id}
+                listKey="a"
+              />
+          }
+        </View>
+    });
+  }
+//}
+//);
+  
   const [filteredDataSource, setFilteredDataSource] = useState(componentList);
 
   const searchFilterFunction = (text) => {
@@ -178,6 +200,7 @@ const Store = ({ navigation }) => {
     }
   };
 
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 0.9}}>
@@ -193,7 +216,7 @@ const Store = ({ navigation }) => {
           }} 
           value={search}
           onChangeText={(text) => searchFilterFunction(text)}
-          onClear={(text) => searchFilterFunction('')}
+          onClear={() => searchFilterFunction('')}
         />
         <FlatList
           data={filteredDataSource}

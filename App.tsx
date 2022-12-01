@@ -80,7 +80,15 @@ function MyStack() {
          headerLeft: null 
        }}
       />
-      
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen 
+        name="FilterModal"
+        component={FilterModal}
+        options={{
+          title: null,
+         headerLeft: null
+         }}  />
+      </Stack.Group>
       <Stack.Screen 
        name="Store" 
        component={Store} 
@@ -92,7 +100,7 @@ function MyStack() {
                 style={{ paddingRight: 10}}
                 name='filter-alt'
                 color='#fff' 
-                //onPress={() => navigation.navigate("FilterModal")}
+                onPress={() => navigation.navigate("FilterModal")}
             />
             <Icon
               name='shopping-cart'
