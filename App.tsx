@@ -4,15 +4,15 @@ import { Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
-import Login from './components/login';
-import Signup from './components/signup';
-import Dashboard from './components/dashboard';
-import Welcome from './components/afterSignup';
-import BookPreview from './components/bookPreview';
-import Settings from './components/settings';
-import Store from './components/store';
-import BookStorePreview from './components/bookStorePreview';
-import Cart from './components/cart.js';
+import Login from './pages/login';
+import Signup from './pages/signup';
+import Dashboard from './pages/dashboard';
+import Store from './pages/store';
+import Settings from './pages/settings';
+import Welcome from './pages/afterSignup';
+import BookPreview from './pages/bookPreview';
+import BookStorePreview from './pages/bookStorePreview';
+import Cart from './pages/cart.js';
 import FilterModal from './components/filterModal';
 
 const Stack = createStackNavigator();
@@ -20,7 +20,7 @@ const Stack = createStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Dashboard"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
