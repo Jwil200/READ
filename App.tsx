@@ -1,6 +1,6 @@
 // App.js
 import * as React from 'react';
-import { Button, View } from 'react-native';
+import { Button, View , Image} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
@@ -14,13 +14,14 @@ import BookPreview from './pages/bookPreview';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart.js';
 import FilterModal from './components/filterModal';
+import TabBar from './components/TabBar';
 
 const Stack = createStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Dashboard"
+      initialRouteName="Login"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -70,8 +71,19 @@ function MyStack() {
        component={BookPreview} 
        options={{
           title: 'Book Preview',
+          headerBackTitle:'Dashboard'
        }}
       />
+      <Stack.Screen
+       name="Tabbar" 
+       component={TabBar} 
+       options={{
+        headerTitle: () => (
+          <Image style={{ width:150, height: 150, resizeMode:'contain', position:'relative'}} source={require("./assets/read-logo.png")} />
+        ),
+        headerLeft: null
+       }}
+       />
       <Stack.Screen 
        name="Settings" 
        component={Settings} 
@@ -114,6 +126,7 @@ function MyStack() {
        component={BookStorePreview} 
        options={{
           title: 'Book Preview',
+          headerBackTitle:'Back',
        }}
       />
       <Stack.Screen 
@@ -130,6 +143,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <MyStack />
+
     </NavigationContainer>
   );
 }

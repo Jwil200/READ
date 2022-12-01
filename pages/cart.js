@@ -100,9 +100,6 @@ const Cart = ({ navigation }) => {
           keyExtractor={item => item._id}
         />
       </View>
-      <View style={{flex: 0.1}}>
-        <Navbar nav={navigation}></Navbar>
-      </View>
     </View>
   );
 }

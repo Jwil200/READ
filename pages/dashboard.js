@@ -5,7 +5,6 @@ import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
 import { SearchBar } from 'react-native-elements';
 import { bookData } from "../assets/books.js";
-import Navbar from "../components/navbar";
 
 // Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';
@@ -195,9 +194,6 @@ const Dashboard = ({ navigation }) => {
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
-      </View>
-      <View style={{flex: 0.1}}>
-        <Navbar nav={navigation}></Navbar>
       </View>
     </View>
   );

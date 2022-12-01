@@ -5,7 +5,6 @@ import { Header, Divider, Tile } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
 import { colors, SearchBar, Button} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
-import Navbar from "../components/navbar";
 
 // Not using firebase at the moment, all content stored in books.js
 //import firebase from '../database/firebase';
@@ -223,9 +222,6 @@ const Store = ({ navigation, route }) => {
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
-      </View>
-      <View style={{flex: 0.1}}>
-        <Navbar nav={navigation}></Navbar>
       </View>
     </View>
   );
