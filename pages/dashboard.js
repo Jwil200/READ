@@ -1,8 +1,9 @@
 // components/dashboard.js
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
+import { SearchBar } from 'react-native-elements';
 import { bookData } from "../assets/books.js";
 import Navbar from "../components/navbar";
 
@@ -52,7 +53,14 @@ const styles = StyleSheet.create({
 
 const Item = ({ item }) => (
   <View style={styles.item}>
-    <BookTile key={"i" + item._id} progress={item.progress}/>
+    <BookTile 
+     key={"i" + item._id} 
+     id={item._id}
+     title= {item.title}
+     progress={item.progress}
+     isRecent={item.isRecent}
+     isFavorite={item.isFavorite}
+ />
   </View>
 );
 
@@ -65,6 +73,8 @@ const Dashboard = ({ navigation }) => {
   let favoriteData = bookData.filter(e => e.isFavorite);
 
   let componentList = [];
+
+  const [search, setSearch] = useState('');
 
   componentList.push({
     _id: 1,
@@ -124,11 +134,64 @@ const Dashboard = ({ navigation }) => {
       </View>
   });
 
+  const [filteredDataSource, setFilteredDataSource] = useState(componentList);
+
+  const searchFilterFunction = (text) => {
+    if (text) {
+      const newData = bookData.filter(function (item) { //Create an array of newData that filters library data
+        const itemData = item.title
+          ? item.title.toUpperCase()
+          : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+
+      const filteredList = [];
+
+      filteredList.push({ //Populate the filtered list with the book componenets
+        _id: 1,
+        jsx:
+        <View style={styles.container}>
+        {
+          (newData.length == 0)
+          ? <Text style={styles.emptyText}>Book not available.</Text>
+          : <FlatList style={styles.grid}
+              data={newData}
+              numColumns={3}
+              renderItem={Item}
+              keyExtractor={item => "a" + item._id}
+              listKey="a"
+            />
+        }
+      </View>
+      });
+      setFilteredDataSource(filteredList); //Update state variables
+      setSearch(text);
+    } else {
+      setFilteredDataSource(componentList); //On clear, go back to og component list
+      setSearch(text);
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <View style={{flex: 0.9}}>
+      <SearchBar round 
+          cancelButtonTitle='X'
+          lightTheme
+          searchIcon={{ size: 20 }}
+          inputStyle={{backgroundColor: 'white'}}
+          placeholderTextColor={'#g5g5g5'}
+          placeholder={'Search'}
+          inputContainerStyle={{ 
+            backgroundColor: 'white',
+          }} 
+          value={search}
+          onChangeText={(text) => searchFilterFunction(text)}
+          onClear={() => searchFilterFunction('')}
+        />
         <FlatList
-          data={componentList}
+          data={filteredDataSource}
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
