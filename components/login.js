@@ -37,7 +37,7 @@ const Login = () => {
       .signInWithEmailAndPassword(email, password)
       .then(async userCredentials => {
         const user = userCredentials.user;
-        navigation.navigate('Dashboard');
+        navigation.navigate('Tabbar');
         console.log('Logged in with', user.email);
       })
       .catch(error => alert(error.message))

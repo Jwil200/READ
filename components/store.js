@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
-    paddingTop: 0
+    padding: 20,
+    paddingTop: 10
   },
   grid: {
     width: '100%'
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   item: {
     width: "31.5%",
     alginItems: "center",
-    margin: 3,
+    margin: 5,
     backgroundColor: '#e9eef1'
   },
   title: {
@@ -39,10 +39,10 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: '98%',
-    marginVertical: 5,
+    marginVertical: 10,
   },
   emptyText: {
-    color: "grey",
+    color: "white",
     marginTop: 10
   }
 });

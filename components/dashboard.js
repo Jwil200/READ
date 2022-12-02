@@ -1,6 +1,6 @@
 // components/dashboard.js
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
+import { Image, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { SearchBar } from 'react-native-elements'
 import BookTile from "./bookTile";
@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
-    paddingTop: 0
+    padding: 20,
+    paddingTop: 10
   },
   grid: {
     width: '100%'

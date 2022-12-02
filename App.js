@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View} from 'react-native';
+import {View, Button, Image} from 'react-native';
 import {Icon} from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -70,6 +70,7 @@ function MyStack() {
        component={BookPreview} 
        options={{
           title: 'Book Preview',
+          headerBackTitle:'Dashboard'
        }}
       />
       <Stack.Screen
@@ -77,7 +78,7 @@ function MyStack() {
        component={TabBar} 
        options={{
         headerTitle: () => (
-          <Image style={{ width:150, height: 150, resizeMode:'contain', position:'relative'}} source={require("./assets/read-logo.png")} />
+          <Image style={{ width:100, height: 65, resizeMode:'contain', position:'relative'}} source={require("./assets/read-logo.png")} />
         ),
         headerLeft: null
        }}
@@ -125,6 +126,7 @@ function MyStack() {
        component={BookStorePreview} 
        options={{
           title: 'Book Preview',
+          headerBackTitle:'Back'
        }}
       />
       <Stack.Screen 
