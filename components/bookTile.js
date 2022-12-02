@@ -8,7 +8,7 @@ const BookTile = (props) => {
   return (
     <Tile
       imageSrc={{
-          uri: props.coverUrl
+        uri: props.coverUrl
       }}
       imageProps={{
         resizeMode:"stretch"

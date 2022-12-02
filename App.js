@@ -1,4 +1,6 @@
-import React, { Component, useEffect, useState, Button  } from 'react';
+import * as React from 'react';
+import {View} from 'react-native';
+import {Icon} from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './components/login';
@@ -9,17 +11,15 @@ import BookPreview from './components/bookPreview';
 import Settings from './components/settings';
 import Store from './components/store';
 import BookStorePreview from './components/bookStorePreview';
-import Cart from './components/cart.js';
-//import VoiceTest from './components/voiceTest';
-
-
+import Cart from './components/cart';
+import FilterModal from './components/filterModal';
 
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Store"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -30,78 +30,84 @@ function MyStack() {
           fontWeight: 'bold',
         },
       }}>
-
       <Stack.Screen 
         name="Signup" 
         component={Signup} 
         options={{ title: 'Signup' }}
       />
-
       <Stack.Screen 
         name="Login" 
         component={Login} 
-        options={
-          {title: 'Login'},
-          {headerLeft: null} 
-        }
+        options={{
+          title: 'Login',
+          headerLeft: null, 
+        }}
       />
-
-      <Stack.Screen 
-       name="BookPreview" 
-       component={BookPreview} 
-       options={
-         { title: 'Book Preview' },
-         {headerLeft: null} 
-       }
-      />
-
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
-       options={
-         { title: 'Dashboard' },
-         {headerLeft: null} 
-       }
+       options= {({ navigation }) => ({
+        title: "Dashboard", 
+          headerRight: () => (
+            <Icon
+                style={{ paddingRight: 10}}
+                name='filter-alt'
+                color='#fff' 
+            />
+          )})}
       />
       <Stack.Screen 
        name="Welcome" 
        component={Welcome} 
-       options={
-         { title: 'Welcome' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Welcome to READ!' ,
+          headerLeft: null
+       }}
+      />
+      <Stack.Screen 
+       name="BookPreview" 
+       component={BookPreview} 
+       options={{
+          title: 'Book Preview',
+       }}
       />
       <Stack.Screen 
        name="Settings" 
        component={Settings} 
-       options={
-         { title: 'Settings' },
-         {headerLeft: null} 
-       }
+       options={{
+          title: 'Settings' ,
+         headerLeft: null 
+       }}
       />
+      <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Screen 
+        name="FilterModal"
+        component={FilterModal}
+        options={{
+          title: null,
+         headerLeft: null
+         }}  />
+      </Stack.Group>
       <Stack.Screen 
-        name="Store" 
-          component={Store} 
-          options={
-            { title: 'Store' },
-            {headerLeft: null} 
-         }
-
-         
-      /*
        name="Store" 
        component={Store} 
-       options= {({ navigation }) => ({
+       options= {({ navigation, route }) => ({
         title: "Book Store", 
           headerRight: () => (
-            <Button
-              onPress={() => navigation.navigate("Cart")}
-              title="Cart"
-              color="#fff"
+            <View style={{ flexDirection:"row", padding: 10}}>
+            <Icon
+                style={{ paddingRight: 10}}
+                name='filter-alt'
+                color='#fff' 
+                onPress={() => navigation.navigate("FilterModal")}
             />
-          )})}*/
+            <Icon
+              name='shopping-cart'
+              onPress={() => navigation.navigate("Cart")}
+              color='#fff' />
+            </View>
+          )})}
       />
- 
       <Stack.Screen 
        name="BookStorePreview" 
        component={BookStorePreview} 
@@ -126,4 +132,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-

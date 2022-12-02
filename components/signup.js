@@ -1,7 +1,7 @@
 // components/signup.js
 import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import { Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Platform, Keyboard, Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -50,7 +50,7 @@ const Signup = () => {
     }
   }
   registerUser = async() => {
-    if(email === '' && password === '') {
+    if(displayname == '' || email === '' || password === '') {
       Alert.alert('Enter your details to sign up!')
     }
     else {
@@ -129,10 +129,12 @@ const Signup = () => {
   
 
 return (//Each component functionality
+<View style={{flex: 1}}>
 <KeyboardAvoidingView
   style={styles.container1}
-  behavior="padding"
->
+  behavior={Platform.OS === "ios" ? "padding" : "height"}
+  keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+><TouchableWithoutFeedback onPress={Keyboard.dismiss}>
   
   <View style={styles.container1}>  
     <Image source={require('../assets/read-logo.png')} style={styles.logo} />
@@ -203,17 +205,6 @@ return (//Each component functionality
         Or sign up with:
       </Text>
     
-    <SocialIcon
-    title='Sign Up With Facebook'
-    button type='facebook'
-    style={{bottom: 20}}
-    />
-
-    <SocialIcon
-    title='Sign Up With Google'
-    button type='google'
-    style={{bottom: 20}}
-    />
 
     <Text 
       style={styles.loginText}
@@ -221,7 +212,9 @@ return (//Each component functionality
       Already registered? Tap here to Log In
     </Text>                          
   </View>
+  </TouchableWithoutFeedback>
 </KeyboardAvoidingView>
+</View>
 );
 
 };

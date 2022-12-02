@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
-import { bookStoreData } from "../components/storeBooks.js";
-import { colors, SearchBar} from 'react-native-elements';
+
+import { colors, SearchBar, Button} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 import Navbar from "../components/navbar";
 import firestore from '@react-native-firebase/firestore';
@@ -74,7 +74,7 @@ const ComponentItem = ({ item }) => (
 const Store = ({ navigation }) => {
   let isInitialMount = useRef(true);
 
-  let recentData = bookStoreData.filter(e => e.isRecent);
+  let recentData = 0//bookStoreData.filter(e => e.isRecent);
   const[bookData, setBooks] = useState([]);
   const[justForYou, setJustForYou] = useState([]);
   const[search, setSearch] = useState('');
@@ -90,7 +90,7 @@ const Store = ({ navigation }) => {
     setJustForYou(newData);
   }
 
-    const getBooks = async() => {//Gets the books from the books Collection
+  const getBooks = async() => {//Gets the books from the books Collection
     const list = [];
     await db
     .collection('Books')
@@ -138,21 +138,21 @@ const Store = ({ navigation }) => {
     });
 
     componentList.push({ //Populate the filtered list with the book componenets
-      _id: 1,
-      jsx:
-      <View style={styles.container}>
-      {
+        _id: 1,
+        jsx:
+          <View style={styles.container}>
+            {
         (newData.length == 0)
         ? <Text style={styles.emptyText}>Book not available.</Text>
-        : <FlatList style={styles.grid}
+              : <FlatList style={styles.grid}
             data={newData}
-            numColumns={3}
-            renderItem={Item}
+                  numColumns={3}
+                  renderItem={Item}
             keyExtractor={item => "a" + item._id}
             listKey="a"
-          />
-      }
-      </View>
+                />
+            }
+            </View>  
     });
   }
   else {
@@ -174,46 +174,46 @@ const Store = ({ navigation }) => {
               />
           }
         </View>
-    });
-    componentList.push({
-      _id: 2,
-      jsx: 
-        <View style={styles.container}>
+});
+componentList.push({
+  _id: 2,
+  jsx: 
+    <View style={styles.container}>
           <Text style={styles.title}>Just for You</Text>
-          <Divider style={styles.divider} />
-          {
+      <Divider style={styles.divider} />
+      {
             (justForYou.length == 0)
             ? <Text style={styles.emptyText}>No Popular books currently.</Text>
-            : <FlatList style={styles.grid}
+        : <FlatList style={styles.grid}
                 data={justForYou}
-                numColumns={3}
-                renderItem={Item}
-                keyExtractor={item => "f" + item._id}
-                listKey="f"
-              />
-          }
-        </View>
-    });
-    componentList.push({
-      _id: 3,
-      jsx:
-        <View style={styles.container}>
-          <Text style={styles.title}>All</Text>
-          <Divider style={styles.divider} />
-          {
+            numColumns={3}
+            renderItem={Item}
+            keyExtractor={item => "f" + item._id}
+            listKey="f"
+          />
+      }
+    </View>
+});
+componentList.push({
+  _id: 3,
+  jsx:
+    <View style={styles.container}>
+      <Text style={styles.title}>All</Text>
+      <Divider style={styles.divider} />
+      {
             (bookData.length == 0)
             ? <Text style={styles.emptyText}>The store is empty...</Text>
-            : <FlatList style={styles.grid}
+        : <FlatList style={styles.grid}
                 data={bookData}
-                numColumns={3}
-                renderItem={Item}
-                keyExtractor={item => "a" + item._id}
-                listKey="a"
-              />
-          }
-        </View>
-    });
-  }
+            numColumns={3}
+            renderItem={Item}
+            keyExtractor={item => "a" + item._id}
+            listKey="a"
+          />
+      }
+    </View>
+});
+}
   
   useEffect(() => {
     if (isInitialMount.current) {

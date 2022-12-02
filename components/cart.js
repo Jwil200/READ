@@ -6,9 +6,6 @@ import { bookStoreData } from "../components/storeBooks.js";
 import BookStoreTile from "../components/bookStoreTile.js";
 import Navbar from "../components/navbar";
 
-// Not using firebase at the moment, all content stored in books.js
-//import firebase from '../database/firebase';
-//require('firebase/auth')
 
 const styles = StyleSheet.create({
   screen: {

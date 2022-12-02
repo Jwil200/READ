@@ -1,10 +1,9 @@
 // components/dashboard.js
-import React, { Component, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
-import { useFocusEffect } from '@react-navigation/native';
-import BookTile from "../components/bookTile.js";
-import Navbar from "../components/navbar";
+import BookTile from "./bookTile";
+import Navbar from "./navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -76,7 +75,7 @@ const Dashboard = ({ navigation }) => {
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
-
+/*
   const filterBooks = async() => {//filter test code
     const list = [];
     await db 
@@ -101,7 +100,7 @@ const Dashboard = ({ navigation }) => {
     setFilter(list)
     //console.log('flitered books', list);
   }
-
+*/
   const getLibraryBooks = async() =>{
     const list = [];
     await db
@@ -174,7 +173,6 @@ const Dashboard = ({ navigation }) => {
   }
 
   useEffect(() => {
-
     const unsubscribe = navigation.addListener('focus', () => {
       getLibraryBooks();
       setMount(true);
