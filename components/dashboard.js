@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
+import { SearchBar } from 'react-native-elements'
 import BookTile from "./bookTile";
-import Navbar from "./navbar";
+//import Navbar from "./navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -244,7 +245,7 @@ const Dashboard = ({ navigation }) => {
   });
 
   return (
-    (!isMount)
+    (!isMount)//need to add search bar
     ? 
       <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
         <ActivityIndicator size="large"/>
@@ -257,9 +258,6 @@ const Dashboard = ({ navigation }) => {
             renderItem={ComponentItem}
             keyExtractor={item => item._id}
           />
-        </View>
-        <View style={{flex: 0.1}}>
-          <Navbar nav={navigation}></Navbar>
         </View>
       </View>
   );

@@ -6,7 +6,7 @@ export default StyleSheet.create({
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
-      padding: 20,
+      padding: 30,
       backgroundColor: '#fff',
     },
     container2: {

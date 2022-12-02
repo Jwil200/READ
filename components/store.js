@@ -2,10 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
-
 import { colors, SearchBar, Button} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
-import Navbar from "../components/navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -252,9 +250,6 @@ componentList.push({
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
-      </View>
-      <View style={{flex: 0.1}}>
-        <Navbar nav={navigation}></Navbar>
       </View>
     </View>
   );

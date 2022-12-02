@@ -13,13 +13,14 @@ import Store from './components/store';
 import BookStorePreview from './components/bookStorePreview';
 import Cart from './components/cart';
 import FilterModal from './components/filterModal';
+import TabBar from './components/TabBar';
 
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Store"
+      initialRouteName="Login"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -71,6 +72,17 @@ function MyStack() {
           title: 'Book Preview',
        }}
       />
+      <Stack.Screen
+       name="Tabbar" 
+       component={TabBar} 
+       options={{
+        headerTitle: () => (
+          <Image style={{ width:150, height: 150, resizeMode:'contain', position:'relative'}} source={require("./assets/read-logo.png")} />
+        ),
+        headerLeft: null
+       }}
+       />
+
       <Stack.Screen 
        name="Settings" 
        component={Settings} 
