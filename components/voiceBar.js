@@ -22,10 +22,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 5,
         
-        shadowColor: '#171717',
-        shadowOffset: {width: -2, height: 4},
-        shadowOpacity: 0.2,
-        shadowRadius: 3
+        elevation: 3
     },
     button: {
         flex: 0.15
@@ -74,7 +71,7 @@ const VoiceBar = (props) => {
     const isInitialMount = useRef(true);
     const ws = useRef(null);
     
-    const [position, setPosition] = useState(3);
+    const [position, setPosition] = useState(0); // Which sentence are we on
     const [isListening, setListening] = useState(false); // Could consolidate into one state object with setState
 
     useEffect(() => {
@@ -115,7 +112,7 @@ const VoiceBar = (props) => {
                     case "SessionBegins":
                         console.log("Established connection to AssemblyAI");
                         break;
-                    case "FinalTranscript":
+                    case "FinalTranscript": // Use this to determine if we should proceed or not
                         if (!(data.text === ""))
                             console.log(`Final: ${data.text}`);
                         break;

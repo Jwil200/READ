@@ -3,22 +3,20 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, PermissionsAndroid, FlatList } from 'react-native';
 import { Button, Icon } from '@rneui/themed';
 import VoiceBar from "../components/voiceBar";
-import Word from "../components/word";
 import firestore from '@react-native-firebase/firestore';
+import Sentence from "../components//sentence";
 
-let j = 0;
-
-const Item = ({ item }) => (
-    <View style={styles.sub_body}>
-        {item.content.split(" ").map(e => <Word key={"w"+(j++)} text={e}/>)}
-    </View>
-);
 
 const VoiceTest = (props) => {
     const [fullText, setFullText] = useState([]);
-    const isInitialMount = useRef(true);
+    const [position, setPosition] = useState(2); // Sentence Position
 
-    console.log(fullText);
+    const next = () => {
+        if (fullText.length - 1 > position)
+            setPosition(position + 1);
+    }
+
+    const isInitialMount = useRef(true);
 
     let name = "Doing my Chores"; // Replace instances of name with props.name
 
@@ -47,9 +45,36 @@ const VoiceTest = (props) => {
     let textArray = [];
     fullText.forEach(e => {
         e.split(" ").forEach(f => {
+            function isLetter(str) {
+                return str.length === 1 && str.match(/[a-z]/i);
+            }
+            if (!isLetter(f.charAt(0))) {
+                f = f.substring(1);
+            }
             textArray.push(f.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase());
         }); 
     });
+    for (index in fullText) {
+        textArray.push()
+    }
+
+    function isLetter(str) {
+        return str.length === 1 && str.match(/[a-z]/i);          
+    }
+
+    fullText.forEach(sentence => {
+        textArray.push(sentence.split(" ").map(word => {
+            if (!isLetter(e.charAt(0))) e = e.substring(1);
+            if (!isLetter(e.charAt(e.length - 1))) e = e.substring(0, e.length - 1);
+            return e.toLowerCase();
+        }));
+    });
+
+    let j = 0;
+
+    const Item = ({ item }) => (
+        <Sentence content={item.content} pos={j++} num={position} key={item._id} />
+    );
 
     let i = 0;
 
@@ -68,11 +93,13 @@ const VoiceTest = (props) => {
                     numColumns={1}
                     renderItem={Item}
                     keyExtractor={item => item._id}
+                    ListFooterComponent={() => <View style={{height: 80}}/>}
                 />
             </View>
             <View style={styles.voice_box_container}>
                 <VoiceBar 
-                    textArray={textArray.filter(e => !(e === ""))}
+                    textArray={textArray}
+                    next={next}
                 />
             </View>
         </View>
@@ -82,11 +109,6 @@ const VoiceTest = (props) => {
 const styles = StyleSheet.create({
     main_body_container: {
         backgroundColor: '#fff'
-    },
-    sub_body: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        padding: 20
     },
     voice_box_container: {
         height: '10%',
