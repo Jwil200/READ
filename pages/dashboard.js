@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Image, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
 import { SearchBar } from 'react-native-elements'
-import BookTile from "./bookTile";
+import BookTile from "../components/bookTile";
 //import Navbar from "./navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -58,7 +58,7 @@ const Item = ({ item }) => (
       title={item.bookName}
       author={item.authorName}
       description={item.bookDes}
-      contetn={item.content}
+      content={item.content}
     />
   </View>
 );

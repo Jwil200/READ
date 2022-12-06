@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
 });
 
 const Sentence = (props) => {
+
     let highlight = {}
     
     if (props.num == props.pos) {

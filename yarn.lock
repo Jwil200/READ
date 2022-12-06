@@ -3627,11 +3627,6 @@
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
 
-"fsevents@^2.3.2":
-  "integrity" "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA=="
-  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
-  "version" "2.3.2"
-
 "function-bind@^1.1.1":
   "integrity" "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
   "resolved" "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz"
@@ -5724,10 +5719,10 @@
   dependencies:
     "dotenv" "^16.0.3"
 
-"react-native-element-dropdown@^2.3.1":
-  "integrity" "sha512-L7b4uXuKkSdUHkeubV2gvgxdxvFx+lXu2KlPrEbWOlaVrMyIiojhZtAzXHPD07HJUzJnubY+1YYNUq5RAJzLbA=="
-  "resolved" "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.3.1.tgz"
-  "version" "2.3.1"
+"react-native-element-dropdown@^2.5.0":
+  "integrity" "sha512-ZlatJ2X0/iR+rgZ9Mcp5KO9JvL9fAI/ZGnbdo07wY0CeqVMxAnAGyj2INEqtwkd81bEHVmWDlhpFgy0xhX6qNQ=="
+  "resolved" "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.5.0.tgz"
+  "version" "2.5.0"
 
 "react-native-elements@^3.4.2":
   "integrity" "sha512-m0eAWOn7JuR1wNTNY0WHuaqst4LI/gFE4N5Bbyfsc4DiryWsMST7aAg5w/Gos4IexWIzhLKCIkPxthND1m/8Xg=="

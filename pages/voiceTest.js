@@ -9,7 +9,7 @@ import Sentence from "../components//sentence";
 
 const VoiceTest = (props) => {
     const [fullText, setFullText] = useState([]);
-    const [position, setPosition] = useState(2); // Sentence Position
+    const [position, setPosition] = useState(0); // Sentence Position
 
     const next = () => {
         if (fullText.length - 1 > position)
@@ -20,67 +20,40 @@ const VoiceTest = (props) => {
 
     let name = "Doing my Chores"; // Replace instances of name with props.name
 
-    const getText = async () => {
-        let content = [];
-        await firestore()
-        .collection("Books")
-        .where("Name", "==", name)
-        .get()
-        .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-                const { Content } = doc.data();
-                content = Content;
-            })
-        });
-        setFullText(content.filter(e => !(e === "")));
-    }
-
     useEffect(() => {
         if (isInitialMount.current) {
-            getText();
+            setFullText(props.route.params.book.content.filter(e => !(e === "")));
             isInitialMount.current = false;
         }
     }, []);
 
     let textArray = [];
-    fullText.forEach(e => {
-        e.split(" ").forEach(f => {
-            function isLetter(str) {
-                return str.length === 1 && str.match(/[a-z]/i);
-            }
-            if (!isLetter(f.charAt(0))) {
-                f = f.substring(1);
-            }
-            textArray.push(f.replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase());
-        }); 
-    });
-    for (index in fullText) {
-        textArray.push()
-    }
 
     function isLetter(str) {
         return str.length === 1 && str.match(/[a-z]/i);          
     }
 
-    fullText.forEach(sentence => {
-        textArray.push(sentence.split(" ").map(word => {
-            if (!isLetter(e.charAt(0))) e = e.substring(1);
-            if (!isLetter(e.charAt(e.length - 1))) e = e.substring(0, e.length - 1);
-            return e.toLowerCase();
-        }));
+    fullText.forEach((e, index) => {
+        textArray[index] = [];
+        e.split(" ").forEach(word => {
+            if (!isLetter(word.charAt(0))) word = word.substring(1);
+            if (!isLetter(word.charAt(word.length - 1))) word = word.substring(0, word.length - 1);
+            textArray[index].push(word.toLowerCase());
+        });
     });
 
     let j = 0;
+    console.log(j);
 
     const Item = ({ item }) => (
-        <Sentence content={item.content} pos={j++} num={position} key={item._id} />
+        <Sentence content={item.content} pos={item._id} num={position} key={item._id} />
     );
 
     let i = 0;
 
     const fullTextObject = fullText.map(e => {
         return {
-            _id: "p" + (i++),
+            _id: i++,
             content: e
         }
     });
@@ -92,7 +65,7 @@ const VoiceTest = (props) => {
                     data={fullTextObject}
                     numColumns={1}
                     renderItem={Item}
-                    keyExtractor={item => item._id}
+                    keyExtractor={item => "p" + item._id}
                     ListFooterComponent={() => <View style={{height: 80}}/>}
                 />
             </View>

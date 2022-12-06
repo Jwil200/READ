@@ -4,7 +4,7 @@ import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
-import styles from './styles';
+import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -74,12 +74,12 @@ const BookPreview = (props) => {
           <OrangeButton 
           title="Begin Reading" 
           size="sm" 
-          onPress ={() => navigation.navigate('VoiceTest', {props})}
+          onPress ={() => navigation.navigate('Book View', {book})}
           /> :
           <OrangeButton 
           title="Continue Reading" 
           size="sm" 
-          onPress ={() => navigation.navigate('VoiceTest', {props})}
+          onPress ={() => navigation.navigate('Book View', {book})}
             />
 
         }

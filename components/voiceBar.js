@@ -4,6 +4,10 @@ import { Divider, Button } from '@rneui/themed';
 import LiveAudioStream from 'react-native-live-audio-stream';
 import { ASSEMBLY_AI_API_KEY } from "@env";
 
+// How similar two strings have to be in order to pass
+// If there is less than 10 words defaults to 50%
+const PERCENT_SIMILAR = 0.70;
+
 // Options for LiveAudioStream
 const options = {
     sampleRate: 16000, // default 44100
@@ -70,12 +74,97 @@ const requestRecordPermissions = async () => {
     }
 };
 
+function isLetter(str) {
+    return str.length === 1 && str.match(/[a-z]/i);          
+}
+
+function min (x, y) {
+    if (x < y)
+        return x;
+    return y;
+}
+  
+function distance (s1, s2) {
+    let costs = [];
+    for (let i = 0; i <= s1.length; i++) {
+      let lastValue = i;
+      for (let j = 0; j <= s2.length; j++) {
+        if (i == 0)
+          costs[j] = j;
+        else {
+          if (j > 0) {
+            let newValue = costs[j - 1];
+            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+              newValue = min(min(newValue, lastValue), costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0)
+        costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
+}
+  
+function longerShorterString (x, y) {
+    if (x.length > y.length)
+        return {longer: x, shorter: y};
+    return {longer: y, shorter: x};
+}
+  
+function similarity(s1, s2, longer, shorter, longerLength) {
+    if (longerLength == 0) {
+        return 1.0;
+    }
+    return (longerLength - distance(longer, shorter)) / parseFloat(longerLength);
+}
+
+// This can generate some false positives.
+function isSimilar(spoken, text) {
+    let limit = PERCENT_SIMILAR;
+    
+    let s1 = "";
+    spoken.forEach(e => s1 += e + " ");
+    let s2 = "";
+    text.forEach(e => s2 += e + " ");
+
+    console.log(s1);
+    console.log(s2);
+
+    const {longer, shorter} = longerShorterString(s1, s2);
+    const longerLength = longer.length;
+    if (longerLength < 10)
+        limit = 0.5;
+
+    let percentSame = similarity(s1, s2, longer, shorter, longerLength);
+    console.log(percentSame);
+
+    if (percentSame >= limit) {
+        return true;
+    }
+    return false;
+}
+
 const VoiceBar = (props) => {
     const isInitialMount = useRef(true);
     const ws = useRef(null);
     
     const [position, setPosition] = useState(0); // Which sentence are we on
+    const [dummy, setDummy] = useState(0);
+    const pos = useRef(0);
+    const respText = useRef("Listening...");
     const [isListening, setListening] = useState(false); // Could consolidate into one state object with setState
+
+    useEffect(() => {
+        pos.current = position;
+        respText.current = "Good!";
+        setTimeout(() => {
+            respText.current = "Listening...";
+            setDummy(dummy + 1);
+        }, 2000);
+        props.next();
+    }, [position]);
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -100,24 +189,36 @@ const VoiceBar = (props) => {
             // Move this function outside for clarity.
             ws.current.onmessage = (e) => {
                 let data = JSON.parse(e.data);
+                let texts = [];
                 switch (data.message_type) {
                     case "PartialTranscript":
-                        let texts = data.words.map(w => w.text);
+                        texts = data.words.map(w => w.text);
+                        if (texts.length == 0)
+                            break;
                         console.log(`Text: ${texts}`);
+                        break;
+                    case "FinalTranscript": // Use this to determine if we should proceed or not
+                        if (data.text === "") return;
+                        texts = data.words.map(word => {
+                            word = word.text;
+                            if (!isLetter(word.charAt(0))) word = word.substring(1);
+                            if (!isLetter(word.charAt(word.length - 1))) word = word.substring(0, word.length - 1);
+                            return word.toLowerCase();
+                        });
+                        let p = pos.current;
+                        console.log("Final: " + texts + "\n");
+                        console.log("Position: " + p);
+                        let isSame = isSimilar(texts, props.textArray[p]);
+                        console.log("Same?: " + isSame);
+                        if (!isSame) return;
+                        console.log("Spoken and input match!");
+                        setPosition(p + 1);
                         break;
                     case "SessionBegins":
                         console.log("Established connection to AssemblyAI");
                         break;
-                    case "FinalTranscript": // Use this to determine if we should proceed or not
-                        if (data.text === "") return;
-                        let texts = data.words.map(w => w.text);
-                        let isSame = true;
-                        texts.forEach((e, index) => {
-                            if (!(e === props.textArray[position][index])) isSame = false;
-                        });
-                        if (!isSame) return;
-                        console.log("Spoken and input match!");
-                        setPosition(position + 1);
+                    case "SessionTerminated":
+                        console.log("Closed connection to AssemblyAI");
                         break;
                     default:
                         if (data.message_type === undefined)
@@ -157,7 +258,7 @@ const VoiceBar = (props) => {
             />
             <Text 
                 style={styles.text}
-            >{props.textArray[position]}</Text>
+            >{respText.current}</Text>
         </View>
     );
 };

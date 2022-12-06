@@ -2,8 +2,8 @@ import * as React from 'react';
 import {View, Button, Image} from 'react-native';
 import {Icon} from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
-import { LogBox } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import Login from './pages/login';
 import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
@@ -17,12 +17,15 @@ import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']);
+
 const Stack = createNativeStackNavigator();
 
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="VoiceTest"
+      initialRouteName="Login"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -140,7 +143,7 @@ function MyStack() {
       />
 
       <Stack.Screen 
-        name="VoiceTest" 
+        name="Book View" 
         component={VoiceTest} 
         options={
           { title: 'Voice' },

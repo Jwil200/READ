@@ -3,7 +3,7 @@ import React,  { Component, useEffect, useState  } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
-import styles from './styles';
+import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
