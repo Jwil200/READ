@@ -4,6 +4,7 @@ import { Divider, Button } from '@rneui/themed';
 import LiveAudioStream from 'react-native-live-audio-stream';
 import { ASSEMBLY_AI_API_KEY } from "@env";
 
+// Options for LiveAudioStream
 const options = {
     sampleRate: 16000, // default 44100
     channels: 1, // 1 or 2, default 1
@@ -41,6 +42,9 @@ const styles = StyleSheet.create({
     }
 });
 
+// Potentially move this to App.js so permissions are asked upon launch of the app.
+// That way if permissions aren't granted we can block opening books, and can init the audio stream
+// first and use it throughout the program.
 const requestRecordPermissions = async () => {
     try {
         const granted = await PermissionsAndroid.request(
@@ -55,10 +59,9 @@ const requestRecordPermissions = async () => {
                 buttonPositive: "OK"
             }
         );
-        console.log(granted);
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             console.log("Initializing audio stream.");
-            LiveAudioStream.init(options);
+            LiveAudioStream.init(options); // Audio Stream is setup once the voiceBar is instanced.
         } else {
             console.log("Microphone permission denied.");
         }
