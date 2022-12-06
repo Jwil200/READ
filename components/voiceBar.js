@@ -100,21 +100,21 @@ const VoiceBar = (props) => {
                 switch (data.message_type) {
                     case "PartialTranscript":
                         let texts = data.words.map(w => w.text);
-                        let text = (texts.length == 0) ? "" : texts[texts.length - 1];
-                        if (props.textArray[position].toLowerCase() === text) {
-                            setPosition(position + 1);
-                        }
-                        else if (!(text === "")) {
-                            console.log(`Got: ${text} | Looking For: ${props.textArray[position].toLowerCase()}`);
-                        }
                         console.log(`Text: ${texts}`);
                         break;
                     case "SessionBegins":
                         console.log("Established connection to AssemblyAI");
                         break;
                     case "FinalTranscript": // Use this to determine if we should proceed or not
-                        if (!(data.text === ""))
-                            console.log(`Final: ${data.text}`);
+                        if (data.text === "") return;
+                        let texts = data.words.map(w => w.text);
+                        let isSame = true;
+                        texts.forEach((e, index) => {
+                            if (!(e === props.textArray[position][index])) isSame = false;
+                        });
+                        if (!isSame) return;
+                        console.log("Spoken and input match!");
+                        setPosition(position + 1);
                         break;
                     default:
                         if (data.message_type === undefined)
