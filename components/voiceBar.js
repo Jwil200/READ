@@ -153,14 +153,15 @@ const VoiceBar = (props) => {
     const [position, setPosition] = useState(0); // Which sentence are we on
     const [dummy, setDummy] = useState(0);
     const pos = useRef(0);
-    const respText = useRef("Listening...");
+    const respText = useRef("Waiting...");
     const [isListening, setListening] = useState(false); // Could consolidate into one state object with setState
 
     useEffect(() => {
+        if (isInitialMount.current) return;
         pos.current = position;
         respText.current = "Good!";
         setTimeout(() => {
-            respText.current = "Listening...";
+            respText.current = "Waiting...";
             setDummy(dummy + 1);
         }, 2000);
         props.next();
