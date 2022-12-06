@@ -1,6 +1,6 @@
 // components/login.js
 import React, { Component, useEffect, useState  } from 'react';
-import { Text, View, TextInput, Button, Alert, Image, TouchableOpacity} from 'react-native';
+import { Platform, TouchableWithoutFeedback, Keyboard, Text, View, TextInput, Button, Alert, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/core'
 import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
@@ -28,23 +28,32 @@ const Login = () => {
 
   const navigation = useNavigation()
 
-  loginUser = () => {
-    if(email === '' && password === '') {
+  loginUser = async() => {
+    if(email === '' || password === '') {
       Alert.alert('Please enter your credentials')
     }
     else {
-      auth()
+      await auth()
       .signInWithEmailAndPassword(email, password)
       .then(async userCredentials => {
         const user = userCredentials.user;
-        navigation.navigate('Dashboard');
+        navigation.navigate('Tabbar');
         console.log('Logged in with', user.email);
       })
       .catch(error => alert(error.message))
     }
   }
   return (
-    <View style={styles.container}>  
+    <View style={{flex: 1}}>
+      
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+
+
+    <View style={styles.container1}>  
     <Image source={require('../assets/read-logo.png')} style={styles.logo} />
       <TextInput
         style={styles.inputStyle}
@@ -70,25 +79,14 @@ const Login = () => {
         <OrangeButton 
         title="Log In" 
         size="sm" 
-        onPress={() => loginUser()}
         />
       </View>
 
-      <Text style={{textAlign: 'center', bottom: 20}}>
+      <Text style={{textAlign: 'center'}}>
         Or log in with:
       </Text>
 
-      <SocialIcon
-      title='Facebook'
-      button type='facebook'
-      style={{bottom: 20}}
-      />
 
-      <SocialIcon
-      title='Google'
-      button type='google'
-      style={{bottom: 20}}
-      />
 
       <Text 
         style={styles.loginText}
@@ -96,8 +94,11 @@ const Login = () => {
         Don't have an account? Tap here to sign up
       </Text>                          
     </View>
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+    </View>
   );
 
-};
+}
 
 export default Login;
