@@ -74,12 +74,12 @@ const BookPreview = (props) => {
           <OrangeButton 
           title="Begin Reading" 
           size="sm" 
-          onPress ={() => navigation.navigate('Dashboard', {props})}
+          onPress ={() => navigation.navigate('VoiceTest', {props})}
           /> :
           <OrangeButton 
           title="Continue Reading" 
           size="sm" 
-          onPress ={() => navigation.navigate('Dashboard', {props})}
+          onPress ={() => navigation.navigate('VoiceTest', {props})}
             />
 
         }
