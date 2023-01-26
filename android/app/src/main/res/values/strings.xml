@@ -1,8 +1,5 @@
 <resources>
-<<<<<<< HEAD
-    <string name="app_name">ReadProject</string>
+  <string name="app_name">read-project</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
 </resources>
-=======
-  <string name="app_name">read-app</string>
-</resources>
->>>>>>> 597149e6b8278cc4058eae65ad4bcc2841424974

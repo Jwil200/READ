@@ -47,6 +47,13 @@ export default StyleSheet.create({
       //bottom: 160,
       //right: 5,
     },
+    bookPreviewText:{
+      alignSelf: 'flex-end',
+      position: 'absolute',
+      width: 200,
+      paddingTop: 80
+      
+    },
     inputStyle: {
       width: '100%',
       marginBottom: 15,

@@ -1,14 +1,13 @@
 // components/dashboard.js
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
-import BookTile from "../components/bookTile.js";
-import { SearchBar } from 'react-native-elements';
-import { bookData } from "../assets/books.js";
+import { SearchBar } from 'react-native-elements'
+import BookTile from "../components/bookTile";
+//import Navbar from "./navbar";
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-// Not using firebase at the moment, all content stored in books.js
-//import firebase from '../database/firebase';
-//require('firebase/auth')
 
 const styles = StyleSheet.create({
   screen: {
@@ -22,8 +21,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
-    paddingTop: 0
+    padding: 20,
+    paddingTop: 10
   },
   grid: {
     width: '100%'
@@ -53,13 +52,14 @@ const styles = StyleSheet.create({
 const Item = ({ item }) => (
   <View style={styles.item}>
     <BookTile 
-     key={"i" + item._id} 
-     id={item._id}
-     title= {item.title}
-     progress={item.progress}
-     isRecent={item.isRecent}
-     isFavorite={item.isFavorite}
- />
+      key={"i" + item._id} 
+      progress={item.progress}
+      coverUrl={item.coverUrl} 
+      title={item.bookName}
+      author={item.authorName}
+      description={item.bookDes}
+      content={item.content}
+    />
   </View>
 );
 
@@ -68,12 +68,123 @@ const ComponentItem = ({ item }) => (
 );
 
 const Dashboard = ({ navigation }) => {
-  let recentData = bookData.filter(e => e.isRecent);
-  let favoriteData = bookData.filter(e => e.isFavorite);
+  const[bookData, setBooks] = useState([]);
+  const[favorite, setFavorite] = useState([]);
+  const[recent, setRecent] = useState([]);
+  const[isMount, setMount] = useState(false);
+  //const[filter, setFilter] = useState([]);
+  
+  const db = firestore();
+  const currentUid = auth().currentUser.uid;
+/*
+  const filterBooks = async() => {//filter test code
+    const list = [];
+    await db 
+    .collection('Books')
+    .where('Genre', 'array-contains-any', ['Children'])
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        console.log('data', doc.data())  
+        const { Name, Author, Description, Cover, Age } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover,
+          age: Age
+        })
+      })
+    });
+    setFilter(list)
+    //console.log('flitered books', list);
+  }
+*/
+  const getLibraryBooks = async() =>{
+    const list = [];
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author, Description, Cover, Content, Progress } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: Progress,
+          coverUrl:  Cover,
+          content: Content
+        })
+      })
+    });
+    console.log('list:', list)
+    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
+    console.log('tempList: ', tempList);
+    setBooks(tempList);
+  }
+
+ 
+
+  const getFavoriteBooks = async () => {
+    const list = [];
+    await db
+    .collection('Users/' + currentUid + '/Favorite')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author, Description, Cover } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover
+        })
+      })
+    });
+    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove test code
+    setFavorite(tempList);
+  }
+
+  const getRecentBooks = async() => {
+    const list = [];
+    await db
+    .collection('Users/' + currentUid + '/Recent')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author, Description, Cover } = doc.data();
+        list.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover
+        })
+      })
+    });
+    let tempList = list.filter( e => e._id !== "Temp" ); //bootleg solution to remvove temp file
+    setRecent(tempList);
+  }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      getLibraryBooks();
+      setMount(true);
+    });
+    return () => {
+      unsubscribe;
+    };
+  }, [navigation]);
+
 
   let componentList = [];
-
-  const [search, setSearch] = useState('');
 
   componentList.push({
     _id: 1,
@@ -82,10 +193,10 @@ const Dashboard = ({ navigation }) => {
         <Text style={styles.title}>Recent</Text>
         <Divider style={styles.divider} />
         {
-          (recentData.length == 0)
+          (recent.length == 0)
           ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
           : <FlatList style={styles.grid}
-              data={recentData}
+              data={recent}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "r" + item._id}
@@ -101,10 +212,10 @@ const Dashboard = ({ navigation }) => {
         <Text style={styles.title}>Favorites</Text>
         <Divider style={styles.divider} />
         {
-          (favoriteData.length == 0)
+          (favorite.length == 0)
           ? <Text style={styles.emptyText}>You don't have anything favorited.</Text>
           : <FlatList style={styles.grid}
-              data={favoriteData}
+              data={favorite}
               numColumns={3}
               renderItem={Item}
               keyExtractor={item => "f" + item._id}
@@ -133,69 +244,22 @@ const Dashboard = ({ navigation }) => {
       </View>
   });
 
-  const [filteredDataSource, setFilteredDataSource] = useState(componentList);
-
-  const searchFilterFunction = (text) => {
-    if (text) {
-      const newData = bookData.filter(function (item) { //Create an array of newData that filters library data
-        const itemData = item.title
-          ? item.title.toUpperCase()
-          : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-
-      const filteredList = [];
-
-      filteredList.push({ //Populate the filtered list with the book componenets
-        _id: 1,
-        jsx:
-        <View style={styles.container}>
-        {
-          (newData.length == 0)
-          ? <Text style={styles.emptyText}>Book not available.</Text>
-          : <FlatList style={styles.grid}
-              data={newData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "a" + item._id}
-              listKey="a"
-            />
-        }
-      </View>
-      });
-      setFilteredDataSource(filteredList); //Update state variables
-      setSearch(text);
-    } else {
-      setFilteredDataSource(componentList); //On clear, go back to og component list
-      setSearch(text);
-    }
-  };
-
   return (
-    <View style={{flex: 1}}>
-      <View style={{flex: 0.9}}>
-      <SearchBar round 
-          cancelButtonTitle='X'
-          lightTheme
-          searchIcon={{ size: 20 }}
-          inputStyle={{backgroundColor: 'white'}}
-          placeholderTextColor={'#g5g5g5'}
-          placeholder={'Search'}
-          inputContainerStyle={{ 
-            backgroundColor: 'white',
-          }} 
-          value={search}
-          onChangeText={(text) => searchFilterFunction(text)}
-          onClear={() => searchFilterFunction('')}
-        />
-        <FlatList
-          data={filteredDataSource}
-          renderItem={ComponentItem}
-          keyExtractor={item => item._id}
-        />
+    (!isMount)//need to add search bar
+    ? 
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size="large"/>
       </View>
-    </View>
+    :
+      <View style={{flex: 1}}>
+        <View style={{flex: 0.9}}>
+          <FlatList
+            data={componentList}
+            renderItem={ComponentItem}
+            keyExtractor={item => item._id}
+          />
+        </View>
+      </View>
   );
 }
 export default Dashboard;

@@ -4,10 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 
 const BookTile = (props) => {
   const navigation = useNavigation()
+  const test = props.coverUrl
   return (
     <Tile
       imageSrc={{
-          uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+        uri: props.coverUrl
       }}
       imageProps={{
         resizeMode:"stretch"
@@ -20,9 +21,6 @@ const BookTile = (props) => {
         value={props.progress}
         variant="determinate"
       />
-
-      
-      
     </Tile>
   );
 }

@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-<resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
-    </style>
-
-</resources>
-=======
 <resources xmlns:tools="http://schemas.android.com/tools">
   <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
     <item name="android:textColor">@android:color/black</item>
@@ -26,4 +15,4 @@
     <item name="android:windowBackground">@drawable/splashscreen</item>
   </style>
 </resources>
->>>>>>> 597149e6b8278cc4058eae65ad4bcc2841424974
+

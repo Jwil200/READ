@@ -8,7 +8,7 @@ const BookStoreTile = (props) => {
   return (
     <Tile
       imageSrc={{
-          uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+          uri: props.coverUrl 
       }}
       imageProps={{
         resizeMode:"stretch"

@@ -59,6 +59,15 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 
-# Expo
+# Expo, POST-MERGE: check for ones you don't need from Expo GO
 .expo/*
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
 web-build/
+.env

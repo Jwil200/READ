@@ -1,16 +1,42 @@
 {
   "expo": {
-    "name": "read-app",
-    "slug": "read-app",
-    "version": "1.0.0",
     "sdkVersion": "46.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
+    "owner": "read-project",
+    "name": "read-project",
+    "slug": "read-project",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
     ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.oscradu.readproject"
+    },
     "android": {
-      "package": "com.anonymous.readapp"
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "package": "com.oscradu.readproject"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "97d286af-5bd7-4ac7-b468-8cf46a535d59"
+      }
     }
   }
 }
