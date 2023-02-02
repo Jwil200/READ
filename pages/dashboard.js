@@ -69,9 +69,9 @@ const ComponentItem = ({ item }) => (
 const Dashboard = ({ navigation }) => {
   const[bookData, setBooks] = useState([]);
   const[isMount, setMount] = useState(false);
-  //const[favorite, setFavorite] = useState([]);
-  //const[recent, setRecent] = useState([]);
-  //const[filter, setFilter] = useState([]);
+  const[favorite, setFavorite] = useState([]);
+  const[recent, setRecent] = useState([]);
+  const[filter, setFilter] = useState([]);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
