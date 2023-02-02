@@ -4,7 +4,6 @@ import { Image, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView 
 import { Header, Divider, Tile } from "@rneui/themed";
 import { SearchBar } from 'react-native-elements'
 import BookTile from "../components/bookTile";
-//import Navbar from "./navbar";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -69,9 +68,9 @@ const ComponentItem = ({ item }) => (
 
 const Dashboard = ({ navigation }) => {
   const[bookData, setBooks] = useState([]);
-  const[favorite, setFavorite] = useState([]);
-  const[recent, setRecent] = useState([]);
   const[isMount, setMount] = useState(false);
+  //const[favorite, setFavorite] = useState([]);
+  //const[recent, setRecent] = useState([]);
   //const[filter, setFilter] = useState([]);
   
   const db = firestore();
@@ -102,6 +101,20 @@ const Dashboard = ({ navigation }) => {
     //console.log('flitered books', list);
   }
 */
+  const getBookID = async() =>{//getting books ID from the user/library subcollection
+    const list = []
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .get()
+    .then(querySnapshot => {
+      console.log('Total books: ', querySnapshot.size);
+  
+      querySnapshot.forEach(documentSnapshot => {
+        console.log('User ID: ', documentSnapshot.title, documentSnapshot.data());
+      })
+    })
+  }
+
   const getLibraryBooks = async() =>{
     const list = [];
     await db
@@ -109,13 +122,12 @@ const Dashboard = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover, Content, Progress } = doc.data();
+        const { Name, Author, Description, Cover, Content} = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
           authorName: Author,
           bookDes: Description,
-          progress: Progress,
           coverUrl:  Cover,
           content: Content
         })
@@ -128,7 +140,7 @@ const Dashboard = ({ navigation }) => {
   }
 
  
-
+/*
   const getFavoriteBooks = async () => {
     const list = [];
     await db
@@ -172,7 +184,7 @@ const Dashboard = ({ navigation }) => {
     let tempList = list.filter( e => e._id !== "Temp" ); //bootleg solution to remvove temp file
     setRecent(tempList);
   }
-
+*/
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getLibraryBooks();
