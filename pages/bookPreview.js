@@ -1,14 +1,16 @@
 // components/bookPreview.js, what the user is taken to when they tap on a book.
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
 import styles from '../assets/styles';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-const OrangeButton = ({ title }) => (
-  <TouchableOpacity //onPress={loginUser}>
-    ><LinearGradient
+const OrangeButton = ({ title, onPress }) => (
+  <TouchableOpacity onPress= {onPress}>
+    <LinearGradient
       colors={["orange","#e65c00"]}
       style={styles.appButtonContainer2}
     >  
@@ -17,11 +19,28 @@ const OrangeButton = ({ title }) => (
   </TouchableOpacity>
 );
 
+
+
 const BookPreview = (props) => {
-    const book = props.route.params.props;
+  const book = props.route.params.props;
+  const db = firestore();
+  const currentUid = auth().currentUser.uid;
+  const navigation = useNavigation();
+  console.log('Book details', book)
+  const removeBook = async() => {//removes selected book from users library subcollection
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .doc(book.title)
+    .delete()
+    .then(() => {
+      console.log('Book removed from your library!!')
+      navigation.navigate('Dashboard');
+
+    })
+    Alert.alert("Book Removed from your Library")
+  }
   return (
-    <ScrollView>
-    <View style={styles.bookPreviewContainer}>
+    <ScrollView style={styles.bookPreviewContainer}>
 
       <View>
         <Text
@@ -32,7 +51,7 @@ const BookPreview = (props) => {
         <View style={styles.bookPreviewImage}>
           <Tile  
           imageSrc={{
-              uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+              uri: book.coverUrl
           }}
           imageProps={{
             resizeMode:"cover",
@@ -44,9 +63,7 @@ const BookPreview = (props) => {
       </View>
 
       <Text>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. {"\n"}
+        {book.description}{"\n"}
       </Text>
     
       {book.progress == 0.00 ? 
@@ -57,14 +74,20 @@ const BookPreview = (props) => {
           <OrangeButton 
           title="Begin Reading" 
           size="sm" 
+          onPress ={() => navigation.navigate('Book View', {book})}
           /> :
           <OrangeButton 
           title="Continue Reading" 
           size="sm" 
+          onPress ={() => navigation.navigate('Book View', {book})}
             />
 
         }
-    </View>
+      <Text 
+      style={styles.loginText}
+      onPress={removeBook}>
+      Remove Book?
+    </Text> 
     </ScrollView>
   );
 }

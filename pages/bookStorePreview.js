@@ -1,14 +1,17 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import React,  { Component, useEffect, useState  } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
-import styles from '../assets/styles'
+import styles from '../assets/styles';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/core';
 
-const OrangeButton = ({ title }) => (
-  <TouchableOpacity //onPress={loginUser}>
-    ><LinearGradient
+
+const OrangeButton = ({ title, onPress }) => (
+  <TouchableOpacity onPress= {onPress}>
+    <LinearGradient
       colors={["orange","#e65c00"]}
       style={styles.appButtonContainer2}
     >  
@@ -17,11 +20,67 @@ const OrangeButton = ({ title }) => (
   </TouchableOpacity>
 );
 
+
 const BookStorePreview = (props) => {
     const book = props.route.params.props;
+    const db = firestore();
+    const currentUid = auth().currentUser.uid;
+    const navigation = useNavigation();
+    const[isCheck, setCheck] = useState(false);
+    console.log(isCheck);//console  check 
+    console.log(book.title);//console check
+
+    const doesDocExist = async() => {//Checks to see if book is in users library
+      return firestore()
+      .collection('Users/' + currentUid + '/Library')
+      .doc(book.title)
+      .get()
+      .then((doc) => {
+          setCheck(doc.exists)
+          return doc.exists
+      })
+    }
+    const dashboard = () =>{
+      navigation.navigate('Dashboard');
+    }
+
+    const addBook = async () => {//add selected book to user sub library
+      let doesbookExist = await doesDocExist();
+      if(isCheck == false) {
+        console.log('name: ', book._id);//check book if book details
+        console.log('age: ', book.age);
+        console.log('cover url: ', book.coverUrl);
+        console.log('description: ', book.description);
+        console.log('Author: ', book.author);
+        console.log('Content: ', book.content)
+        console.log('Progress: ', book.Progress)
+        await db
+        .collection('Users/' + currentUid + '/Library')
+        .doc(book.title)
+        .set({
+          //Author: book.author,
+          //Cover: book.coverUrl,
+          //Description: book.description,
+          Name: book.title,
+          //Progress: 0,
+          //Content: book.content,
+          WordCount: 0,
+          
+        })
+        .then(()=>{
+          Alert.alert('Book added to your library!!')
+        })
+      }else{
+        Alert.alert('Book is already in your library')
+      }
+  }
+
+  useEffect(() => {
+    doesDocExist();
+  }, [])
+      
   return (
-    <ScrollView>
-    <View style={styles.bookPreviewContainer}>
+    <ScrollView style={styles.bookPreviewContainer}>
 
       <View>
         <Text
@@ -32,7 +91,7 @@ const BookStorePreview = (props) => {
         <View style={styles.bookPreviewImage}>
           <Tile  
           imageSrc={{
-              uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
+              uri: book.coverUrl
           }}
           imageProps={{
             resizeMode:"cover",
@@ -46,24 +105,24 @@ const BookStorePreview = (props) => {
       <Text style={styles.bookPreviewProgress}>Rating: {book.rating}/5</Text>
 
       <Text>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-      Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 
-      in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. {"\n"}
+      {book.description}{"\n"}
       </Text>
     
-      {book.isAddedtoCart ? 
+      {(isCheck) ? 
           <OrangeButton 
-          title="Remove from Cart" 
+          title="View in Library" 
           size="sm"
+          onPress = {() => dashboard()}
           /> :
           <OrangeButton 
-          title="Add to Cart" 
+          title="Add to Library" 
           size="sm" 
+          onPress = {() => addBook()}
             />
         }
 
-    </View>
     </ScrollView>
   );
+
 }
 export default BookStorePreview;

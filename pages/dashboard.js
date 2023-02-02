@@ -187,6 +187,7 @@ const Dashboard = ({ navigation }) => {
 */
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
+      getBookID();
       getLibraryBooks();
       setMount(true);
     });
