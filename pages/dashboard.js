@@ -71,76 +71,87 @@ const Dashboard = ({ navigation }) => {
   const[isMount, setMount] = useState(false);
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
-  const[filter, setFilter] = useState([]);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
-/*
-  const filterBooks = async() => {//filter test code
+
+  const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
     const list = [];
-    await db 
-    .collection('Books')
-    .where('Genre', 'array-contains-any', ['Children'])
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        console.log('data', doc.data())  
-        const { Name, Author, Description, Cover, Age } = doc.data();
-        list.push({
-          _id: doc.id,
-          bookName: Name,
-          authorName: Author,
-          bookDes: Description,
-          progress: 0.5,
-          coverUrl:  Cover,
-          age: Age
-        })
-      })
-    });
-    setFilter(list)
-    //console.log('flitered books', list);
-  }
-*/
-  const getBookID = async() =>{//getting books ID from the user/library subcollection
-    const list = []
     await db
     .collection('Users/' + currentUid + '/Library')
     .get()
-    .then(querySnapshot => {
+    .then(async querySnapshot => {
       console.log('Total books: ', querySnapshot.size);
   
       querySnapshot.forEach(documentSnapshot => {
-        console.log('User ID: ', documentSnapshot.title, documentSnapshot.data());
+        console.log('User ID: ', documentSnapshot.id);
+        list.push(documentSnapshot.id)
       })
     })
-  }
 
+    let tempList = list.filter( e => e !== "Temp" );//bootleg solution to remove temp file
+    console.log("TempList:  ", tempList);
+    
+    let list2 = []
+    let i = 0;
+    do {
+      let val = tempList[i];
+      console.log(val);
+      
+      await db
+      .collection('Books')
+      .doc(val)
+      .get()
+      .then(documentSnapshot => {
+        if(documentSnapshot.exists){
+          const { Name, Author, Description, Cover, Content} = documentSnapshot.data();
+          list2.push({
+            _id: documentSnapshot.id,
+            bookName: Name,
+            authorName: Author,
+            bookDes: Description,
+            coverUrl:  Cover,
+            content: Content
+          })
+        } 
+      });
+      i++;
+    }while(i < tempList.length);
+    setBooks(list2);
+  } 
+  
+/*
   const getLibraryBooks = async() =>{
-    const list = [];
-    await db
-    .collection('Users/' + currentUid + '/Library')
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover, Content} = doc.data();
-        list.push({
-          _id: doc.id,
-          bookName: Name,
-          authorName: Author,
-          bookDes: Description,
-          coverUrl:  Cover,
-          content: Content
+    let list = bookID;
+    let i = 1;
+    do {
+      let val = list[i];
+      console.log(val);
+      await db
+      .collection('Books/' + val)
+      .then(function(querySnapshot){
+        querySnapshot.forEach(function(doc){
+          const { Name, Author, Description, Cover, Content} = doc.data();
+          list.push({
+            _id: doc.id,
+            bookName: Name,
+            authorName: Author,
+            bookDes: Description,
+            coverUrl:  Cover,
+            content: Content
+          })
         })
-      })
-    });
+      });
+      i++;
+    }while(i < list.length)
     console.log('list:', list)
     let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
     console.log('tempList: ', tempList);
     setBooks(tempList);
-  }
+  }*/
 
  
-/*
+
   const getFavoriteBooks = async () => {
     const list = [];
     await db
@@ -184,10 +195,9 @@ const Dashboard = ({ navigation }) => {
     let tempList = list.filter( e => e._id !== "Temp" ); //bootleg solution to remvove temp file
     setRecent(tempList);
   }
-*/
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      getBookID();
       getLibraryBooks();
       setMount(true);
     });
