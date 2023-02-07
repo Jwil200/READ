@@ -76,11 +76,26 @@ const Dashboard = ({ navigation }) => {
   const currentUid = auth().currentUser.uid;
 
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
+    const proglist = [];//gets the progress of all books from the User/Library subcollection
+    await db
+    .collection('Users/' + currentUid + '/Libray')
+    .where('Name', '!=', 'Temp')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(documentSnapshot =>{
+        const { WordCount, Progress} = documentSnapshot.data();
+        proglist.push({
+          wordCount: WordCount,
+          progress: Progress
+        })
+      })
+    });
+
     const list = [];
     await db
     .collection('Users/' + currentUid + '/Library')
     .get()
-    .then(async querySnapshot => {
+    .then(querySnapshot => {
       console.log('Total books: ', querySnapshot.size);
   
       querySnapshot.forEach(documentSnapshot => {
@@ -89,16 +104,35 @@ const Dashboard = ({ navigation }) => {
       })
     })
 
-    let tempList = list.filter( e => e !== "Temp" );//bootleg solution to remove temp file
-    console.log("TempList:  ", tempList);
+    let nameList = list.filter( e => e !== "Temp" );//bootleg solution to remove temp file
+    console.log("TempList:  ", nameList);//console test
     
-    let list2 = []
-    let i = 0;
+    let list2 = [];
+    
+    await db.collection('Books')
+    .where('Name', 'in', nameList)
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        const { Name, Author, Description, Cover } = doc.data();
+        list2.push({
+          _id: doc.id,
+          bookName: Name,
+          authorName: Author,
+          bookDes: Description,
+          progress: 0.5,
+          coverUrl:  Cover
+        })
+      })
+    });
+
+    console.log("Result: ", list2);
+    /*
     do {
-      let val = tempList[i];
+      let val = nameList[i];
       console.log(val);
       
-      await db
+      db
       .collection('Books')
       .doc(val)
       .get()
@@ -111,48 +145,18 @@ const Dashboard = ({ navigation }) => {
             authorName: Author,
             bookDes: Description,
             coverUrl:  Cover,
-            content: Content
+            content: Content,
           })
         } 
       });
+      console.log(i)
       i++;
-    }while(i < tempList.length);
+    }while(i < nameList.length);*/
     setBooks(list2);
   } 
   
-/*
-  const getLibraryBooks = async() =>{
-    let list = bookID;
-    let i = 1;
-    do {
-      let val = list[i];
-      console.log(val);
-      await db
-      .collection('Books/' + val)
-      .then(function(querySnapshot){
-        querySnapshot.forEach(function(doc){
-          const { Name, Author, Description, Cover, Content} = doc.data();
-          list.push({
-            _id: doc.id,
-            bookName: Name,
-            authorName: Author,
-            bookDes: Description,
-            coverUrl:  Cover,
-            content: Content
-          })
-        })
-      });
-      i++;
-    }while(i < list.length)
-    console.log('list:', list)
-    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove temp file
-    console.log('tempList: ', tempList);
-    setBooks(tempList);
-  }*/
 
- 
-
-  const getFavoriteBooks = async () => {
+  const getFavoriteBooks = async () => {//For getting favorite books
     const list = [];
     await db
     .collection('Users/' + currentUid + '/Favorite')
@@ -174,7 +178,7 @@ const Dashboard = ({ navigation }) => {
     setFavorite(tempList);
   }
 
-  const getRecentBooks = async() => {
+  const getRecentBooks = async() => {//For getting recent books
     const list = [];
     await db
     .collection('Users/' + currentUid + '/Recent')
