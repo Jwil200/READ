@@ -75,7 +75,20 @@ const Dashboard = ({ navigation }) => {
   const db = firestore();
   const currentUid = auth().currentUser.uid;
 
+  const inLibrary = async() =>{ //Checks to see if data on this book in the library subcollection for the user
+    firestore()
+    .collection('Users/' + currentUid + '/Library')
+    .doc(book.title)
+    .get()
+    .then(doc => {
+      var dat = doc.data()
+      console.log("In library: ", dat.Favorite);
+      let check = dat.Favorite;
+      return check
+    })
+  }
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
+    /*
     const proglist = [];//gets the progress of all books from the User/Library subcollection
     await db
     .collection('Users/' + currentUid + '/Libray')
@@ -90,94 +103,95 @@ const Dashboard = ({ navigation }) => {
         })
       })
     });
+    console.log(proglist);
+*/
+
+
+   
 
     const list = [];
     await db
     .collection('Users/' + currentUid + '/Library')
+    .where('inLibrary', '==', true)
     .get()
     .then(querySnapshot => {
-      console.log('Total books: ', querySnapshot.size);
-  
+      //console.log('Total books: ', querySnapshot.size);  
       querySnapshot.forEach(documentSnapshot => {
         console.log('User ID: ', documentSnapshot.id);
         list.push(documentSnapshot.id)
       })
     })
 
-    let nameList = list.filter( e => e !== "Temp" );//bootleg solution to remove temp file
-    console.log("TempList:  ", nameList);//console test
+    let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
+    console.log("What is in the namelist:  ", nameList);//console test
     
-    let list2 = [];
-    
-    await db.collection('Books')
-    .where('Name', 'in', nameList)
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover } = doc.data();
-        list2.push({
-          _id: doc.id,
-          bookName: Name,
-          authorName: Author,
-          bookDes: Description,
-          progress: 0.5,
-          coverUrl:  Cover
-        })
-      })
-    });
-
-    console.log("Result: ", list2);
-    /*
-    do {
-      let val = nameList[i];
-      console.log(val);
-      
-      db
-      .collection('Books')
-      .doc(val)
+    let list2 = [];//list 2 will hold the objects from /library
+    //can also reset list
+    if(nameList.length != 0){
+      await db.collection('Books')
+      .where('Name', 'in', nameList)
       .get()
-      .then(documentSnapshot => {
-        if(documentSnapshot.exists){
-          const { Name, Author, Description, Cover, Content} = documentSnapshot.data();
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const { Name, Author, Description, Cover, Progress } = doc.data();
           list2.push({
-            _id: documentSnapshot.id,
+            _id: doc.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
-            coverUrl:  Cover,
-            content: Content,
+            progress: Progress,
+            coverUrl:  Cover
           })
-        } 
+        })
       });
-      console.log(i)
-      i++;
-    }while(i < nameList.length);*/
+
+      //console.log("Result: ", list2);//test
+      //Array.prototype.push.apply(list2, proglist); 
+      //console.log(list2);
+      
+    }
     setBooks(list2);
+    
   } 
   
 
   const getFavoriteBooks = async () => {//For getting favorite books
     const list = [];
     await db
-    .collection('Users/' + currentUid + '/Favorite')
+    .collection('Users/' + currentUid + '/Library')
+    .where('Favorite', '==', true)
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover } = doc.data();
-        list.push({
-          _id: doc.id,
-          bookName: Name,
-          authorName: Author,
-          bookDes: Description,
-          progress: 0.5,
-          coverUrl:  Cover
-        })
+        list.push(doc.id)
       })
     });
-    let tempList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove test code
-    setFavorite(tempList);
-  }
 
+    let nameList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove test code
+
+    let list2 = [];
+    if(nameList.length != 0){
+      await db
+      .collection('Books')
+      .where('Name', 'in', nameList)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const { Name, Author, Description, Cover } = doc.data();
+          list2.push({
+            _id: doc.id,
+            bookName: Name,
+            authorName: Author,
+            bookDes: Description,
+            progress: 0.5,
+            coverUrl:  Cover
+          })
+        })
+      });
+      setFavorite(list2)
+    }
+  }
+/*
   const getRecentBooks = async() => {//For getting recent books
     const list = [];
     await db
@@ -199,10 +213,11 @@ const Dashboard = ({ navigation }) => {
     let tempList = list.filter( e => e._id !== "Temp" ); //bootleg solution to remvove temp file
     setRecent(tempList);
   }
-
+*/
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getLibraryBooks();
+      getFavoriteBooks();
       setMount(true);
     });
     return () => {

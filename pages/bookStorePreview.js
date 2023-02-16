@@ -26,9 +26,8 @@ const BookStorePreview = (props) => {
     const db = firestore();
     const currentUid = auth().currentUser.uid;
     const navigation = useNavigation();
+
     const[isCheck, setCheck] = useState(false);
-    console.log(isCheck);//console  check 
-    console.log(book.title);//console check
 
     const doesDocExist = async() => {//Checks to see if book is in users library
       return firestore()
@@ -36,42 +35,60 @@ const BookStorePreview = (props) => {
       .doc(book.title)
       .get()
       .then((doc) => {
+          console.log("In database: ", doc.exists);//console check
           setCheck(doc.exists)
           return doc.exists
       })
     }
+
+    const isInLibrary = async() =>{ //Checks to see if the inLibrary field is true or false
+      return db
+      .collection('Users/' + currentUid + '/Library')
+      .doc(book.title)
+      .get()
+      .then(doc => {
+        const dat = doc.data();
+        console.log("In library: ", dat.inLibrary);//console check 
+        let check = dat.inLibrary;
+        return check
+      })
+    }
+
+    
     const dashboard = () =>{
-      navigation.navigate('Dashboard');
+      navigation.navigate('Tabbar');
     }
 
     const addBook = async () => {//add selected book to user sub library
-      let doesbookExist = await doesDocExist();
       if(isCheck == false) {
-        console.log('name: ', book._id);//check book if book details
-        console.log('age: ', book.age);
-        console.log('cover url: ', book.coverUrl);
-        console.log('description: ', book.description);
-        console.log('Author: ', book.author);
-        console.log('Content: ', book.content)
-        console.log('Progress: ', book.Progress)
         await db
         .collection('Users/' + currentUid + '/Library')
         .doc(book.title)
         .set({
-          //Author: book.author,
-          //Cover: book.coverUrl,
-          //Description: book.description,
           Name: book.title,
-          //Progress: 0,
-          //Content: book.content,
+          Progress: 0,
           WordCount: 0,
-          
+          Favorite: false,
+          dateAdded: firestore.FieldValue.serverTimestamp(),
+          inLibrary: true
         })
         .then(()=>{
           Alert.alert('Book added to your library!!')
         })
-      }else{
-        Alert.alert('Book is already in your library')
+      }else if(isCheck == true){
+        let check2 = await isInLibrary()
+        if(check2 == false){
+          await db
+          .collection('Users/' + currentUid + '/Library' )
+          .doc(book.title)
+          .update({
+            inLibrary: true
+          })
+          .then(() => {
+            Alert.alert('Book added to your library!!')
+          })
+        }
+        else{Alert.alert('Book is already in your library')}
       }
   }
 
@@ -110,9 +127,9 @@ const BookStorePreview = (props) => {
     
       {(isCheck) ? 
           <OrangeButton 
-          title="View in Library" 
+          title="add to Library" 
           size="sm"
-          onPress = {() => dashboard()}
+          onPress = {() => addBook()}
           /> :
           <OrangeButton 
           title="Add to Library" 

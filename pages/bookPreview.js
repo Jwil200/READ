@@ -27,18 +27,40 @@ const BookPreview = (props) => {
   const currentUid = auth().currentUser.uid;
   const navigation = useNavigation();
   console.log('Book details', book)
+  
   const removeBook = async() => {//removes selected book from users library subcollection
     await db
     .collection('Users/' + currentUid + '/Library')
     .doc(book.title)
-    .delete()
+    .update({
+      inLibrary: false
+    })
     .then(() => {
       console.log('Book removed from your library!!')
-      navigation.navigate('Dashboard');
+      navigation.navigate('Tabbar');
 
     })
     Alert.alert("Book Removed from your Library")
   }
+
+  const addFavorite = async() =>{// adds to favorite
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .doc(book.title)
+    .update({
+      'Favorite': true
+    })
+  }
+
+  const removeFavorite = async() => {
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .doc(book.title)
+    .update({
+      'Favorite': 0
+    })
+  }
+
   return (
     <ScrollView style={styles.bookPreviewContainer}>
 
