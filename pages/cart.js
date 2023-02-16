@@ -1,14 +1,22 @@
 // components/cart.js *Based from store.js
 import React from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
-import { Header, Divider, Tile } from "@rneui/themed";
+import { Button, StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
 import { bookStoreData } from "../components/storeBooks.js";
+import { Divider } from "@rneui/themed";
+import { LinearGradient } from 'expo-linear-gradient';
 import BookStoreTile from "../components/bookStoreTile.js";
-import Navbar from "../components/navbar";
 
-// Not using firebase at the moment, all content stored in books.js
-//import firebase from '../database/firebase';
-//require('firebase/auth')
+const OrangeButton = ({ title, onPress }) => (
+  <TouchableOpacity onPress={onPress}>
+    <LinearGradient
+      colors={["orange","#e65c00"]}
+      style={styles.appButtonContainer2}
+    >  
+      <Text style={styles.appButtonText}>{title}</Text>
+    </LinearGradient>
+  </TouchableOpacity>
+);
+
 
 const styles = StyleSheet.create({
   screen: {
@@ -49,6 +57,24 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlignVer: 'center'
   },
+  checkoutButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appButtonContainer2:{
+    elevation: 8,
+    backgroundColor: "#009688",
+    borderRadius: 100,
+    paddingVertical: 15,
+    paddingHorizontal: 100,
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase"
+  }
 });
 
 const Item = ({ item }) => (
@@ -77,6 +103,8 @@ const Cart = ({ navigation }) => {
     _id: 1,
     jsx: 
       <View style={styles.container}>
+        <Text style={styles.title}>Your Cart</Text>
+        <Divider style={styles.divider} />
         
           {recentData.length == 0
           ? <Text style={styles.emptyText}>Your cart is empty!</Text>
@@ -99,6 +127,13 @@ const Cart = ({ navigation }) => {
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
+      </View>
+      <View style={styles.checkoutButton}>
+      <OrangeButton 
+          title="Checkout ($0.00)" 
+          size="sm"
+          onPress={() => navigation.navigate('Checkout')}
+          />
       </View>
     </View>
   );

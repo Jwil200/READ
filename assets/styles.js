@@ -35,18 +35,6 @@ export default StyleSheet.create({
       fontWeight: 'bold',
       paddingBottom: 5
     },
-    bookPreviewDescription:{
-      //alignSelf: 'flex-end',
-      //position: 'absolute',
-     // width: 200,
-      //paddingTop: 80
-      
-    },
-    icon: {
-      //position: 'absolute',
-      //bottom: 160,
-      //right: 5,
-    },
     inputStyle: {
       width: '100%',
       marginBottom: 15,

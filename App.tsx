@@ -1,6 +1,6 @@
 // App.js
 import * as React from 'react';
-import { Button, View , Image} from 'react-native';
+import { Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Icon } from 'react-native-elements';
@@ -13,6 +13,7 @@ import Welcome from './pages/afterSignup';
 import BookPreview from './pages/bookPreview';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart.js';
+import Checkout from './pages/checkout';
 import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
 
@@ -85,10 +86,10 @@ function MyStack() {
         headerRight: () => (
           getFilterVisibility(navigation) ? 
           <Icon
-              style={{ paddingRight: 10}}
-              name='filter-alt'
-              color='#fff'
-              onPress={() => navigation.navigate('FilterModal')} 
+            style={{ paddingRight: 10}}
+            name='filter-alt'
+            color='#fff'
+            onPress={() => navigation.navigate('FilterModal')} 
           />
           :
           null
@@ -132,6 +133,14 @@ function MyStack() {
         options={{
             title: 'Your Cart',
         }}
+      />
+      <Stack.Screen 
+       name="Checkout" 
+       component={Checkout} 
+       options= {{
+        title: "Checkout",
+        headerBackTitle: "Cart"
+       }}
       />
     </Stack.Navigator>
   );

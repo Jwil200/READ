@@ -1,7 +1,6 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
 import styles from '../assets/styles'
