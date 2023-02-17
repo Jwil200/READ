@@ -26,9 +26,10 @@ const BookPreview = (props) => {
   const db = firestore();
   const currentUid = auth().currentUser.uid;
   const navigation = useNavigation();
-  console.log('Book details', book)
+  //console.log('Book details', book)
+  console.log('word Count: ', book.wordCount)
   
-  const removeBook = async() => {//removes selected book from users library subcollection
+  const removeBook = async() => {//changes the inLibrary to false for this book
     await db
     .collection('Users/' + currentUid + '/Library')
     .doc(book.title)

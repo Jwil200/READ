@@ -53,6 +53,7 @@ const Item = ({ item }) => (
     <BookTile 
       key={"i" + item._id} 
       progress={item.progress}
+      wordCount = {item.wordCount}
       coverUrl={item.coverUrl} 
       title={item.bookName}
       author={item.authorName}
@@ -73,8 +74,9 @@ const Dashboard = ({ navigation }) => {
   const[recent, setRecent] = useState([]);
   
   const db = firestore();
+  const userLib = db.collection('Users/' + currentUid + '/Library');
   const currentUid = auth().currentUser.uid;
-
+ /*
   const inLibrary = async() =>{ //Checks to see if data on this book in the library subcollection for the user
     firestore()
     .collection('Users/' + currentUid + '/Library')
@@ -86,70 +88,107 @@ const Dashboard = ({ navigation }) => {
       let check = dat.Favorite;
       return check
     })
-  }
+  }*/
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
-    /*
-    const proglist = [];//gets the progress of all books from the User/Library subcollection
-    await db
-    .collection('Users/' + currentUid + '/Libray')
-    .where('Name', '!=', 'Temp')
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(documentSnapshot =>{
-        const { WordCount, Progress} = documentSnapshot.data();
-        proglist.push({
-          wordCount: WordCount,
-          progress: Progress
-        })
-      })
-    });
-    console.log(proglist);
-*/
-
-
-   
-
+    
     const list = [];
     await db
     .collection('Users/' + currentUid + '/Library')
     .where('inLibrary', '==', true)
     .get()
     .then(querySnapshot => {
-      //console.log('Total books: ', querySnapshot.size);  
       querySnapshot.forEach(documentSnapshot => {
-        console.log('User ID: ', documentSnapshot.id);
         list.push(documentSnapshot.id)
       })
     })
 
     let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
-    console.log("What is in the namelist:  ", nameList);//console test
+
     
     let list2 = [];//list 2 will hold the objects from /library
     //can also reset list
+    let progList = [];
     if(nameList.length != 0){
-      await db.collection('Books')
+      console.log("What is in the namelist:  ", nameList);//console test
+      
+      await db
+      .collection('Users/' + currentUid + '/Library')
+      .where('Name', 'in', nameList)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(document =>{
+          
+          const { WordCount, Progress} = document.data();
+          
+          progList.push({
+            wordCount: WordCount,
+            progress: Progress
+          })
+        })
+      });
+      
+      await db
+      .collection('Books')
       .where('Name', 'in', nameList)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover, Progress } = doc.data();
+          const { Name, Author, Description, Cover, } = doc.data();
           list2.push({
             _id: doc.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
-            progress: Progress,
             coverUrl:  Cover
           })
         })
       });
+      console.log(list2);
+      let mergedArray = []
+      for(let i = 0; i < nameList.length; i++){
+        let obj1 = list2[i]
+        let obj2 = progList[i]
+        let mergedObj = Object.assign(obj1, obj2)
+        mergedArray.push(mergedObj)
+      }
+      //let target = Object.assign(list2, progList)
+      console.log(mergedArray);
+      /*
+      const combinedArray = list2.concat(progList);
+      const mergedArray = combinedArray.map(item => {
+      if (item.hasOwnProperty('_id') && item.hasOwnProperty('bookName') && item.hasOwnProperty('authorName') && item.hasOwnProperty('bookDes') && item.hasOwnProperty('coverUrl')) {
+        return { 
+          _id: item._id, 
+          bookName: item.bookName, 
+          authotName: item.authorName,
+          bookDes: item.bookDes,
+          coverUrl: item.coverUrl,
+          progress: undefined, 
+          wordCount: undefined 
+        };
+      } else if (item.hasOwnProperty('progress') && item.hasOwnProperty('wordCount')) {
+        return { 
+          _id: undefined, 
+          bookName: undefined, 
+          authotName: undefined,
+          bookDes: undefined,
+          coverUrl: undefined,
+          progress: item.progress, 
+          wordCount: item.wordCount 
+        };
+      }
+    });
 
+    //console.log(mergedArray);*/
+    setBooks(mergedArray);
+
+      
       //console.log("Result: ", list2);//test
       //Array.prototype.push.apply(list2, proglist); 
       //console.log(list2);
       
     }
+
     setBooks(list2);
     
   } 
