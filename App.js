@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Login from './pages/login';
+import Checkout from './pages/checkout';
 import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
 import Welcome from './components/afterSignup';
@@ -21,6 +22,13 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const Stack = createNativeStackNavigator();
+
+const getFilterVisibility = navigation => { //Visibility toggle for filter depending on current tab.
+  let isDashboard = (typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');
+  let currPage = isDashboard ? null : navigation.getState().routes[1].state.history[1].key;
+  return isDashboard ? isDashboard : !(currPage.includes('Cart') || currPage.includes('Settings'));
+}
+
 
 function MyStack() {
   return (
@@ -52,15 +60,10 @@ function MyStack() {
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
-       options= {({ navigation }) => ({
-        title: "Dashboard", 
-          headerRight: () => (
-            <Icon
-                style={{ paddingRight: 10}}
-                name='filter-alt'
-                color='#fff' 
-            />
-          )})}
+       options= {{
+        title: "Dashboard"
+       }}
+
       />
       <Stack.Screen 
        name="Welcome" 
@@ -81,12 +84,23 @@ function MyStack() {
       <Stack.Screen
        name="Tabbar" 
        component={TabBar} 
-       options={{
+       options= {({ navigation, route }) => ({
         headerTitle: () => (
           <Image style={{ width:100, height: 65, resizeMode:'contain', position:'relative'}} source={require("./assets/read-logo.png")} />
         ),
-        headerLeft: null
-       }}
+        headerLeft: null, 
+        headerRight: () => (
+          getFilterVisibility(navigation) ? 
+          <Icon
+              style={{ paddingRight: 10}}
+              name='filter-alt'
+              color='#fff'
+              onPress={() => navigation.navigate('FilterModal')} 
+          />
+          :
+          null
+        )})}
+
        />
 
       <Stack.Screen 
@@ -109,22 +123,10 @@ function MyStack() {
       <Stack.Screen 
        name="Store" 
        component={Store} 
-       options= {({ navigation, route }) => ({
-        title: "Book Store", 
-          headerRight: () => (
-            <View style={{ flexDirection:"row", padding: 10}}>
-            <Icon
-                style={{ paddingRight: 10}}
-                name='filter-alt'
-                color='#fff' 
-                onPress={() => navigation.navigate("FilterModal")}
-            />
-            <Icon
-              name='shopping-cart'
-              onPress={() => navigation.navigate("Cart")}
-              color='#fff' />
-            </View>
-          )})}
+       options= {{
+        title: "Book Store"
+       }}
+
       />
       <Stack.Screen 
        name="BookStorePreview" 
@@ -150,6 +152,15 @@ function MyStack() {
           { headerLeft: null } 
         }
       />
+            <Stack.Screen 
+       name="Checkout" 
+       component={Checkout} 
+       options= {{
+        title: "Checkout",
+        headerBackTitle: "Cart"
+       }}
+      />
+
       
     </Stack.Navigator>
   );

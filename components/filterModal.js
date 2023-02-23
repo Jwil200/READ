@@ -7,7 +7,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const FilterModal = () => {
   const navigation = useNavigation();
-  const genres = ["Mystery", "Children", "Young Adult", "Popular", "Fantasy"]; //placeholder categories
+  const genres = [
+    {name: "Mystery"},
+    {name: "Children"},
+    {name: "Young Adult"}, 
+    {name: "Popular"},
+    {name: "Fantasy"}]; //placeholder categories
+
   const [checkedState, setCheckedState] = useState(new Array(genres.length).fill(false));
   const [filteredList, setFilteredList] = useState([]);
 
@@ -41,7 +47,7 @@ const FilterModal = () => {
       {genres.map((g, i) => {
         return(
         <CheckBox 
-        title={g}
+        title={g.name}
         checked={checkedState[i]}
         onPress={() => filterList(g, i)} />
       )})}
@@ -50,7 +56,7 @@ const FilterModal = () => {
 
       <Button 
       title= "Apply Filter"
-      onPress={() => navigation.navigate('Store', {filteredData: filteredList})}></Button>
+      onPress={() => navigation.navigate('Tabbar', {filteredData: filteredList})}></Button>
 
       <Button title="Reset" onPress={()=> reset() }/>
     </View>

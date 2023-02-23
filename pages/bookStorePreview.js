@@ -54,13 +54,24 @@ const BookStorePreview = (props) => {
       })
     }
 
-    
+    /*
     const dashboard = () =>{
       navigation.navigate('Tabbar');
-    }
+    }*/
 
     const addBook = async () => {//add selected book to user sub library
       if(isCheck == false) {
+        await db 
+        .collection('Users/' + currentUid + '/Cart')
+        .doc(book.title)
+        .set({
+          Name: book.title
+        })
+        .then(() =>{
+          Alert.alert('Book has been added to your cart')
+        })
+
+        /* use this code in the cart page/checkout page
         await db
         .collection('Users/' + currentUid + '/Library')
         .doc(book.title)
@@ -74,7 +85,7 @@ const BookStorePreview = (props) => {
         })
         .then(()=>{
           Alert.alert('Book added to your library!!')
-        })
+        })*/
       }else if(isCheck == true){
         let check2 = await isInLibrary()
         if(check2 == false){
@@ -127,12 +138,12 @@ const BookStorePreview = (props) => {
     
       {(isCheck) ? 
           <OrangeButton 
-          title="add to Library" 
+          title="Add to Library" 
           size="sm"
           onPress = {() => addBook()}
           /> :
           <OrangeButton 
-          title="Add to Library" 
+          title="Add to Cart" 
           size="sm" 
           onPress = {() => addBook()}
             />

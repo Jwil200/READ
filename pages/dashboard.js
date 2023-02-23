@@ -76,19 +76,9 @@ const Dashboard = ({ navigation }) => {
   const db = firestore();
   const userLib = db.collection('Users/' + currentUid + '/Library');
   const currentUid = auth().currentUser.uid;
- /*
-  const inLibrary = async() =>{ //Checks to see if data on this book in the library subcollection for the user
-    firestore()
-    .collection('Users/' + currentUid + '/Library')
-    .doc(book.title)
-    .get()
-    .then(doc => {
-      var dat = doc.data()
-      console.log("In library: ", dat.Favorite);
-      let check = dat.Favorite;
-      return check
-    })
-  }*/
+ 
+  
+
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
     
     const list = [];
@@ -105,12 +95,13 @@ const Dashboard = ({ navigation }) => {
     let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
 
     
-    let list2 = [];//list 2 will hold the objects from /library
-    //can also reset list
-    let progList = [];
+    let bookDetails = [];//list 2 will hold the objects from /library
+    
+    let progressList = [];
+
     if(nameList.length != 0){
       console.log("What is in the namelist:  ", nameList);//console test
-      
+      //pushes word count and progress to the proglist array
       await db
       .collection('Users/' + currentUid + '/Library')
       .where('Name', 'in', nameList)
@@ -120,13 +111,14 @@ const Dashboard = ({ navigation }) => {
           
           const { WordCount, Progress} = document.data();
           
-          progList.push({
+          progressList.push({
             wordCount: WordCount,
             progress: Progress
           })
         })
       });
       
+      //pushes other book details to bookDetails array
       await db
       .collection('Books')
       .where('Name', 'in', nameList)
@@ -134,7 +126,7 @@ const Dashboard = ({ navigation }) => {
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
           const { Name, Author, Description, Cover, } = doc.data();
-          list2.push({
+          bookDetails.push({
             _id: doc.id,
             bookName: Name,
             authorName: Author,
@@ -143,54 +135,22 @@ const Dashboard = ({ navigation }) => {
           })
         })
       });
-      console.log(list2);
+      console.log(bookDetails);
       let mergedArray = []
       for(let i = 0; i < nameList.length; i++){
-        let obj1 = list2[i]
-        let obj2 = progList[i]
+        let obj1 = bookDetails[i]
+        let obj2 = progressList[i]
         let mergedObj = Object.assign(obj1, obj2)
         mergedArray.push(mergedObj)
       }
-      //let target = Object.assign(list2, progList)
-      console.log(mergedArray);
-      /*
-      const combinedArray = list2.concat(progList);
-      const mergedArray = combinedArray.map(item => {
-      if (item.hasOwnProperty('_id') && item.hasOwnProperty('bookName') && item.hasOwnProperty('authorName') && item.hasOwnProperty('bookDes') && item.hasOwnProperty('coverUrl')) {
-        return { 
-          _id: item._id, 
-          bookName: item.bookName, 
-          authotName: item.authorName,
-          bookDes: item.bookDes,
-          coverUrl: item.coverUrl,
-          progress: undefined, 
-          wordCount: undefined 
-        };
-      } else if (item.hasOwnProperty('progress') && item.hasOwnProperty('wordCount')) {
-        return { 
-          _id: undefined, 
-          bookName: undefined, 
-          authotName: undefined,
-          bookDes: undefined,
-          coverUrl: undefined,
-          progress: item.progress, 
-          wordCount: item.wordCount 
-        };
-      }
-    });
+      console.log(mergedArray);//console check
+  
 
-    //console.log(mergedArray);*/
+
     setBooks(mergedArray);
-
-      
-      //console.log("Result: ", list2);//test
-      //Array.prototype.push.apply(list2, proglist); 
-      //console.log(list2);
-      
     }
 
-    setBooks(list2);
-    
+    setBooks(bookDetails);//or its empty  
   } 
   
 
@@ -208,7 +168,7 @@ const Dashboard = ({ navigation }) => {
 
     let nameList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove test code
 
-    let list2 = [];
+    let bookDetails = [];
     if(nameList.length != 0){
       await db
       .collection('Books')
@@ -217,7 +177,7 @@ const Dashboard = ({ navigation }) => {
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
           const { Name, Author, Description, Cover } = doc.data();
-          list2.push({
+          bookDetails.push({
             _id: doc.id,
             bookName: Name,
             authorName: Author,
@@ -227,7 +187,7 @@ const Dashboard = ({ navigation }) => {
           })
         })
       });
-      setFavorite(list2)
+      setFavorite(bookDetails)
     }
   }
 /*

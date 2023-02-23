@@ -72,7 +72,7 @@ const ComponentItem = ({ item }) => (
 const Store = ({ navigation }) => {
   let isInitialMount = useRef(true);
 
-  let recentData = 0//bookStoreData.filter(e => e.isRecent);
+  let recentData = 0;
   const[bookData, setBooks] = useState([]);
   const[justForYou, setJustForYou] = useState([]);
   const[search, setSearch] = useState('');

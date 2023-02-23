@@ -73,28 +73,11 @@ const Signup = () => {
             newUser: 'True',
           })
           
-        db//add a Favorite subcollection
-          .collection('Users')
-          .doc(currentuser.uid)
-          .collection('Favorite')
-          .doc('Temp')
-          .set({
-            Name: 'Temp'
-          })
 
           db//add user library subcollection
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Library')
-          .doc('Temp')
-          .set({
-            Name: 'Temp'
-          })
-
-          db// adds a Recent subcollection
-          .collection('Users')
-          .doc(currentuser.uid)
-          .collection('Recent')
           .doc('Temp')
           .set({
             Name: 'Temp'

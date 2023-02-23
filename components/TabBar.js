@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
@@ -7,9 +7,31 @@ import Dashboard from '../pages/dashboard';
 import Store from '../pages/store';
 import Settings from '../pages/settings';
 import Cart from '../pages/cart';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+
+
+function getBadgeNumberForRoute() {
+  const [badgeNumber, setBadgeNumber] = useState(0);
+
+  useEffect(() => {
+    const currentUid = auth().currentUser.uid;
+    const unsubscribe = firestore()
+      .collection('Users/' + currentUid + '/Cart')
+      .onSnapshot(querySnapshot => {
+        setBadgeNumber(querySnapshot.size - 1);
+      });
+
+    return () => unsubscribe();
+  }, []);
+  console.log('badge', badgeNumber)
+  return badgeNumber;
+}
+
 
 const HomeStack = () => {
   return (
@@ -25,6 +47,9 @@ const HomeStack = () => {
 };
 
 const TabNavigator = () => {
+
+  
+  //console.log("items: ", items);
   return (
 
     <Tab.Navigator
@@ -71,7 +96,7 @@ const TabNavigator = () => {
           tabBarStyle: {
             backgroundColor: '#FFDE00',
           },
-          tabBarBadge: 0,
+          tabBarBadge: getBadgeNumberForRoute(),
           tabBarBadgeStyle: {backgroundColor: 'yellow'},
           tabBarIcon: ({color, size}) => (
             <Ionicons name="cart-outline" color={color} size={size} />
