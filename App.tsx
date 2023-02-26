@@ -15,6 +15,7 @@ import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart.js';
 import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
+import Onboarding from './pages/onboarding';
 
 const Stack = createStackNavigator();
 
@@ -134,6 +135,14 @@ function MyStack() {
         component={Cart} 
         options={{
             title: 'Your Cart',
+        }}
+      />
+      <Stack.Screen 
+        name="Onboarding" 
+        component={Onboarding} 
+        options={{
+            title: 'Onboarding',
+            headerShown:false
         }}
       />
     </Stack.Navigator>

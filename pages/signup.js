@@ -94,7 +94,7 @@ const Signup = () => {
         })
         
         
-        navigation.navigate('Welcome')
+        navigation.navigate('Onboarding')
         //displays username to terminal for testing
         console.log(user.displayName)
       })
