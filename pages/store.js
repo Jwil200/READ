@@ -1,9 +1,9 @@
 // components/store.js *Based from dashboard.js at the moment
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
-import { Header, Divider, Tile } from "@rneui/themed";
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { Divider } from "@rneui/themed";
 import { bookStoreData } from "../components/storeBooks.js";
-import { colors, SearchBar, Button} from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 
 // Not using firebase at the moment, all content stored in books.js

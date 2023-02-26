@@ -21,7 +21,7 @@ export default StyleSheet.create({
       backgroundColor: '#fff'
     },
     bookPreviewContainer:{
-      padding: 10 
+      padding: 10,
     },
     bookTitle:{
       fontSize: 26,
@@ -103,5 +103,35 @@ export default StyleSheet.create({
     label: {
       position: 'absolute',
     },
-  
+    cardField: {
+      width: '100%',
+      height: 50,
+      marginVertical: 10,
+    },
+    checkoutImage: {
+      width: '110%',
+      height: '40%',
+      resizeMode: 'contain',
+      position: 'absolute',
+    },
+    checkoutDivider: {
+      width: '98%',
+      height: '35%',
+      marginVertical: 5,
+    },
+    checkOutText: {
+      textAlign: 'center',
+      padding: 20, 
+      fontWeight: 'bold',
+      letterSpacing: 1,
+      fontSize: 20
+    },
+    checkOutName: {
+      width: '100%',
+      marginBottom: 15,
+      padding: 15,
+      alignSelf: "stretch",
+      borderColor: "#ccc",
+      borderBottomWidth: 1,
+    }
   });

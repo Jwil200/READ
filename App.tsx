@@ -20,7 +20,7 @@ import TabBar from './components/TabBar';
 const Stack = createStackNavigator();
 
 const getFilterVisibility = navigation => { //Visibility toggle for filter depending on current tab.
-  let isDashboard = (typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');
+  let isDashboard = (typeof(navigation.getState().routes[1]) === 'undefined' || typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');
   let currPage = isDashboard ? null : navigation.getState().routes[1].state.history[1].key;
   return isDashboard ? isDashboard : !(currPage.includes('Cart') || currPage.includes('Settings'));
 }

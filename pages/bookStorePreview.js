@@ -1,20 +1,9 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { View, Text, ScrollView } from 'react-native';
 import { Tile } from "@rneui/themed";
+import OrangeButton from '../assets/orangeButton';
 import styles from '../assets/styles'
-
-const OrangeButton = ({ title }) => (
-  <TouchableOpacity //onPress={loginUser}>
-    ><LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer2}
-    >  
-      <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
 
 const BookStorePreview = (props) => {
     const book = props.route.params.props;

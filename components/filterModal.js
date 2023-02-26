@@ -55,7 +55,7 @@ const FilterModal = () => {
 
       <Button 
       title= "Apply Filter"
-      onPress={() => navigation.navigate('Store', {filteredData: filteredList})}></Button>
+      onPress={() => navigation.navigate('Tabbar', {filteredData: filteredList})}></Button>
 
       <Button title="Reset" onPress={()=> reset() }/>
     </View>

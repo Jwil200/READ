@@ -1,22 +1,10 @@
 // components/cart.js *Based from store.js
 import React from 'react';
-import { Button, StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { bookStoreData } from "../components/storeBooks.js";
 import { Divider } from "@rneui/themed";
-import { LinearGradient } from 'expo-linear-gradient';
 import BookStoreTile from "../components/bookStoreTile.js";
-
-const OrangeButton = ({ title, onPress }) => (
-  <TouchableOpacity onPress={onPress}>
-    <LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer2}
-    >  
-      <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
-
+import OrangeButton from '../assets/orangeButton.js';
 
 const styles = StyleSheet.create({
   screen: {
@@ -59,22 +47,8 @@ const styles = StyleSheet.create({
   },
   checkoutButton: {
     justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 10
   },
-  appButtonContainer2:{
-    elevation: 8,
-    backgroundColor: "#009688",
-    borderRadius: 100,
-    paddingVertical: 15,
-    paddingHorizontal: 100,
-  },
-  appButtonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
-  }
 });
 
 const Item = ({ item }) => (
@@ -129,11 +103,11 @@ const Cart = ({ navigation }) => {
         />
       </View>
       <View style={styles.checkoutButton}>
-      <OrangeButton 
+        <OrangeButton 
           title="Checkout ($0.00)" 
           size="sm"
           onPress={() => navigation.navigate('Checkout')}
-          />
+          /> 
       </View>
     </View>
   );

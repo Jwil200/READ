@@ -1,7 +1,7 @@
 // components/dashboard.js
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
-import { Header, Divider, Tile } from "@rneui/themed";
+import { StyleSheet, View, Text, FlatList } from 'react-native';
+import { Divider } from "@rneui/themed";
 import BookTile from "../components/bookTile.js";
 import { SearchBar } from 'react-native-elements';
 import { bookData } from "../assets/books.js";

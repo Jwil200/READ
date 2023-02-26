@@ -1,24 +1,11 @@
 // components/signup.js
-import React, { Component, useEffect, useState  } from 'react';
+import React, { useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import { Text, View, TextInput, Alert, Image, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Text, View, TextInput, Alert, Image, KeyboardAvoidingView } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import styles from '../assets/styles'
 import firebase from '../database/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-
-
-const OrangeButton = ({ title }) => (
-  <TouchableOpacity onPress={registerUser}>
-    <LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer}
-    >  
-    <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
+import OrangeButton from '../assets/orangeButton';
 
 const options = [
   { value: '1', label: '6 and under' },
@@ -153,6 +140,7 @@ const Signup = () => {
           <OrangeButton 
           title="Create an Account" 
           size="sm" 
+          onPress={() => registerUser()}
         />
         </View>
 
