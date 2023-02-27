@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     paddingTop: 25,
+
     backgroundColor: '#fff'
   },
   container: {
@@ -20,7 +21,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    paddingTop: 10
+    paddingTop: 10,
+    height: '100%'
   },
   grid: {
     width: '100%'
@@ -47,8 +49,9 @@ const styles = StyleSheet.create({
   }
 });
 
+
 const Item = ({ item }) => (
-  <View style={styles.item}>
+  <View style={[styles.item, {marginBottom: 0, height: 150}]}>
     <BookStoreTile 
      key={"i" + item._id} 
      coverUrl={item.coverUrl} 
@@ -60,6 +63,7 @@ const Item = ({ item }) => (
      rating={item.rating}
      isAddedtoCart={item.isAddedtoCart}
      content={item.content}
+     price={item.price}
 />
   </View>
 );
@@ -71,7 +75,6 @@ const ComponentItem = ({ item }) => (
 
 const Store = ({ navigation }) => {
   let isInitialMount = useRef(true);
-
   let recentData = 0;
   const[bookData, setBooks] = useState([]);
   const[justForYou, setJustForYou] = useState([]);
@@ -83,7 +86,6 @@ const Store = ({ navigation }) => {
 
   const getJustForYou = (newlist, age) =>{
     let data = newlist;
-    //console.log('data: ', data)
     let newData = data.filter((data) => data.age < age)
     setJustForYou(newData);
   }
@@ -95,7 +97,7 @@ const Store = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover, Age, Content} = doc.data();
+        const { Name, Author, Description, Cover, Age, Content, Price} = doc.data();
         list.push({
           _id: doc.id,
           bookName: Name,
@@ -104,10 +106,11 @@ const Store = ({ navigation }) => {
           coverUrl:  Cover,
           age: Age,
           content: Content,
+          price: Price,
         })
       })
     });
-    console.log('Current User', currentUid)
+    
     let data = [];
     await db 
     .collection('Users')
@@ -118,7 +121,6 @@ const Store = ({ navigation }) => {
       if (documentSnapshot.exists) {
         console.log('User data: ', documentSnapshot.data());
         let data = documentSnapshot.data();
-        console.log('User Age ', data.age)
         getJustForYou(list, data.age);
       }
     });

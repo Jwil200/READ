@@ -2,24 +2,14 @@
 import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
 import { Platform, Keyboard, Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { SocialIcon } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import styles from '../assets/styles';
+import OrangeButton from '../assets/orangeButton.js';
 
 
-const OrangeButton = ({ onPress, title }) => (
-  <TouchableOpacity onPress={registerUser}>
-    <LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer}
-    >  
-      <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
 
 //React-Native dependencies needed
 const options = [
@@ -83,6 +73,15 @@ const Signup = () => {
             Name: 'Temp'
           })
 
+          db//adds a cart subcollection
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Cart')
+          .doc('Temp')
+          .set({
+            Name:'Temp'
+          })
+
           db// adds Settings subcollection
           .collection('Users')
           .doc(currentuser.uid)
@@ -101,8 +100,7 @@ const Signup = () => {
             Name: 'Temp'
           })
           
-        //console.log(currentuser);//checks if user was created
-        navigation.navigate('Welcome')
+        navigation.navigate('Onboarding')
  })
   .catch(error => {//Error if email is already in use
     if (error.code === 'auth/email-already-in-use') {
@@ -190,12 +188,13 @@ return (//Each component functionality
       <OrangeButton 
       title="Create an Account" 
       size="sm" 
+      onPress={() => registerUser()}
     />
     </View>
 
-    <Text style={{textAlign: 'center', bottom: 20}}>
+    {/* <Text style={{textAlign: 'center'}}>
         Or sign up with:
-      </Text>
+      </Text> */}
     
 
     <Text 

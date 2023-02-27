@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
 import { Header, Divider, Tile } from "@rneui/themed";
-import { SearchBar } from 'react-native-elements'
 import BookTile from "../components/bookTile";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
 });
 
 const Item = ({ item }) => (
-  <View style={styles.item}>
+  <View style={[styles.item, {marginBottom: 0, height: 150}]}>
     <BookTile 
       key={"i" + item._id} 
       progress={item.progress}
@@ -135,22 +134,19 @@ const Dashboard = ({ navigation }) => {
           })
         })
       });
-      console.log(bookDetails);
-      let mergedArray = []
+
+      let mergedArray = []//Merge progList with bookDetails
       for(let i = 0; i < nameList.length; i++){
         let obj1 = bookDetails[i]
         let obj2 = progressList[i]
         let mergedObj = Object.assign(obj1, obj2)
         mergedArray.push(mergedObj)
       }
-      console.log(mergedArray);//console check
-  
 
-
-    setBooks(mergedArray);
+    setBooks(mergedArray);//set the merged list
     }
 
-    setBooks(bookDetails);//or its empty  
+    setBooks(bookDetails);//or set an empty list  
   } 
   
 
@@ -224,7 +220,6 @@ const Dashboard = ({ navigation }) => {
     };
   }, [navigation]);
 
-
   let componentList = [];
 
   componentList.push({
@@ -286,7 +281,7 @@ const Dashboard = ({ navigation }) => {
   });
 
   return (
-    (!isMount)//need to add search bar
+    (!isMount)
     ? 
       <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
         <ActivityIndicator size="large"/>

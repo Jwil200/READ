@@ -3,6 +3,7 @@ import {View, Button, Image} from 'react-native';
 import {Icon} from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { LogBox } from 'react-native';
 
 import Login from './pages/login';
 import Checkout from './pages/checkout';
@@ -17,15 +18,14 @@ import Cart from './pages/cart';
 import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
+import Onboarding from './pages/onboarding';
 
-import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const Stack = createNativeStackNavigator();
 
 const getFilterVisibility = navigation => { //Visibility toggle for filter depending on current tab.
-  let isDashboard = (typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');
-  let currPage = isDashboard ? null : navigation.getState().routes[1].state.history[1].key;
+  let isDashboard = (typeof(navigation.getState().routes[1]) === 'undefined' || typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');  let currPage = isDashboard ? null : navigation.getState().routes[1].state.history[1].key;
   return isDashboard ? isDashboard : !(currPage.includes('Cart') || currPage.includes('Settings'));
 }
 
@@ -160,8 +160,14 @@ function MyStack() {
         headerBackTitle: "Cart"
        }}
       />
-
-      
+      <Stack.Screen 
+        name="Onboarding" 
+        component={Onboarding} 
+        options={{
+            title: 'Onboarding',
+            headerShown:false
+        }}
+      />
     </Stack.Navigator>
   );
 }

@@ -7,18 +7,7 @@ import { Tile } from "@rneui/themed";
 import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-
-const OrangeButton = ({ title, onPress }) => (
-  <TouchableOpacity onPress= {onPress}>
-    <LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer2}
-    >  
-      <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
-
+import OrangeButton from '../assets/orangeButton';
 
 
 const BookPreview = (props) => {
@@ -28,8 +17,8 @@ const BookPreview = (props) => {
   const navigation = useNavigation();
   
   //console tests
-  console.log('Book details', book)
-  console.log('word Count: ', book.wordCount)
+  //console.log('Book details', book)
+  //console.log('word Count: ', book.wordCount)
   
   const removeBook = async() => {//changes the inLibrary to false for this book
     await db

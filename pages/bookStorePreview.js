@@ -7,18 +7,7 @@ import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
-
-
-const OrangeButton = ({ title, onPress }) => (
-  <TouchableOpacity onPress= {onPress}>
-    <LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer2}
-    >  
-      <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
+import OrangeButton from '../assets/orangeButton';
 
 
 const BookStorePreview = (props) => {
@@ -65,27 +54,13 @@ const BookStorePreview = (props) => {
         .collection('Users/' + currentUid + '/Cart')
         .doc(book.title)
         .set({
-          Name: book.title
+          Name: book.title,
+          Price: book.price
         })
         .then(() =>{
           Alert.alert('Book has been added to your cart')
         })
 
-        /* use this code in the cart page/checkout page
-        await db
-        .collection('Users/' + currentUid + '/Library')
-        .doc(book.title)
-        .set({
-          Name: book.title,
-          Progress: 0,
-          WordCount: 0,
-          Favorite: false,
-          dateAdded: firestore.FieldValue.serverTimestamp(),
-          inLibrary: true
-        })
-        .then(()=>{
-          Alert.alert('Book added to your library!!')
-        })*/
       }else if(isCheck == true){
         let check2 = await isInLibrary()
         if(check2 == false){

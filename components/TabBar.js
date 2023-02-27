@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 
-function getBadgeNumberForRoute() {
+function getBadgeNumberForRoute() {//Updates the badge numbers in the bottom tab navigator
   const [badgeNumber, setBadgeNumber] = useState(0);
 
   useEffect(() => {
@@ -28,28 +28,24 @@ function getBadgeNumberForRoute() {
 
     return () => unsubscribe();
   }, []);
-  console.log('badge', badgeNumber)
   return badgeNumber;
 }
 
 
-const HomeStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={Dashboard}
-        options={{headerShown: false}}
-      />
+// const HomeStack = () => {
+//   return (
+//     <Stack.Navigator>
+//       <Stack.Screen
+//         name="Home"
+//         component={Dashboard}
+//         options={{headerShown: false}}
+//       />
 
-    </Stack.Navigator>
-  );
-};
+//     </Stack.Navigator>
+//   );
+// };
 
 const TabNavigator = () => {
-
-  
-  //console.log("items: ", items);
   return (
 
     <Tab.Navigator

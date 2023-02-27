@@ -1,25 +1,13 @@
 // components/cart.js *Based from store.js
 import React, { useEffect, useState, useRef } from 'react';
 import { Button, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
-import { bookStoreData } from "../components/storeBooks.js";
 import { Divider } from "@rneui/themed";
-import { LinearGradient } from 'expo-linear-gradient';
 import BookStoreTile from "../components/bookStoreTile.js";
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import OrangeButton from '../assets/orangeButton.js';
 
 
-
-const OrangeButton = ({ title, onPress }) => (
-  <TouchableOpacity onPress={onPress}>
-    <LinearGradient
-      colors={["orange","#e65c00"]}
-      style={styles.appButtonContainer2}
-    >  
-      <Text style={styles.appButtonText}>{title}</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-);
 
 
 const styles = StyleSheet.create({
