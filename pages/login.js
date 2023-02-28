@@ -27,6 +27,7 @@ const Login = () => {
       .signInWithEmailAndPassword(email, password)
       .then(async userCredentials => {
         const user = userCredentials.user;
+        console.log("User verified: ", user.emailVerified)
         navigation.navigate('Tabbar');
         console.log('Logged in with', user.email);
       })

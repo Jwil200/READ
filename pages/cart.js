@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
 });
 
 const Item = ({ item }) => (
-  <View style={styles.item}>
+  <View style={[styles.item, {marginBottom: 0, height: 150}]}>
     <BookStoreTile 
      coverUrl={item.coverUrl}
      author={item.authorName}
