@@ -2,7 +2,6 @@
 import React, { Component, useEffect, useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
 import { Platform, Keyboard, Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView } from 'react-native';
-import { SocialIcon } from 'react-native-elements';
 import { Dropdown } from 'react-native-element-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -51,6 +50,7 @@ const Signup = () => {
         console.log('User account created & signed in!');
         const db = firestore();
         console.log(currentuser.uid);
+        //currentuser.sendEmailVerification()//for email verification
         db//Creates new entry to the database
           .collection('Users')
           .doc(currentuser.uid)//Sets name of document with userID instead of random generate
@@ -95,6 +95,24 @@ const Signup = () => {
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Stats')
+          .doc('Temp')
+          .set({
+            Name: 'Temp'
+          })
+
+          db// adds a user purchase history subcollection
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Purchase History')
+          .doc('Temp')
+          .set({
+            Name: 'Temp'
+          })
+
+          db// adds User Payment options subcollection
+          .collection('Users')
+          .doc(currentuser.uid)
+          .collection('Payment Options')
           .doc('Temp')
           .set({
             Name: 'Temp'

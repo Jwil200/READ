@@ -2,8 +2,6 @@
 import React, { Component, useEffect, useState  } from 'react';
 import { Platform, TouchableWithoutFeedback, Keyboard, Text, View, TextInput, Button, Alert, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/core'
-import { LinearGradient } from 'expo-linear-gradient';
-import { SocialIcon } from 'react-native-elements';
 import styles from '../assets/styles'
 import auth from '@react-native-firebase/auth';
 import OrangeButton from '../assets/orangeButton.js';
