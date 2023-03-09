@@ -11,11 +11,12 @@ const BookStoreTile = (props) => {
           uri:'https://www.nbmchealth.com/wp-content/uploads/2018/04/default-placeholder.png'
       }}
       imageProps={{
-        resizeMode:"stretch"
+        resizeMode:"cover"
       }}
       width={'100%'}
       height={200}
       onPress={() => navigation.navigate('BookStorePreview', {props})}
+      disabled={props.disabled}
     >   
     </Tile>
   );

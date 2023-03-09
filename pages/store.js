@@ -56,9 +56,12 @@ const Item = ({ item }) => (
      key={"i" + item._id} 
      id={item._id}
      title= {item.title}
+     author={item.author}
+     price={item.price}
      isRecent={item.isRecent}
      rating={item.rating}
      isAddedtoCart={item.isAddedtoCart}
+     disabled={false}
 />
   </View>
 );
