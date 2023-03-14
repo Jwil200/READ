@@ -1,44 +1,19 @@
 // components/store.js *Based from dashboard.js at the moment
 import React, { useState, useEffect, useRef } from 'react';
-import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView} from 'react-native';
-import { Divider, Dialog, ListItem, Avatar } from "@rneui/themed";
+import { ActivityIndicator , StyleSheet, View, Text, FlatList } from 'react-native';
+import { Divider, Dialog } from "@rneui/themed";
 import { SearchBar, Button} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-
-
-
-const genreList = [
-  {
-    name: 'Fantasy',
-    avatar_url: 'https://img.icons8.com/color/48/null/magic-crystal-ball.png',
-    subtitle: 'Wizzard, Knights, and Magic!!',
-  },
-  {
-    name: 'Children',
-    avatar_url: 'https://img.icons8.com/fluency/48/null/children.png',
-    subtitle: 'Book for younger Children',
-  },
-  {
-    name: 'Animal',
-    avatar_url:
-      'https://img.icons8.com/external-justicon-flat-justicon/64/null/external-dog-dog-and-cat-justicon-flat-justicon-4.png',
-    subtitle: 'For those who love Animals.',
-  },
-  {
-    name: 'Culture',
-    avatar_url:
-      'https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/null/external-culture-archaeology-flaticons-lineal-color-flat-icons.png',
-    subtitle: 'Experience Different Cultures',
-  },
-];
+import Dialog from "react-native-dialog";
 
 const styles = StyleSheet.create({
   screen: {
     height: '100%',
     width: '100%',
     paddingTop: 25,
+
     backgroundColor: '#fff'
   },
   container: {
@@ -46,8 +21,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
-    paddingTop: 0,
+    padding: 20,
+    paddingTop: 10,
+    height: '100%'
   },
   grid: {
     width: '100%'
@@ -55,7 +31,7 @@ const styles = StyleSheet.create({
   item: {
     width: "31.5%",
     alginItems: "center",
-    margin: 3,
+    margin: 5,
     backgroundColor: '#e9eef1'
   },
   title: {
@@ -66,7 +42,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: '98%',
-    marginVertical: 5,
+    marginVertical: 10,
   },
   emptyText: {
     color: "white",
@@ -122,25 +98,18 @@ const Store = ({ navigation }) => {
     setVisible(false);
   }
 
-  const handleGenreSelection = async(genre) =>{
-    //console.log("selected Genre: ", genre);
-    setVisible(false);
-    //setSelectedGenre(genre);
-    await handleFilter(genre);
-  }
-
-  const handleFilter = async(genre) => {
-    console.log("selected Genre: ", genre);
-    await db
+  const handleFilter = () => {
+    console.log("selected Genre: ", selectedGenre);
+    db
     .collection('Books')
-    .where('Genre', 'array-contains', genre)
+    .where('Genre', '==', selectedGenre)
     .get()
     .then(querySnapshot => {
       const books = []
       querySnapshot.forEach(documentSnapshot =>{
         const { Name, Author, Description, Cover, Age, Content, Price} = documentSnapshot.data();
         books.push({
-          _id: documentSnapshot.id,
+          _id: doc.id,
           bookName: Name,
           authorName: Author,
           bookDes: Description,
@@ -150,10 +119,9 @@ const Store = ({ navigation }) => {
           price: Price,
         })
       })
-      console.log("books: ", books);
-      setSelectedGenre(genre);
       setFilteredBooks(books);
     })
+    setVisible(false)
   }
 
   const getJustForYou = (newlist, age) =>{
@@ -227,7 +195,7 @@ const Store = ({ navigation }) => {
             </View>  
     });
   }
-  else if(selectedGenre){
+  else if(selectedGenre && !visible){
     componentList.push({ //Populate the filtered list with the book componenets
       _id: 1,
       jsx:
@@ -340,46 +308,22 @@ const Store = ({ navigation }) => {
           onChangeText={(text) => setSearch(text)}
           onClear={(text) => setSearch('')}
         />
-        <Button 
-          title="Filter Genre" 
-          onPress={filterBooks}
-          buttonStyle={{ 
-            backgroundColor: 'blue', 
-            borderRadius: 10, 
-          }}
-          />
+        <Button title="Filter Genre" onPress={filterBooks}/>
         <FlatList
           data={componentList}
           renderItem={ComponentItem}
           keyExtractor={item => item._id}
         />
-          <Dialog isVisible ={visible} onBackdropPress={handleCancel}>
-          <Dialog.Title title= "Genre Selection" />
-        <View style={{height: 300}}>
-        <ScrollView>
-        {genreList.map((genre, i) => (
-        <ListItem
-          key={i}
-          containerStyle={{
-            marginHorizontal: -10,
-            borderRadius: 8,
-          }}
-          onPress={() => handleGenreSelection(genre.name)}
-        >
-          <Avatar rounded source={{ uri: genre.avatar_url }} />
-          <ListItem.Content>
-            <ListItem.Title style={{ fontWeight: '700' }}>
-              {genre.name}
-            </ListItem.Title>
-            <ListItem.Subtitle>{genre.subtitle}</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
-        
-      ))}
-     </ScrollView>
-    </View>
-        <Dialog.Button title="Reset" onPress={clearFilter} />
-        </Dialog>
+          <Dialog.Container visible ={visible} onBackdropPress={handleCancel}>
+          <Dialog.Title>Filter by Genre</Dialog.Title>
+          <Dialog.Input 
+            placeholder="Select genre"
+            onChangeText={text => setSelectedGenre(text)}
+          />
+          <Dialog.Button label="Reset" onPress={(clearFilter)}/>
+          <Dialog.Button label="Cancel" onPress={() => setVisible(false)}/>
+          <Dialog.Button label="Filter" onPress={(handleFilter)}/>
+        </Dialog.Container>
       </View>
     </View>
   );
@@ -387,3 +331,239 @@ const Store = ({ navigation }) => {
 
 
 export default Store
+
+
+
+
+
+
+
+
+EXPO EXAMPLE:
+
+
+import React, { useState } from 'react';
+import {
+Button,
+Dialog,
+CheckBox,
+ListItem,
+Avatar,
+} from '@rneui/themed';
+import { View, Text, StyleSheet } from 'react-native';
+
+type DialogComponentProps = {};
+
+const Dialogs: React.FunctionComponent<DialogComponentProps> = () => {
+const [visible1, setVisible1] = useState(false);
+const [visible2, setVisible2] = useState(false);
+const [visible3, setVisible3] = useState(false);
+const [visible4, setVisible4] = useState(false);
+const [visible5, setVisible5] = useState(false);
+const [visible6, setVisible6] = useState(false);
+const [checked, setChecked] = useState(1);
+
+const toggleDialog1 = () => {
+  setVisible1(!visible1);
+};
+const toggleDialog2 = () => {
+  setVisible2(!visible2);
+};
+const toggleDialog3 = () => {
+  setVisible3(!visible3);
+};
+const toggleDialog4 = () => {
+  setVisible4(!visible4);
+};
+const toggleDialog5 = () => {
+  setVisible5(!visible5);
+};
+const toggleDialog6 = () => {
+  setVisible6(!visible6);
+};
+
+const userlist = [
+  {
+    name: 'Amy Farha',
+    avatar_url: 'https://uifaces.co/our-content/donated/XdLjsJX_.jpg',
+    subtitle: 'amy.farha@gmail.com',
+  },
+  {
+    name: 'Chris Jackson',
+    avatar_url: 'https://uifaces.co/our-content/donated/KtCFjlD4.jpg',
+    subtitle: 'cjackson@gmail.com',
+  },
+  {
+    name: 'Amanda Martin',
+    avatar_url:
+      'https://images.unsplash.com/photo-1498529605908-f357a9af7bf5?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=047fade70e80ebb22ac8f09c04872c40',
+    subtitle: 'amandam@gmail.com',
+  },
+];
+
+return (
+  <View>
+    <View style={styles.buttonContainer}>
+      <Button
+        title="Open Simple Dialog"
+        onPress={toggleDialog1}
+        buttonStyle={styles.button}
+      />
+      <Button
+        title="Open Mutli Action Dialog"
+        onPress={toggleDialog2}
+        buttonStyle={styles.button}
+      />
+      <Button
+        title="Open Loading Dialog"
+        onPress={toggleDialog3}
+        buttonStyle={styles.button}
+      />
+      <Button
+        title="Open Buttonless Dialog"
+        onPress={toggleDialog4}
+        buttonStyle={styles.button}
+      />
+      <Button
+        title="Open Custom Dialog 1"
+        onPress={toggleDialog5}
+        buttonStyle={styles.button}
+      />
+      <Button
+        title="Open Custom Dialog 2"
+        onPress={toggleDialog6}
+        buttonStyle={styles.button}
+      />
+    </View>
+    <Dialog
+      isVisible={visible1}
+      onBackdropPress={toggleDialog1}
+    >
+      <Dialog.Title title="Dialog Title"/>
+      <Text>Dialog body text. Add relevant information here.</Text>
+    </Dialog>
+    <Dialog
+      isVisible={visible2}
+      onBackdropPress={toggleDialog2}
+    >
+      <Dialog.Title title="Dialog Title"/>
+      <Text>Dialog body text. Add relevant information here.</Text>
+      <Dialog.Actions>
+        <Dialog.Button title="ACTION 1" onPress={() => console.log('Primary Action Clicked!')}/>
+        <Dialog.Button title="ACTION 2" onPress={() => console.log('Secondary Action Clicked!')}/>
+      </Dialog.Actions>
+    </Dialog>
+    <Dialog isVisible={visible3} onBackdropPress={toggleDialog3}>
+      <Dialog.Loading />
+    </Dialog>
+    <Dialog
+      isVisible={visible4}
+      onBackdropPress={toggleDialog4}
+    >
+      <Dialog.Title title="Dialog Title"/>
+      <Text>Dialog body text. Add relevant information here.</Text>
+    </Dialog>
+    <Dialog
+      isVisible={visible5}
+      onBackdropPress={toggleDialog5}
+    >
+      <Dialog.Title title="Select Preference"/>
+      {['Option 1', 'Option 2', 'Option 3'].map((l, i) => (
+        <CheckBox
+          key={i}
+          title={l}
+          containerStyle={{ backgroundColor: 'white', borderWidth: 0 }}
+          checkedIcon="dot-circle-o"
+          uncheckedIcon="circle-o"
+          checked={checked === i + 1}
+          onPress={() => setChecked(i + 1)}
+        />
+      ))}
+
+      <Dialog.Actions>
+        <Dialog.Button
+          title="CONFIRM"
+          onPress={() => {
+            console.log(`Option ${checked} was selected!`);
+            toggleDialog5();
+          }}
+        />
+        <Dialog.Button title="CANCEL" onPress={toggleDialog5} />
+      </Dialog.Actions>
+    </Dialog>
+    <Dialog
+      isVisible={visible6}
+      onBackdropPress={toggleDialog6}
+    >
+      <Dialog.Title title="Choose Account"/>
+      {userlist.map((l, i) => (
+        <ListItem
+          key={i}
+          containerStyle={{
+            marginHorizontal: -10,
+            borderRadius: 8,
+          }}
+          onPress={toggleDialog6}
+        >
+          <Avatar rounded source={{ uri: l.avatar_url }} />
+          <ListItem.Content>
+            <ListItem.Title style={{ fontWeight: '700' }}>
+              {l.name}
+            </ListItem.Title>
+            <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+          </ListItem.Content>
+        </ListItem>
+      ))}
+    </Dialog>
+  </View>
+);
+};
+
+const styles = StyleSheet.create({
+button: {
+  borderRadius: 6,
+  width: 220,
+  margin: 20,
+},
+buttonContainer: {
+  margin: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+});
+
+export default Dialogs;
+
+
+  return (
+    <View>
+      <Button title="Select Genre" onPress={handleOpenDialog} />
+      <Text>Selected genre: {selectedGenre}</Text>
+      <Dialog visible={isVisible} onDismiss={() => setIsVisible(false)}>
+        <Dialog.Title>Select Genre</Dialog.Title>
+        {genreList.map((genre, index) => (
+          <ListItem
+            key={index}
+            onPress={() => handleGenreSelect(genre.name)}
+            bottomDivider
+          >
+            <Avatar source={{ uri: genre.avatar_url }} />
+            <ListItem.Content>
+              <ListItem.Title>{genre.name}</ListItem.Title>
+              <ListItem.Subtitle>{genre.subtitle}</ListItem.Subtitle>
+            </ListItem.Content>
+          </ListItem>
+        ))}
+        <Dialog.Actions>
+          <Button onPress={handleDoneButton}>Done</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </View>
+  );
+};
+
+export default GenreDialog;
+
+
+
+

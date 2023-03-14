@@ -1,16 +1,43 @@
 // components/cart.js *Based from store.js
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, FlatList, Alert, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
 import { Divider } from "@rneui/themed";
-import BookStoreTile from "../components/bookStoreTile.js";
-import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
+import { Card, Icon, Dialog } from 'react-native-elements';
+import { usePaymentSheet, StripeProvider } from '@stripe/stripe-react-native';
 import OrangeButton from '../assets/orangeButton.js';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
-
+const db = firestore();
+const currentUid = auth().currentUser.uid;
 
 
 const styles = StyleSheet.create({
+  bookTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    width: '10%',
+    marginTop: 10,
+    marginLeft: 10,
+
+  },
+  coverImage: {
+    width: 100,
+    height: 140,
+    resizeMode: 'cover',
+    marginBottom: 10,
+    marginTop: 0,
+  },
+  bookPrice: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    
+  },
+  bookAuthor: {
+
+  },
   screen: {
     height: '100%',
     width: '100%',
@@ -29,10 +56,10 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   item: {
-    width: "31.5%",
+    width: "39%",
     alignItems: "center",
-    margin: 3,
-    backgroundColor: '#e9eef1'
+    margin: -20,
+    backgroundColor: '#e9eef1',
   },
   title: {
     fontSize: 24,
@@ -51,52 +78,124 @@ const styles = StyleSheet.create({
   },
   checkoutButton: {
     justifyContent: 'center',
-    alignItems: 'center',
+    paddingHorizontal: 10
   },
-  appButtonContainer2:{
-    elevation: 8,
-    backgroundColor: "#009688",
-    borderRadius: 100,
-    paddingVertical: 15,
-    paddingHorizontal: 100,
+  card: {
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
-  appButtonText: {
-    fontSize: 18,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase"
-  }
+  cartText: {
+    fontSize: 16,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    letterSpacing:0,
+    paddingTop: 0,
+    paddingRight: 0,
+    marginLeft: 110,
+    
+  },
 });
 
-const Item = ({ item }) => (
-  <View style={[styles.item, {marginBottom: 0, height: 150}]}>
-    <BookStoreTile 
-     coverUrl={item.coverUrl}
-     author={item.authorName}
-     description={item.bookDes}
-     key={"i" + item._id} 
-     id={item._id}
-     title= {item.title}
-     isRecent={item.isRecent}
-     rating={item.rating}
-     isAddedtoCart={item.isAddedtoCart}
-/>
-  </View>
-);
-
-const ComponentItem = ({ item }) => (
-  <View>{item.jsx}</View>
-);
 
 const Cart = ({ navigation }) => {
-  let isInitialMount = useRef(true);
+  const [clientSecret, setClientSecret] = useState(null);
   const[bookData, setBooks] = useState([]);
   const[isMount, setMount] = useState(false);
   const [checkoutAmount, setCheckoutAmount] = useState(0);
-  const db = firestore();
-  const currentUid = auth().currentUser.uid;
+  const [ready, setReady] = useState(false);
+  const {initPaymentSheet, presentPaymentSheet, loading} = usePaymentSheet();
+ 
 
+  
+  const Item = ({ item }) => (
+    <Card style={styles.card} >
+      <View style={{flexDirection: 'row'}}>
+      <Card.Image source={{uri: item.coverUrl}} style={styles.coverImage} resizeMode="contain" />
+      <Card.Divider/>
+      <Text style={styles.bookTitle} numberOfLines={2} ellipsizeMode='tail'>
+      <Card.Title style={styles.bookTitle}> 
+      {item.bookName}
+      </Card.Title>
+    </Text>
+        <Text style={styles.cartText}>
+          <Text style={styles.bookAuthor}>
+            {item.authorName}{"\n"}{"\n"}
+          </Text>
+          <Text style={styles.bookPrice}>
+            ${item.price}
+          </Text>
+        </Text>
+        <Icon
+        name='close-o'
+        type='evilicon'
+        color='red'
+        onPress={() => {
+          Alert.alert(
+            'Remove Item',
+            'Remove from cart?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel'
+              },
+              {
+                text: 'OK',
+                onPress: () => {
+                  removeBook(item.bookName);
+                  // handle remove action here
+                }
+              }
+            ],
+            { cancelable: false }
+          )
+        }
+      }
+      containerStyle={{ position: 'absolute', top: -6, right: 0 }}
+      />
+      </View>
+      {/* <View style={styles.item}> */}
+        {/* <BookStoreTile 
+        coverUrl={item.coverUrl}
+        author={item.authorName}
+        description={item.bookDes}
+        key={"i" + item._id} 
+        id={item._id}
+        title= {item.bookName}
+        price={item.price}
+        isRecent={item.isRecent}
+        rating={item.rating}
+        isAddedtoCart={item.isAddedtoCart}
+        disabled={true}
+        /> */}
+      {/* </View> */}
+  
+        {/* <Text style={styles.cartText}>
+          <Text style={styles.bookPrice}>
+            {item.bookName}{"\n"}
+          </Text>
+          <Text style={styles.h2}>
+            {item.authorName}{"\n"}{"\n"}
+          </Text>
+  
+          <Text style={styles.bookPrice}>
+            ${item.price}
+          </Text>
+        </Text> */}
+    </Card>
+  );
+  
+  const ComponentItem = ({ item }) => (
+    <View>{item.jsx}</View>
+  );
+
+  const removeBook = async (bookName) => {
+    console.log(bookName);
+    await db.collection('Users/' + currentUid + '/Cart').doc(bookName).delete();
+    getCartBooks();
+  }
+  
   const getCheckoutAmount = async() =>{
     await db
     .collection('Users/' + currentUid + '/Cart')
@@ -123,11 +222,11 @@ const Cart = ({ navigation }) => {
       querySnapshot.forEach(doc => {
         list.push(doc.id)
       })
-    })
+    });
 
     let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
 
-    let bookDetails = [];
+    let bookDetails = [];// gets book details from the library collection
 
     if(nameList.length != 0){
       console.log("What is in the namelist:  ", nameList);//console test
@@ -148,17 +247,51 @@ const Cart = ({ navigation }) => {
           })
         })
       });
+      console.log("Book details: ", bookDetails)
       setBooks(bookDetails)
     }
     setBooks(bookDetails)
   }
 
+  //Stripe Payment
+  const initializePaymentSheet = async () => {
+    const paymentIntent = stripe.paymentIntents.create({
+      amount: 2099, //dummy info
+      currency: 'usd',
+      customer: 1,
+      payment_method_types: ['card']
+    });
 
+    const { error } = await initPaymentSheet({
+      customerId: 1, //dummy info
+      customerEphemeralKeySecret: 1234, 
+      paymentIntentClientSecret: paymentIntent,
+      merchantDisplayName: 'READ Mobile App',
+    });
+
+    if (error){
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      setReady(true);
+    }
+  }
+
+  const buy = async () => {
+    const { error } = await presentPaymentSheet();
+
+    if (error){
+      Alert.alert(`Error code: ${error.code}`, error.message);
+    } else {
+      Alert.alert('Success', 'Payment confirmed successfully');
+      setReady(false);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getCartBooks();
       getCheckoutAmount();
+      initializePaymentSheet();
       setMount(true);
     });
     return () => {
@@ -167,8 +300,6 @@ const Cart = ({ navigation }) => {
   }, [navigation]);
 
   let componentList = [];
-
-
   componentList.push({
     _id: 1,
     jsx: 
@@ -179,38 +310,40 @@ const Cart = ({ navigation }) => {
           {bookData.length == 0
           ? <Text style={styles.emptyText}>Your cart is empty!</Text>
           : <FlatList style={styles.grid}
-              data={bookData}
-              numColumns={3}
-              renderItem={Item}
-              keyExtractor={item => "r" + item._id}
-              listKey="r"
-            />
+                data={bookData}
+                renderItem={Item}
+                keyExtractor={item => "r" + item._id}
+                listKey="r"
+              />
         }
       </View>
   });
 
   return (
     (!isMount)
-    ?
-    <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-    <ActivityIndicator size="large"/>
-  </View>
-  :
+    ? 
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size="large"/>
+      </View>
+    :
     <View style={{flex: 1}}>
-      <View style={{flex: 0.9}}>
-        <FlatList
-          data={componentList}
-          renderItem={ComponentItem}
-          keyExtractor={item => item._id}
-        />
-      </View>
-      <View style={styles.checkoutButton}>
-      <OrangeButton 
-          title ={`Checkout ($${checkoutAmount})`}
-          size="sm"
-          onPress={() => navigation.navigate('Checkout')}
+      <StripeProvider publishableKey={'pk_test_51Me1uSKEBCZYewMa90gWv5uMmNtQ0svMhPNpc8uHHC1sfWssMTjFoFehcUts9Ovl5VxZtfoJkMEzlj7Ipg9AjwdG00Wjt7V1uz'}>
+        <View style={{flex: 0.95}}>
+          <FlatList
+            data={componentList}
+            renderItem={ComponentItem}
+            keyExtractor={item => item._id}
           />
-      </View>
+        </View>
+        <View style={styles.checkoutButton}>
+          <OrangeButton 
+          title ={`Checkout ($${checkoutAmount})`}
+            size="sm"
+            onPress={buy}
+            disabled={loading || !ready}
+            /> 
+        </View>
+        </StripeProvider>
     </View>
   );
 }

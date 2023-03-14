@@ -15,9 +15,11 @@ const BookTile = (props) => {
       imageSrc={{ uri: props.coverUrl }}
       imageProps={{ resizeMode: "cover" }}
       width={'100%'}
-      height={height}
+      height={height || 200}
       onPress={() => navigation.navigate('BookPreview', { props })}
       onImageLoad={handleImageLoad}
+      containerStyle={{ overflow: 'hidden' }} // set to 'hidden'
+
     >
       <LinearProgress
         value={props.progress}

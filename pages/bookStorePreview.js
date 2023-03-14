@@ -1,7 +1,6 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
-import React,  { Component, useEffect, useState  } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, Alert } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React,  { useEffect, useState  } from 'react';
+import { ScrollView, View, Text, Alert } from 'react-native';
 import { Tile } from "@rneui/themed";
 import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';

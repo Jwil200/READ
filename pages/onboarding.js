@@ -1,8 +1,6 @@
-import { Alert, StatusBar } from 'react-native';
 import React from 'react';
 import { Button, Icon } from 'react-native-elements';
 import Onboarding from 'react-native-onboarding-swiper';
-import Login from './login';
 import { Image } from '@rneui/themed';
 
 

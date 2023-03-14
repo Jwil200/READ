@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {View, Button, Image} from 'react-native';
+import {Image} from 'react-native';
 import {Icon} from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -19,6 +19,8 @@ import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
+import UserProfile from './pages/userProfile';
+
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -56,6 +58,11 @@ function MyStack() {
           title: 'Login',
           headerLeft: null, 
         }}
+      />
+      <Stack.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={{  title: 'User Profile' }}
       />
       <Stack.Screen 
        name="Dashboard" 
@@ -168,6 +175,14 @@ function MyStack() {
             headerShown:false
         }}
       />
+      {/* <Stack.Screen 
+        name="Stats" 
+        component={Stats} 
+        options={{
+            title: 'Stats',
+            headerShown:false
+        }}
+      /> */}
     </Stack.Navigator>
   );
 }

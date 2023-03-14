@@ -1,5 +1,5 @@
 // components/login.js
-import React, { Component, useEffect, useState  } from 'react';
+import React, { useState  } from 'react';
 import { Platform, TouchableWithoutFeedback, Keyboard, Text, View, TextInput, Button, Alert, Image, TouchableOpacity, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/core'
 import styles from '../assets/styles'
@@ -26,7 +26,7 @@ const Login = () => {
       .then(async userCredentials => {
         const user = userCredentials.user;
         console.log("User verified: ", user.emailVerified)
-        navigation.navigate('Tabbar');
+        navigation.navigate('Tabbar')
         console.log('Logged in with', user.email);
       })
       .catch(error => alert(error.message))

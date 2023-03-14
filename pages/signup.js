@@ -1,7 +1,7 @@
 // components/signup.js
-import React, { Component, useEffect, useState  } from 'react';
+import React, { useState  } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import { Platform, Keyboard, Text, View, TextInput, Alert,Image, TouchableOpacity, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { Platform, Keyboard, Text, View, TextInput, Alert,Image, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';

@@ -6,6 +6,7 @@ import { bookStoreData } from "./storeBooks";
 import { useNavigation } from "@react-navigation/native";
 
 const FilterModal = () => {
+  const { setFilter } = useCotext(FilterContext)
   const navigation = useNavigation();
   const genres = [
     {name: "Mystery"},

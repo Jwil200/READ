@@ -6,9 +6,31 @@ import { StripeProvider, CardField, usePaymentSheet } from '@stripe/stripe-react
 import { Divider } from '@rneui/themed';
 import styles from '../assets/styles'
 import OrangeButton from "../assets/orangeButton"
+import axios from 'axios'
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+
+
 
 const Checkout = () => {
   const [name, setName] = useState('');
+  const [Token, setToken] = useState('')
+ 
+  const handleCheckOut = async() =>{
+    axios({
+        method: 'POST',
+        url: 'https://us-central1-read-1992f.cloudfunctions.net/completePaymentWithStripe',
+        data: {
+            amount: '100',
+            currency: 'usd',
+            //token: Token,
+
+        }
+
+    }).then(response => {
+        console.log(response)
+    })
+  }
 
   return (
     <StripeProvider publishableKey={'pk_test_51Me1uSKEBCZYewMa90gWv5uMmNtQ0svMhPNpc8uHHC1sfWssMTjFoFehcUts9Ovl5VxZtfoJkMEzlj7Ipg9AjwdG00Wjt7V1uz'}>
@@ -36,7 +58,7 @@ const Checkout = () => {
           <OrangeButton 
             title="Pay $25.00" 
             size="sm"
-            onPress={() => Alert.alert("Success!")}
+            onPress={handleCheckOut}
             />   
       </View>
     </StripeProvider>

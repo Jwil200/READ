@@ -1,7 +1,7 @@
 // components/dashboard.js
 import React, { useEffect, useState } from 'react';
-import { Image, ActivityIndicator, StyleSheet, View, Text, FlatList, ScrollView } from 'react-native';
-import { Header, Divider, Tile } from "@rneui/themed";
+import { ActivityIndicator, StyleSheet, View, Text, FlatList} from 'react-native';
+import { Divider } from "@rneui/themed";
 import BookTile from "../components/bookTile";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -19,8 +19,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 10
+    padding: 5,
+    paddingTop: 0
   },
   grid: {
     width: '100%'
@@ -73,7 +73,6 @@ const Dashboard = ({ navigation }) => {
   const[recent, setRecent] = useState([]);
   
   const db = firestore();
-  const userLib = db.collection('Users/' + currentUid + '/Library');
   const currentUid = auth().currentUser.uid;
  
   
@@ -88,15 +87,16 @@ const Dashboard = ({ navigation }) => {
     .then(querySnapshot => {
       querySnapshot.forEach(documentSnapshot => {
         list.push(documentSnapshot.id)
+        console.log("id: ", documentSnapshot.id)
       })
     })
 
     let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
 
     
-    let bookDetails = [];//list 2 will hold the objects from /library
+    let bookDetails = [];//book details will hold the objects from /library
     
-    let progressList = [];
+    let progressList = [];//word count, book progress
 
     if(nameList.length != 0){
       console.log("What is in the namelist:  ", nameList);//console test
@@ -116,26 +116,30 @@ const Dashboard = ({ navigation }) => {
           })
         })
       });
-      
+      console.log("proglist Array: ", progressList)//console test
+
       //pushes other book details to bookDetails array
       await db
       .collection('Books')
       .where('Name', 'in', nameList)
       .get()
       .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover, } = doc.data();
+        querySnapshot.forEach(documentSnapshot => {
+          const { Name, Author, Description, Cover, Content } = documentSnapshot.data();
           bookDetails.push({
-            _id: doc.id,
+            _id: documentSnapshot.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
-            coverUrl:  Cover
+            coverUrl:  Cover,
+            content: Content
           })
         })
       });
 
-      let mergedArray = []//Merge progList with bookDetails
+      console.log("Book Details: ", bookDetails)
+
+      let mergedArray = []//Merge progressList with bookDetails
       for(let i = 0; i < nameList.length; i++){
         let obj1 = bookDetails[i]
         let obj2 = progressList[i]
@@ -172,14 +176,15 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover } = doc.data();
+          const { Name, Author, Description, Cover, Content } = doc.data();
           bookDetails.push({
             _id: doc.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
             progress: 0.5,
-            coverUrl:  Cover
+            coverUrl:  Cover,
+            content: Content
           })
         })
       });
@@ -221,7 +226,6 @@ const Dashboard = ({ navigation }) => {
   }, [navigation]);
 
   let componentList = [];
-
   componentList.push({
     _id: 1,
     jsx: 
