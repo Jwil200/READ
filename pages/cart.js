@@ -3,10 +3,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Text, FlatList, Alert, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
 import { Divider } from "@rneui/themed";
 import { Card, Icon, Dialog } from 'react-native-elements';
-import { usePaymentSheet, StripeProvider } from '@stripe/stripe-react-native';
+import { usePaymentSheet, StripeProvider, useStripe, CardField } from '@stripe/stripe-react-native';
 import OrangeButton from '../assets/orangeButton.js';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+
+import axios  from 'axios';
 
 const db = firestore();
 const currentUid = auth().currentUser.uid;
@@ -100,12 +102,15 @@ const styles = StyleSheet.create({
 
 
 const Cart = ({ navigation }) => {
-  const [clientSecret, setClientSecret] = useState(null);
+  //const [clientSecret, setClientSecret] = useState(null);
+  const [key, setKey] = useState(null);
   const[bookData, setBooks] = useState([]);
+  const[nameList, setNameList] = useState([]);
+  const[isLoading, setIsLoading] = useState(true);
   const[isMount, setMount] = useState(false);
   const [checkoutAmount, setCheckoutAmount] = useState(0);
   const [ready, setReady] = useState(false);
-  const {initPaymentSheet, presentPaymentSheet, loading} = usePaymentSheet();
+  const {initPaymentSheet, presentPaymentSheet } = usePaymentSheet();
  
 
   
@@ -224,15 +229,16 @@ const Cart = ({ navigation }) => {
       })
     });
 
-    let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
+    let bookNameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
+    setNameList(bookNameList);//used for post Payment
 
     let bookDetails = [];// gets book details from the library collection
 
-    if(nameList.length != 0){
-      console.log("What is in the namelist:  ", nameList);//console test
+    if(bookNameList.length != 0){
+      console.log("What is in the namelist:  ", bookNameList);//console test
       await db
       .collection('Books')
-      .where('Name', 'in', nameList)
+      .where('Name', 'in', bookNameList)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -254,45 +260,92 @@ const Cart = ({ navigation }) => {
   }
 
   //Stripe Payment
-  const initializePaymentSheet = async () => {
-    const paymentIntent = stripe.paymentIntents.create({
-      amount: 2099, //dummy info
-      currency: 'usd',
-      customer: 1,
-      payment_method_types: ['card']
-    });
 
-    const { error } = await initPaymentSheet({
-      customerId: 1, //dummy info
-      customerEphemeralKeySecret: 1234, 
-      paymentIntentClientSecret: paymentIntent,
-      merchantDisplayName: 'READ Mobile App',
-    });
+const initializePaymentSheet = async () => {
+  const clientSecret = await fetchPaymentIntent();
+  console.log("CLient key: ", clientSecret)
+  //const ephemeralKey = await fetchEphemeralKey();
+  const { error } = await initPaymentSheet({
+    merchantDisplayName: 'Read',
+    paymentIntentClientSecret: clientSecret,
+  });
 
-    if (error){
-      Alert.alert(`Error code: ${error.code}`, error.message);
+  if (error){
+    Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
       setReady(true);
     }
   }
 
-  const buy = async () => {
-    const { error } = await presentPaymentSheet();
-
-    if (error){
-      Alert.alert(`Error code: ${error.code}`, error.message);
-    } else {
-      Alert.alert('Success', 'Payment confirmed successfully');
-      setReady(false);
-    }
+const fetchEphemeralKey = async () => {
+    const  ephemeralKey  = await axios.post(
+      'https://us-central1-read-1992f.cloudfunctions.net/createEmphemeralKey',
+      {
+        customerId: 'cus_NZ6sCuy9M9CKeO', //dummy info
+      }
+    );
+    console.log('ephemeralkey: ',ephemeralKey)
+    return ephemeralKey;
   };
 
+  const fetchPaymentIntent = async () => {
+    const  response  = await axios.post(
+      'https://us-central1-read-1992f.cloudfunctions.net/createPaymentIntent',
+      {
+        amount: 597,
+        currency: 'usd',
+        customer: 'cus_NZ6sCuy9M9CKeO', //dummy info
+        payment_method_types: ['card'],
+      }
+    );
+    const clientSecret = response.data.client_secret;
+    setKey(clientSecret);
+    return clientSecret;
+    
+  };
+  
+   const buy = async () => {
+    console.log('buying')
+     const {error} = await presentPaymentSheet();
+     if (error){
+       Alert.alert(`Error code: ${error.code}`, error.message);
+     } else {
+      postPayment();
+       Alert.alert('Success', 'Payment confirmed successfully');
+       setReady(false);
+     }
+   };
+
+  //post payment
+  const postPayment = async () => {
+    setIsLoading(true);
+    console.log('Namelist: ', nameList);
+    const cartRef = db.collection('Users').doc(currentUid).collection('Cart');
+    nameList.forEach(async (name) => {
+      const querySnapshot = await cartRef.where('Name', '==', name).get();
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete();
+      });
+    });
+
+    const libraryRef = db.collection('Users').doc(currentUid).collection('Library');
+    nameList.forEach(async (name) => {
+      libraryRef.doc(name).set({
+        Progress: 0,
+        WordCount: 0,
+        inLibrary: true,
+      });
+    });
+    setBooks([]);
+    setIsLoading(false);
+  }  
+
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      getCartBooks();
-      getCheckoutAmount();
-      initializePaymentSheet();
-      setMount(true);
+    const unsubscribe = navigation.addListener('focus', async() => {
+      setIsLoading(true);
+      await Promise.all([getCartBooks(), getCheckoutAmount(), initializePaymentSheet()]);
+
+      setIsLoading(false);
     });
     return () => {
       unsubscribe;
@@ -319,15 +372,17 @@ const Cart = ({ navigation }) => {
       </View>
   });
 
-  return (
-    (!isMount)
-    ? 
-      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-        <ActivityIndicator size="large"/>
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
-    :
+    );
+  }
+
+  return (
     <View style={{flex: 1}}>
-      <StripeProvider publishableKey={'pk_test_51Me1uSKEBCZYewMa90gWv5uMmNtQ0svMhPNpc8uHHC1sfWssMTjFoFehcUts9Ovl5VxZtfoJkMEzlj7Ipg9AjwdG00Wjt7V1uz'}>
+      <StripeProvider publishableKey={'pk_test_51MnuFXEtUzCDwLJQuJqtaWMuaCfWONYj3xWD0XKGTkFJgxbAu7w2UzcXmyhPIDtvvNC7LQYtvkK6qi8cjtBbBtNb00g8oYHhMV'}>
         <View style={{flex: 0.95}}>
           <FlatList
             data={componentList}
@@ -340,9 +395,10 @@ const Cart = ({ navigation }) => {
           title ={`Checkout ($${checkoutAmount})`}
             size="sm"
             onPress={buy}
-            disabled={loading || !ready}
+            disabled={!ready}
             /> 
         </View>
+        
         </StripeProvider>
     </View>
   );

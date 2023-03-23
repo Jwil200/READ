@@ -96,14 +96,15 @@ const ComponentItem = ({ item }) => (
 
 
 const Store = ({ navigation }) => {
-  let isInitialMount = useRef(true);
-  let recentData = 0;
   const[bookData, setBooks] = useState([]);
   const[justForYou, setJustForYou] = useState([]);
   const[search, setSearch] = useState('');
   const[visible, setVisible] = useState(false);
   const[selectedGenre, setSelectedGenre] = useState("")
   const[filteredBooks, setFilteredBooks] = useState("")
+  const[isLoading, setIsLoading] = useState(true);
+
+  let recentData = 0;
 
   let componentList = [];
   const currentUid = auth().currentUser.uid;
@@ -123,9 +124,7 @@ const Store = ({ navigation }) => {
   }
 
   const handleGenreSelection = async(genre) =>{
-    //console.log("selected Genre: ", genre);
     setVisible(false);
-    //setSelectedGenre(genre);
     await handleFilter(genre);
   }
 
@@ -308,22 +307,25 @@ const Store = ({ navigation }) => {
   }
       
   useEffect(() => {
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      getBooks();
+    const unsubscribe = navigation.addListener('focus', async() => {
+      setIsLoading(true);
+      await Promise.all([getBooks()])
+      setIsLoading(false);
+    });
+    return () => {unsubscribe;
+    };
+  }, [navigation]);
 
-    }
-  }, []);
-
-  console.log(isInitialMount.current);
+  
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
-    (!isInitialMount)
-    ? 
-      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-        <ActivityIndicator size="large"/>
-      </View>
-    :
     <View style={{flex: 1}}>
       <View style={{flex: 0.9}}>
         <SearchBar round 

@@ -1159,27 +1159,6 @@
     node-forge "^1.2.1"
     nullthrows "^1.1.1"
 
-"@expo/config-plugins@^4.1.4":
-  version "4.1.5"
-  resolved "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-4.1.5.tgz"
-  integrity sha512-RVvU40RtZt12HavuDAe+LDIq9lHj7sheOfMEHdmpJ/uTA8pgvkbc56XF6JHQD+yRr6+uhhb+JnAasGq49dsQbw==
-  dependencies:
-    "@expo/config-types" "^45.0.0"
-    "@expo/json-file" "8.2.36"
-    "@expo/plist" "0.0.18"
-    "@expo/sdk-runtime-versions" "^1.0.0"
-    "@react-native/normalize-color" "^2.0.0"
-    chalk "^4.1.2"
-    debug "^4.3.1"
-    find-up "~5.0.0"
-    getenv "^1.0.0"
-    glob "7.1.6"
-    resolve-from "^5.0.0"
-    semver "^7.3.5"
-    slash "^3.0.0"
-    xcode "^3.0.1"
-    xml2js "0.4.23"
-
 "@expo/config-plugins@^5.0.1", "@expo/config-plugins@~5.0.0", "@expo/config-plugins@~5.0.1", "@expo/config-plugins@~5.0.3":
   version "5.0.4"
   resolved "https://registry.npmjs.org/@expo/config-plugins/-/config-plugins-5.0.4.tgz"
@@ -1200,11 +1179,6 @@
     slash "^3.0.0"
     xcode "^3.0.1"
     xml2js "0.4.23"
-
-"@expo/config-types@^45.0.0":
-  version "45.0.0"
-  resolved "https://registry.npmjs.org/@expo/config-types/-/config-types-45.0.0.tgz"
-  integrity sha512-/QGhhLWyaGautgEyU50UJr5YqKJix5t77ePTwreOVAhmZH+ff3nrrtYTTnccx+qF08ZNQmfAyYMCD3rQfzpiJA==
 
 "@expo/config-types@^46.0.1":
   version "46.0.2"
@@ -1870,12 +1844,10 @@
   resolved "https://registry.npmjs.org/@sideway/pinpoint/-/pinpoint-2.0.0.tgz"
   integrity sha512-RNiOoTPkptFtSVzQevY/yWtZwf/RxyVnPy/OcA9HBM3MlGDnBEYL5B41H0MTn0Uec8Hi+2qUtTfG2WWZBmMejQ==
 
-"@stripe/stripe-react-native@0.13.1":
-  version "0.13.1"
-  resolved "https://registry.npmjs.org/@stripe/stripe-react-native/-/stripe-react-native-0.13.1.tgz"
-  integrity sha512-Y0Op6/ACJF+iKd121qObFnU1oTW2ZIhIs4E0d141oSTW4KMgIY4Mq1mRExt9ZNnp7ZgMOQ7BIRaInoF52xJIgQ==
-  dependencies:
-    "@expo/config-plugins" "^4.1.4"
+"@stripe/stripe-react-native@^0.26.0":
+  version "0.26.0"
+  resolved "https://registry.npmjs.org/@stripe/stripe-react-native/-/stripe-react-native-0.26.0.tgz"
+  integrity sha512-PFZhU3MeTyuxrnvuf/7CiFIKQNETvytmabmMGnaqgLJR9lV4P+eQPeO0G4aF0jlo3+bbXT325D1fqNahOiZu3A==
 
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
@@ -3396,7 +3368,7 @@ expo-updates-interface@~0.7.0:
   resolved "https://registry.npmjs.org/expo-updates-interface/-/expo-updates-interface-0.7.0.tgz"
   integrity sha512-saThnbrYDSjKxfMFFguAvh5o5KGabvAOHItkJRwq2L3c0T/3q26Q0kM83880h/+TTtAVsl1+Vhny9d+ImD3yvQ==
 
-expo@*, expo@~46.0.16:
+expo@*, expo@>=46.0.9, expo@~46.0.19:
   version "46.0.20"
   resolved "https://registry.npmjs.org/expo/-/expo-46.0.20.tgz"
   integrity sha512-bNvLMcByZia/JsTngCXEKmI+outPQo6/V5M896yzUo4hdLApwIwq7kV/6bZqHuWyYFSdRgem3NATJRisHQrP1A==

@@ -68,15 +68,13 @@ const ComponentItem = ({ item }) => (
 
 const Dashboard = ({ navigation }) => {
   const[bookData, setBooks] = useState([]);
-  const[isMount, setMount] = useState(false);
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
  
-  
-
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
     
     const list = [];
@@ -191,34 +189,12 @@ const Dashboard = ({ navigation }) => {
       setFavorite(bookDetails)
     }
   }
-/*
-  const getRecentBooks = async() => {//For getting recent books
-    const list = [];
-    await db
-    .collection('Users/' + currentUid + '/Recent')
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const { Name, Author, Description, Cover } = doc.data();
-        list.push({
-          _id: doc.id,
-          bookName: Name,
-          authorName: Author,
-          bookDes: Description,
-          progress: 0.5,
-          coverUrl:  Cover
-        })
-      })
-    });
-    let tempList = list.filter( e => e._id !== "Temp" ); //bootleg solution to remvove temp file
-    setRecent(tempList);
-  }
-*/
+
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      getLibraryBooks();
-      getFavoriteBooks();
-      setMount(true);
+    const unsubscribe = navigation.addListener('focus', async() => {
+      setIsLoading(true);
+      await Promise.all([getLibraryBooks(), getFavoriteBooks()])
+      setIsLoading(false);
     });
     return () => {
       unsubscribe;
@@ -283,14 +259,15 @@ const Dashboard = ({ navigation }) => {
         }
       </View>
   });
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
-    (!isMount)
-    ? 
-      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-        <ActivityIndicator size="large"/>
-      </View>
-    :
       <View style={{flex: 1}}>
         <View style={{flex: 0.9}}>
           <FlatList

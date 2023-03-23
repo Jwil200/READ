@@ -23,6 +23,10 @@ export default StyleSheet.create({
     bookPreviewContainer:{
       padding: 10 
     },
+    bookPreviewImage: {
+      width: '100%',
+      height: '100%',
+    },
     bookTitle:{
       fontSize: 26,
       paddingBottom: 10
