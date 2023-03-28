@@ -19,6 +19,7 @@ import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
+import PDFTest from './pages/pdfTest'
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -165,6 +166,14 @@ function MyStack() {
         component={Onboarding} 
         options={{
             title: 'Onboarding',
+            headerShown:false
+        }}
+      />
+      <Stack.Screen 
+        name="PDFTest" 
+        component={PDFTest} 
+        options={{
+            title: 'PDFTest',
             headerShown:false
         }}
       />

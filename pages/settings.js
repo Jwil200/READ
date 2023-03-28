@@ -1,187 +1,104 @@
-import React, { Component,useState  } from 'react';
-import { StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme, ScrollView} from 'react-native';
-import { Header, Divider, Tile, Switch} from "@rneui/themed";
+import React, { Component, useState } from 'react';
+import { StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme, ScrollView } from 'react-native';
+import { Header, Divider, Tile, Switch, Icon } from "@rneui/themed";
 import { Button } from 'react-native-elements/dist/buttons/Button.js';
 import { useNavigation, NavigationContainer, Darktheme } from '@react-navigation/core';
-import { colors, SearchBar} from 'react-native-elements';
+import { colors, SearchBar } from 'react-native-elements';
+import SettingsOption from "../components/settingsOption";
 
 const styles = StyleSheet.create({
-  colorchange: {
-    backgroundColor:'white'
+  rowContainer: {
+    height: 60,
+    flexDirection: "row",
+    alignItems: 'center',
+    backgroundColor: '#d3d3d3',
+    marginTop: 10,
+    elevation: 10,
+    shadowColor: '#52006A',
   },
-  tinylogo:{
-      width:35,
-      height:35,
-      flex:1,
-      position:"absolute",
-      marginVertical: 10,
-      marginLeft: 20
+  icon: {
+    margin: 5,
+    marginLeft: 5
   },
-  tinylogo2:{
-    width:50,
-    height:50,
-    flex:1,
-    position:"absolute",
-    marginVertical: 60,
-    marginLeft: 10
-},
-tinylogo3:{
-  width:50,
-  height:50,
-  flex:1,
-  position:"absolute",
-  marginVertical: 120,
-  marginLeft: 10
-},
-tinylogo4:{
-  width:50,
-  height:50,
-  flex:1,
-  position:"absolute",
-  marginVertical: 180,
-  marginLeft: 10
-},
-tinylogo5:{
-  width:45,
-  height:45,
-  flex:1,
-  position:"absolute",
-  marginVertical: 410,
-  marginLeft: 15
-},
-tinylogo6:{
-  width:50,
-  height:50,
-  flex:1,
-  position:"absolute",
-  marginVertical: 520,
-  marginLeft: 10
-},
-tinylogo7:{
-  width:50,
-  height:50,
-  flex:1,
-  position:"absolute",
-  marginVertical: 460,
-  marginLeft: 10
-},
-tinylogo8:{
-  width:40,
-  height:40,
-  flex:1,
-  position:"absolute",
-  marginVertical: 240,
-  marginLeft: 15
-},
-tinylogo9:{
-  width:40,
-  height:40,
-  flex:1,
-  position:"absolute",
-  marginVertical: 300,
-  marginLeft: 15
-},
-  toggle:{
-    marginLeft: 300,
-    marginVertical:240,
-    flex:2,
-    position:'absolute',
-    zIndex:999
+  text: {
   },
-  toggle2:{
-    marginLeft: 300,
-    marginVertical:300,
-    flex:2,
-    position:'absolute',
-    zIndex:999
-  }
+  divider: {
+    width: '98%',
+    marginVertical: 5,
+  },
 });
 
-
 const Settings = ({navigation}) => {
-    const settingOptions=[
-    {title: "Account Settings"},
-    {title: "Purchase Settings"},
-    {title: "Audio Settings"},
-    {title: "Accessibility"},
-    {title: "Read-Only Mode"},
-    {title: "Dark Mode"},
-    {},
-    {title: "Parental Controls"}, 
-    {title: "Help and Support"}, 
-    {title: "Contact Us"},
-    ]
+  const settingOptions = [
+    {
+      title: "Account Settings",
+      icon: "gear",
+      type: "nav"
+    },
+    {
+      title: "Purchase Settings",
+      icon: "shopping-bag",
+      type: "nav"
+    },
+    {
+      title: "Audio Settings",
+      icon: "volume-up",
+      type: "nav"
+    },
+    {
+      title: "Accessibility",
+      icon: "universal-access",
+      type: "nav"
+    },
+    {
+      title: "Read Only",
+      icon: "book",
+      type: "toggle"
+    },
+    {
+      title: "Dark Mode",
+      icon: "moon-o",
+      type: "toggle"
+    },
+    {
+      title: "Parental Controls",
+      icon: "group",
+      type: "nav"
+    }, 
+    {
+      title: "Help and Support",
+      icon: "phone",
+      type: "nav"
+    }, 
+    {
+      title: "Contact Us",
+      icon: "envelope",
+      type: "nav"
+    }
+  ]
+  i = 0
   return (
     <ScrollView>
-    <View style={styles.colorchange}>
- 
-      <Image source={require('../assets/settingsicon.png')}
-        style={styles.tinylogo}
-       />
-      <Image source={require('../assets/bag.jpg')}
-        style={styles.tinylogo2}
-       />
-      <Image source={require('../assets/sound.png')}
-        style={styles.tinylogo3}
-       />
-      <Image source={require('../assets/man.png')}
-        style={styles.tinylogo4}
-       />
-      <Image source={require('../assets/parents.png')}
-        style={styles.tinylogo5}
-       />
-      <Image source={require('../assets/phone.png')}
-        style={styles.tinylogo6}
-       />
-      <Image source={require('../assets/question.png')}
-        style={styles.tinylogo7}
-       />       
-      <Image source={require('../assets/book.png')}
-        style={styles.tinylogo8}
-       />    
-      <Image source={require('../assets/darkmode.png')}
-        style={styles.tinylogo9}
-       /> 
-      <Switch style={styles.toggle}>
-
-         </Switch>
-      <Switch style={styles.toggle2}>
-        
-
-      </Switch>
-        {settingOptions.map(({title})=>
-        <View key={title}>
-            <View style={{
-                paddingHorizontal:20,
-                paddingBottom:20,
-                paddingTop:20,
-                paddingLeft:75
-                      }
-            }>
-            <Text style={{fontSize:17}}>{title}</Text>
-
-            </View>
-            <View style={{height: 0.5, backgroundColor:colors.grey0}} />
-        </View>)}
+      <View style={{flexDirection: 'column'}}>
+      {settingOptions.map(e => <SettingsOption styles={styles} icon={e.icon} title={e.title} isSwitch={e.type === "toggle"} key={"o" + (++i)}/>)}
+      </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Button 
-        title="Sign Out"
-        titleStyle={{ fontWeight: '500' }}
-        buttonStyle={{
-        backgroundColor: 'blue',
-        borderColor: 'transparent',
-        borderWidth: 0,
-        margin:160,
-        alignSelf: "auto",
-        bottom:120
-        }}
-         onPress={() => navigation.navigate('Login')}
-         />
-        <Text style={{bottom:400,margin:160,fontSize:17}}> {'\u00A9'}Read 2022 </Text>
-
-    </View>
+          title="Sign Out"
+          titleStyle={{ fontWeight: '500' }}
+          buttonStyle={{
+            backgroundColor: 'blue',
+            borderColor: 'transparent',
+            borderWidth: 0,
+            width: 100,
+            alignSelf: "auto",
+            marginTop: 30,
+          }}
+          onPress={() => navigation.navigate('Login')}
+        />
+        <Text style={{marginTop:30, fontSize:17, marginBottom: 20}}> {'\u00A9'}Read 2022 </Text>
+      </View>
     </ScrollView>
   );
-  
-      
 } 
 export default Settings;
