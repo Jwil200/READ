@@ -1,145 +1,115 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Switch, TouchableOpacity } from 'react-native';
-import {useColorScheme} from 'react-native';
-import { Image } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
+import React, { Component, useState } from 'react';
+import { StyleSheet, View, Text, Image, FlatList, ImageStore, LogBox, ImageBackground, useColorScheme, ScrollView } from 'react-native';
+import { Header, Divider, Tile, Switch, Icon } from "@rneui/themed";
+import { Button } from 'react-native-elements/dist/buttons/Button.js';
+import { colors, SearchBar } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
+import SettingsOption from '../components/settingsOptions.js';
 import auth from '@react-native-firebase/auth';
-
-
-
-const SettingsScreen = ({navigation}) => {
-  const currentUser = auth().currentUser.uid;
-  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
-  const colorScheme = useColorScheme ();
-  const isSystemDarkModeEnabled = colorScheme === 'dark';
-  useEffect(() => {
-    setDarkModeEnabled(isSystemDarkModeEnabled);
-  }, [isSystemDarkModeEnabled]);
-  
-
-  const signOut = async() => {
-    await auth().signOut().then(() => {
-      console.log("User signed out!!", currentUser)
-      navigation.navigate('Login')
-    })
-    .catch(error => this.setState({ errorMessage: error.message }))
-  } 
-
-  const toggleDarkMode = () => {
-    setDarkModeEnabled(!darkModeEnabled);
-  };
-
-
-  return (
-    <ScrollView style={[styles.container, darkModeEnabled ? styles.darkMode : styles.lightMode]}>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/darkmode.png')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Dark Mode</Text>
-        <Switch style={styles.switchloco} value={darkModeEnabled} onValueChange={toggleDarkMode} />
-      </View>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/parents.png')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Parental Controls</Text>
-      </View>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/man.png')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Accessibility</Text>
-      </View>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/settingsicon.png')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Account Settings</Text>
-      </View>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/bag.jpg')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Purchase Settings</Text>
-      </View>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/question.png')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Help and Support</Text>
-      </View>
-      <View style={styles.itemContainer}>
-      <Image source={require('../assets/phone.png')}
-        style={styles.tinylogo}
-       /> 
-        <Text style={[styles.itemTitle, { color: darkModeEnabled ? '#fff' : '#000' }]}>Contact Us</Text>
-      </View>
-      <TouchableOpacity style={styles.signOutButton}
-                         onPress={() => signOut()}> 
-        <Text style={styles.signOutButtonText}>Sign Out</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  );
-};
 const styles = StyleSheet.create({
-  container: {
-    flex: 2,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  darkMode: {
-    backgroundColor: '#222',
-
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: "flex-start",
+  rowContainer: {
+    height: 60,
+    flexDirection: "row",
     alignItems: 'center',
-    paddingVertical: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#d3d3d3',
+    marginTop: 10,
+    elevation: 10,
+    shadowColor: '#52006A',
   },
-  itemTitle: {
-    fontSize: 18,
+  icon: {
+    margin: 5,
+    marginLeft: 5
   },
-  signOutButton: {
-    backgroundColor: '#f00',
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginTop: 30,
-    alignSelf: 'stretch',
-    alignItems: 'center',
+  text: {
   },
-  signOutButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  tinylogo:{
-    width:30,
-    height:30,
-    position:"relative",
-    marginLeft: 10,
-    marginRight: 20,
-    marginTop: 0,
-    resizeMode: "center",
-    paddingVertical: 10,
-  
-  },
-  switchloco:{
-    position: "relative",
-    marginLeft: 150
-  
+  divider: {
+    width: '98%',
+    marginVertical: 5,
   },
 });
 
-export default SettingsScreen;
+const Settings = ({navigation}) => {
+  const signOut = () => {
+    auth()
+      .signOut()
+      .then(() => {console.log('User signed out!')
+      navigation.navigate('Login')});
+  }
+
+
+  const settingOptions = [
+    {
+      title: "Account Settings",
+      icon: "gear",
+      type: "screen",
+      screenName: "AccountSettings",
+      navigation: navigation
+
+    },
+    {
+      title: "Purchase Settings",
+      icon: "shopping-bag",
+      type: "nav"
+    },
+    {
+      title: "Audio Settings",
+      icon: "volume-up",
+      type: "nav"
+    },
+    {
+      title: "Accessibility",
+      icon: "universal-access",
+      type: "nav"
+    },
+    {
+      title: "Read Only",
+      icon: "book",
+      type: "toggle"
+    },
+    {
+      title: "Dark Mode",
+      icon: "moon-o",
+      type: "toggle"
+    },
+    {
+      title: "Parental Controls",
+      icon: "group",
+      type: "nav"
+    }, 
+    {
+      title: "Help and Support",
+      icon: "phone",
+      type: "nav"
+    }, 
+    {
+      title: "Contact Us",
+      icon: "envelope",
+      type: "nav"
+    }
+  ]
+  i = 0
+  return (
+    <ScrollView>
+      <View style={{flexDirection: 'column'}}>
+      {settingOptions.map(e => <SettingsOption styles={styles} navigation={e.navigation} icon={e.icon} title={e.title} isSwitch={e.type === "toggle"} screenName={e.screenName} key={"o" + (++i)}/>)}
+      </View>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
+        <Button 
+          title="Sign Out"
+          titleStyle={{ fontWeight: '500' }}
+          buttonStyle={{
+            backgroundColor: 'blue',
+            borderColor: 'transparent',
+            borderWidth: 0,
+            width: 100,
+            alignSelf: "auto",
+            marginTop: 30,
+          }}
+          onPress={() => signOut()}
+        />
+        <Text style={{marginTop:30, fontSize:17, marginBottom: 20}}> {'\u00A9'}Read 2022 </Text>
+      </View>
+    </ScrollView>
+  );
+} 
+export default Settings;

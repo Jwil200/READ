@@ -11,7 +11,7 @@ import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
 import Welcome from './components/afterSignup';
 import BookPreview from './pages/bookPreview';
-import Settings from './components/settings';
+import Settings from './pages/settings';
 import Store from './pages/store';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart';
@@ -20,6 +20,7 @@ import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
 import UserProfile from './pages/userProfile';
+import AccountSettings from './pages/accountSettings';
 
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -166,6 +167,11 @@ function MyStack() {
         title: "Checkout",
         headerBackTitle: "Cart"
        }}
+      />
+      <Stack.Screen
+        name="AccountSettings"
+        component={AccountSettings}
+        options={{  title: 'Account Settings' }}
       />
       <Stack.Screen 
         name="Onboarding" 

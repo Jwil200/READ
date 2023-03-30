@@ -21,18 +21,19 @@ export default StyleSheet.create({
       backgroundColor: '#fff'
     },
     bookPreviewContainer:{
-      padding: 10 
+      padding: 20 
     },
     bookPreviewImage: {
-      width: '100%',
-      height: '100%',
+      width: 300,
+      height: 400,
+      alignSelf: 'center',
+      borderRadius: 10,
+      marginBottom: 10,
+      elevation: 100
     },
     bookTitle:{
       fontSize: 26,
       paddingBottom: 10
-    },
-    bookPreviewImage:{
-      alignItems: 'center'
     },
     bookPreviewProgress:{
       alignSelf: 'center', 

@@ -85,7 +85,6 @@ const Dashboard = ({ navigation }) => {
     .then(querySnapshot => {
       querySnapshot.forEach(documentSnapshot => {
         list.push(documentSnapshot.id)
-        console.log("id: ", documentSnapshot.id)
       })
     })
 
@@ -101,21 +100,18 @@ const Dashboard = ({ navigation }) => {
       //pushes word count and progress to the proglist array
       await db
       .collection('Users/' + currentUid + '/Library')
-      .where('Name', 'in', nameList)
+      .where('bookTitle', 'in', nameList)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(document =>{
-          
           const { WordCount, Progress} = document.data();
-          
           progressList.push({
             wordCount: WordCount,
             progress: Progress
           })
         })
       });
-      console.log("proglist Array: ", progressList)//console test
-
+      console.log("What is in the progress list:  ", progressList);//console test
       //pushes other book details to bookDetails array
       await db
       .collection('Books')
@@ -135,8 +131,6 @@ const Dashboard = ({ navigation }) => {
         })
       });
 
-      console.log("Book Details: ", bookDetails)
-
       let mergedArray = []//Merge progressList with bookDetails
       for(let i = 0; i < nameList.length; i++){
         let obj1 = bookDetails[i]
@@ -146,8 +140,8 @@ const Dashboard = ({ navigation }) => {
       }
 
     setBooks(mergedArray);//set the merged list
+    console.log("merged Array: ", mergedArray)//console test
     }
-
     setBooks(bookDetails);//or set an empty list  
   } 
   
@@ -180,7 +174,6 @@ const Dashboard = ({ navigation }) => {
             bookName: Name,
             authorName: Author,
             bookDes: Description,
-            progress: 0.5,
             coverUrl:  Cover,
             content: Content
           })

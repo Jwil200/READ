@@ -102,18 +102,16 @@ const styles = StyleSheet.create({
 
 
 const Cart = ({ navigation }) => {
-  //const [clientSecret, setClientSecret] = useState(null);
   const [key, setKey] = useState(null);
   const[bookData, setBooks] = useState([]);
   const[nameList, setNameList] = useState([]);
   const[isLoading, setIsLoading] = useState(true);
-  const[isMount, setMount] = useState(false);
-  const [checkoutAmount, setCheckoutAmount] = useState(0);
+  const [checkoutAmount, setCheckoutAmount] = useState(1);
   const [ready, setReady] = useState(false);
   const {initPaymentSheet, presentPaymentSheet } = usePaymentSheet();
  
 
-  
+  //get cart books
   const Item = ({ item }) => (
     <Card style={styles.card} >
       <View style={{flexDirection: 'row'}}>
@@ -206,16 +204,22 @@ const Cart = ({ navigation }) => {
     .collection('Users/' + currentUid + '/Cart')
     .where('Name', '!=', 'Temp')
     .onSnapshot(querySnapshot => {
-      let totalamount = 0;
+      let totalAmount = 0;
       querySnapshot.forEach(doc => {
         
         const item = doc.data()
         console.log(item.Name, ' ' , item.Price)
-        totalamount += parseFloat(item.Price);
+        totalAmount += parseFloat(item.Price);
       });
-      console.log("Total:" , totalamount)
-      setCheckoutAmount(totalamount)
+      console.log("Total:" , totalAmount)
+      setCheckoutAmount(totalAmount);
+      initializePaymentSheet(totalAmount);
     })
+  }
+
+  const checkoutAmountToIntger = () =>{
+    const integerNumber = Math.round(checkoutAmount * 100);
+    return integerNumber;
   }
 
   const getCartBooks = async() =>{
@@ -261,8 +265,8 @@ const Cart = ({ navigation }) => {
 
   //Stripe Payment
 
-const initializePaymentSheet = async () => {
-  const clientSecret = await fetchPaymentIntent();
+const initializePaymentSheet = async (totalAmount) => {
+  const clientSecret = await fetchPaymentIntent(totalAmount);
   console.log("CLient key: ", clientSecret)
   //const ephemeralKey = await fetchEphemeralKey();
   const { error } = await initPaymentSheet({
@@ -288,11 +292,14 @@ const fetchEphemeralKey = async () => {
     return ephemeralKey;
   };
 
-  const fetchPaymentIntent = async () => {
+  const fetchPaymentIntent = async (totalAmount) => {
+    //console.log("Amount: ", checkoutAmount)
+    const integerNumber = Math.round(totalAmount * 100);
+    console.log("Integer: ", integerNumber)
     const  response  = await axios.post(
       'https://us-central1-read-1992f.cloudfunctions.net/createPaymentIntent',
       {
-        amount: 597,
+        amount: integerNumber,
         currency: 'usd',
         customer: 'cus_NZ6sCuy9M9CKeO', //dummy info
         payment_method_types: ['card'],
@@ -331,6 +338,7 @@ const fetchEphemeralKey = async () => {
     const libraryRef = db.collection('Users').doc(currentUid).collection('Library');
     nameList.forEach(async (name) => {
       libraryRef.doc(name).set({
+        bookTitle: name,
         Progress: 0,
         WordCount: 0,
         inLibrary: true,
@@ -343,7 +351,7 @@ const fetchEphemeralKey = async () => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async() => {
       setIsLoading(true);
-      await Promise.all([getCartBooks(), getCheckoutAmount(), initializePaymentSheet()]);
+      await Promise.all([getCartBooks(), getCheckoutAmount()]);
 
       setIsLoading(false);
     });

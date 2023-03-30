@@ -1,6 +1,6 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
 import React,  { useEffect, useState  } from 'react';
-import { ScrollView, View, Text, Alert } from 'react-native';
+import { ScrollView, View, Text, Alert, Image } from 'react-native';
 import { Tile } from "@rneui/themed";
 import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
@@ -83,33 +83,22 @@ const BookStorePreview = (props) => {
       
   return (
     <ScrollView style={styles.bookPreviewContainer}>
-
-      <View>
-        <Text
-        style={styles.bookTitle}>
-        {book.title}
-        </Text>
-
-        <View style={styles.bookPreviewImage}>
-          <Tile  
-          imageSrc={{
-              uri: book.coverUrl
-          }}
-          imageProps={{
-            resizeMode:"cover",
-          }}
-          width={250}
-          height={400}
-          ></Tile>
-        </View>
-      </View>
-
-      <Text style={styles.bookPreviewProgress}>Rating: {book.rating}/5</Text>
-
-      <Text>
-      {book.description}{"\n"}
-      </Text>
-    
+    <View style={{alignItems: 'center'}}>
+    <Image  
+          source={{uri: book.coverUrl}}
+          style={styles.bookPreviewImage}
+          resizeMode="contain"
+      />
+            
+    </View>
+    <Text style={styles.bookTitle}>{book.title}</Text>
+    <Text style={styles.bookPreviewDescription}>{book.author}</Text>
+    <Text style={styles.bookPreviewDescription}>{book.description}</Text>
+    {book.progress == 0.00 ? (
+      <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
+    ) : (
+      <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
+    )}
       {(isCheck) ? 
           <OrangeButton 
           title="Add to Library" 
