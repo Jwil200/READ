@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Text, FlatList, Alert, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
 import { Divider } from "@rneui/themed";
-import { Card, Icon, Dialog } from 'react-native-elements';
+import { Card, Icon, } from 'react-native-elements';
 import { usePaymentSheet, StripeProvider, useStripe, CardField } from '@stripe/stripe-react-native';
 import OrangeButton from '../assets/orangeButton.js';
 import firestore from '@react-native-firebase/firestore';
@@ -115,13 +115,13 @@ const Cart = ({ navigation }) => {
   const Item = ({ item }) => (
     <Card style={styles.card} >
       <View style={{flexDirection: 'row'}}>
-      <Card.Image source={{uri: item.coverUrl}} style={styles.coverImage} resizeMode="contain" />
-      <Card.Divider/>
-      <Text style={styles.bookTitle} numberOfLines={2} ellipsizeMode='tail'>
-      <Card.Title style={styles.bookTitle}> 
-      {item.bookName}
-      </Card.Title>
-    </Text>
+        <Card.Image source={{uri: item.coverUrl}} style={styles.coverImage} resizeMode="contain" />
+        <Card.Divider/>
+        <Text style={styles.bookTitle} numberOfLines={2} ellipsizeMode='tail'>
+          <Card.Title style={styles.bookTitle}> 
+            {item.bookName}
+          </Card.Title>
+        </Text>
         <Text style={styles.cartText}>
           <Text style={styles.bookAuthor}>
             {item.authorName}{"\n"}{"\n"}
@@ -213,7 +213,9 @@ const Cart = ({ navigation }) => {
       });
       console.log("Total:" , totalAmount)
       setCheckoutAmount(totalAmount);
-      initializePaymentSheet(totalAmount);
+      if(totalAmount != 0){
+        initializePaymentSheet(totalAmount);
+      }
     })
   }
 
@@ -281,17 +283,6 @@ const initializePaymentSheet = async (totalAmount) => {
     }
   }
 
-const fetchEphemeralKey = async () => {
-    const  ephemeralKey  = await axios.post(
-      'https://us-central1-read-1992f.cloudfunctions.net/createEmphemeralKey',
-      {
-        customerId: 'cus_NZ6sCuy9M9CKeO', //dummy info
-      }
-    );
-    console.log('ephemeralkey: ',ephemeralKey)
-    return ephemeralKey;
-  };
-
   const fetchPaymentIntent = async (totalAmount) => {
     //console.log("Amount: ", checkoutAmount)
     const integerNumber = Math.round(totalAmount * 100);
@@ -326,6 +317,7 @@ const fetchEphemeralKey = async () => {
   //post payment
   const postPayment = async () => {
     setIsLoading(true);
+    //delete from cart page
     console.log('Namelist: ', nameList);
     const cartRef = db.collection('Users').doc(currentUid).collection('Cart');
     nameList.forEach(async (name) => {
@@ -335,6 +327,14 @@ const fetchEphemeralKey = async () => {
       });
     });
 
+    //add to library
+
+    //handles date 
+    const currentDate = new Date();
+    const month = currentDate.getMonth() + 1; // getMonth() returns 0-based index, so add 1 to get the actual month
+    const day = currentDate.getDate();
+    const year = currentDate.getFullYear();
+    const date = `${month}/${day}/${year}`;
     const libraryRef = db.collection('Users').doc(currentUid).collection('Library');
     nameList.forEach(async (name) => {
       libraryRef.doc(name).set({
@@ -342,7 +342,14 @@ const fetchEphemeralKey = async () => {
         Progress: 0,
         WordCount: 0,
         inLibrary: true,
-      });
+        PurchaseDate: date
+      }).then(() => {
+        console.log("Book added to library!");
+      }
+      ).catch((error) => {
+        console.error("Error writing document: ", error);
+      }
+      );
     });
     setBooks([]);
     setIsLoading(false);
@@ -388,6 +395,18 @@ const fetchEphemeralKey = async () => {
     );
   }
 
+  if(bookData.length == 0){
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flexDirection: 'column'}}>
+          <Icon name="cart" type='ionicon' size={100} color="#FFA500"/>
+         <Text style={{textalign: 'center'}}>Your cart is empty!</Text>
+        </View>
+      </View>
+    );
+
+  } else {
+
   return (
     <View style={{flex: 1}}>
       <StripeProvider publishableKey={'pk_test_51MnuFXEtUzCDwLJQuJqtaWMuaCfWONYj3xWD0XKGTkFJgxbAu7w2UzcXmyhPIDtvvNC7LQYtvkK6qi8cjtBbBtNb00g8oYHhMV'}>
@@ -410,5 +429,6 @@ const fetchEphemeralKey = async () => {
         </StripeProvider>
     </View>
   );
+  }
 }
 export default Cart;

@@ -47,9 +47,11 @@ const Settings = ({navigation}) => {
 
     },
     {
-      title: "Purchase Settings",
-      icon: "shopping-bag",
-      type: "nav"
+      title: "Notifications",
+      icon: "bell-o",
+      type: "screen",
+      screenName: "NotificationSettings",
+      navigation: navigation
     },
     {
       title: "Audio Settings",
@@ -72,19 +74,18 @@ const Settings = ({navigation}) => {
       type: "toggle"
     },
     {
-      title: "Parental Controls",
-      icon: "group",
-      type: "nav"
+      title: "Purcahse History",
+      icon: "shopping-cart",
+      type: "screen",
+      screenName: "PurchaseHistory",
+      navigation: navigation
     }, 
     {
-      title: "Help and Support",
-      icon: "phone",
-      type: "nav"
-    }, 
-    {
-      title: "Contact Us",
-      icon: "envelope",
-      type: "nav"
+      title: "About",
+      icon: "info",
+      type: "screen",
+      screenName: "About",
+      navigation: navigation
     }
   ]
   i = 0

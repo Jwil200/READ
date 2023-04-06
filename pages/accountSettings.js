@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-
-const userId = auth().currentUser.uid;
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const AccountSettings = ({ navigation }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const getUserRef = () => {
@@ -21,6 +21,10 @@ const AccountSettings = ({ navigation }) => {
         const userRef = getUserRef();
         const user = await userRef.get();
         const userData = user.data();
+        const email = await auth().currentUser.email;
+        const password = await auth().currentUser.password;
+        console.log('email: ' + email)
+        console.log('password: ' + password)
         console.log(userData);
         if(userData){
             setName(userData.name);
@@ -29,10 +33,33 @@ const AccountSettings = ({ navigation }) => {
         }
     }
 
+    const toggleShowPassword = () => setShowPassword(!showPassword);
 
     const handleSaveChanges = async() => {
-    
-    console.log('Changes saved');
+    if(name == '' || email == '' || password == ''){
+        alert('Please fill out all fields');
+    }
+    else{
+        //update user information
+        await auth().currentUser.updateEmail(email).catch(error => {
+            console.log(error);
+            alert(error);
+        });
+
+        await auth().currentUser.updatePassword(password).catch(error => {
+            console.log(error);
+            alert(error);
+        });
+
+        const userRef = getUserRef();
+        await userRef.update({
+            name: name,
+            email: email,
+            password: password,
+        });
+        console.log('Changes saved');
+        alert('Your information has been updated!!');
+    }
   }
 
     useEffect(() => {
@@ -67,7 +94,14 @@ const AccountSettings = ({ navigation }) => {
           style={styles.input}
           value={password}
           onChangeText={setPassword}
-          secureTextEntry
+          secureTextEntry = {!showPassword}
+        />
+        <Icon
+          name={showPassword ? 'eye-slash' : 'eye'}
+          size={20}
+          color={'grey'}
+          onPress={toggleShowPassword}
+          style={{ padding: 10 }}
         />
         <Button
           title="Save Changes"

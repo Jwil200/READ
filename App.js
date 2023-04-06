@@ -21,6 +21,10 @@ import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
 import UserProfile from './pages/userProfile';
 import AccountSettings from './pages/accountSettings';
+import NotificationSettings from './pages/notificationSettings';
+import PurchaseHistory from './pages/purchaseHistory';
+import About from './pages/about';
+
 
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -160,7 +164,7 @@ function MyStack() {
           { headerLeft: null } 
         }
       />
-            <Stack.Screen 
+      <Stack.Screen 
        name="Checkout" 
        component={Checkout} 
        options= {{
@@ -172,6 +176,21 @@ function MyStack() {
         name="AccountSettings"
         component={AccountSettings}
         options={{  title: 'Account Settings' }}
+      />
+      <Stack.Screen
+        name="PurchaseHistory"
+        component={PurchaseHistory}
+        options={{  title: 'Purchase History' }}
+      />
+      <Stack.Screen
+        name="NotificationSettings"
+        component={NotificationSettings}
+        options={{  title: 'Notifications' }}
+      />
+      <Stack.Screen
+        name="About"
+        component={About}
+        options={{  title: 'About' }}
       />
       <Stack.Screen 
         name="Onboarding" 
