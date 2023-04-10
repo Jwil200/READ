@@ -10,8 +10,9 @@ import auth from '@react-native-firebase/auth';
 
 import axios  from 'axios';
 
-const db = firestore();
-const currentUid = auth().currentUser.uid;
+
+const db = firestore()
+const currentUid = auth().currentUser.uid
 
 
 const styles = StyleSheet.create({
