@@ -11,7 +11,6 @@ import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
 import Welcome from './components/afterSignup';
 import BookPreview from './pages/bookPreview';
-import Settings from './pages/settings';
 import Store from './pages/store';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart';
@@ -20,10 +19,11 @@ import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
 import UserProfile from './pages/userProfile';
-import AccountSettings from './pages/accountSettings';
-import NotificationSettings from './pages/notificationSettings';
-import PurchaseHistory from './pages/purchaseHistory';
-import About from './pages/about';
+import Settings from './pages/settings/settings';
+import AccountSettings from './pages/settings/accountSettings';
+import NotificationSettings from './pages/settings/notificationSettings';
+import PurchaseHistory from './pages/settings/purchaseHistory';
+import About from './pages/settings/about';
 
 
 

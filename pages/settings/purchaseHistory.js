@@ -63,7 +63,7 @@ const PurchaseHistory = ({ navigation }) => {
 
     const Item = ({ item }) => (
         <Card style={{ flexDirection: 'column', elevation: 10, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }  }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', elevation: 3 }}> 
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}> 
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.bookTitle} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
             <Text style={styles.text}>Date Purchased: {item.date}</Text>

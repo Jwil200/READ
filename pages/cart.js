@@ -342,6 +342,7 @@ const initializePaymentSheet = async (totalAmount) => {
         Progress: 0,
         WordCount: 0,
         inLibrary: true,
+        Favorite: false,
         PurchaseDate: date
       }).then(() => {
         console.log("Book added to library!");

@@ -5,7 +5,7 @@ import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Dashboard from '../pages/dashboard';
 import Store from '../pages/store';
-import Settings from '../pages/settings';
+import Settings from '../pages/settings/settings';
 import Cart from '../pages/cart';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';

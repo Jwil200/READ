@@ -8,7 +8,7 @@ const About = () => {
           <View style={styles.imageContainer}>
             <Image
             style={styles.image}
-            source={require('../assets/read-logo.png')}
+            source={require('../../assets/read-logo.png')}
             />
         </View>
         <View styles={styles.blackContainer}>

@@ -93,6 +93,12 @@ export default StyleSheet.create({
       left: 20,
       bottom: 60,
     },
+    favoriteIcon: {
+      position: 'absolute',
+      top: 5,
+      right: 15,
+    },
+  
   
     appButtonContainer: {
       elevation: 8,

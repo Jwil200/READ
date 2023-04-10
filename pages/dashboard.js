@@ -44,7 +44,13 @@ const styles = StyleSheet.create({
   emptyText: {
     color: "grey",
     marginTop: 10
-  }
+  },
+  favoriteIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+  },
+
 });
 
 const Item = ({ item }) => (
@@ -58,6 +64,7 @@ const Item = ({ item }) => (
       author={item.authorName}
       description={item.bookDes}
       content={item.content}
+      favorite={item.favorite}
     />
   </View>
 );
@@ -71,6 +78,7 @@ const Dashboard = ({ navigation }) => {
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [updateFavorite, setUpdateFavorite] = useState(false);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
@@ -119,14 +127,15 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
-          const { Name, Author, Description, Cover, Content } = documentSnapshot.data();
+          const { Name, Author, Description, Cover, Content, Favorite } = documentSnapshot.data();
           bookDetails.push({
             _id: documentSnapshot.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
             coverUrl:  Cover,
-            content: Content
+            content: Content,
+            favorite: Favorite
           })
         })
       });
@@ -140,9 +149,8 @@ const Dashboard = ({ navigation }) => {
       }
 
     setBooks(mergedArray);//set the merged list
-    console.log("merged Array: ", mergedArray)//console test
     }
-    setBooks(bookDetails);//or set an empty list  
+  setBooks(bookDetails);//or set an empty list  
   } 
   
 
@@ -179,8 +187,8 @@ const Dashboard = ({ navigation }) => {
           })
         })
       });
-      setFavorite(bookDetails)
-    }
+    setFavorite(bookDetails)
+      }
   }
 
   useEffect(() => {
@@ -262,7 +270,7 @@ const Dashboard = ({ navigation }) => {
 
   return (
       <View style={{flex: 1}}>
-        <View style={{flex: 0.9}}>
+        <View style={{flex: 1}}>
           <FlatList
             data={componentList}
             renderItem={ComponentItem}
@@ -272,4 +280,6 @@ const Dashboard = ({ navigation }) => {
       </View>
   );
 }
+
+
 export default Dashboard;

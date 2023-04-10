@@ -1,9 +1,10 @@
 // components/bookPreview.js, what the user is taken to when they tap on a book.
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tile } from "@rneui/themed";
+import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -16,6 +17,54 @@ const BookPreview = (props) => {
   const currentUid = auth().currentUser.uid;
   const navigation = useNavigation();
 
+  const [isFavorite, setISFavorite] = useState(book.favorite);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchFavoriteStatus();
+  }, []);
+
+  const fetchFavoriteStatus = () => {
+    try {
+      setIsLoading(true);
+      db.collection('Users/' + currentUid + '/Library')
+        .doc(book.title)
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            setISFavorite(data.Favorite);
+          }
+        });
+    } catch (error) {
+      console.log(error);
+    }
+    console.log('Favorite status: ', isFavorite);
+  };
+
+const toggleFavorite = async () => {
+  if(isFavorite) {
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .doc(book.title)
+    .update({
+      Favorite: false
+      });
+    setISFavorite(false);
+    //navigation.goBack();
+    }
+      
+  else {
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .doc(book.title)
+    .update({
+      Favorite: true,
+    });
+    setISFavorite(true);
+  }
+};
+  
 
   
   //console tests
@@ -38,23 +87,11 @@ const BookPreview = (props) => {
     Alert.alert("Book Removed from your Library")
   }
 
-  const addFavorite = async() =>{// adds to favorite
-    await db
-    .collection('Users/' + currentUid + '/Library')
-    .doc(book.title)
-    .update({
-      'Favorite': true
-    })
-  }
 
-  const removeFavorite = async() => {//removes from favorites
-    await db
-    .collection('Users/' + currentUid + '/Library')
-    .doc(book.title)
-    .update({
-      'Favorite': false
-    })
-  }
+
+
+
+ 
 
   return (
     <ScrollView style={styles.bookPreviewContainer}>
@@ -64,7 +101,9 @@ const BookPreview = (props) => {
           style={styles.bookPreviewImage}
           resizeMode="contain"
       />
-            
+        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteIcon}>
+          <Icon name={isFavorite ? 'heart' : 'heart-o'} size={50} color="#FFA500" />
+        </TouchableOpacity>
     </View>
     <Text style={styles.bookTitle}>{book.title}</Text>
     <Text style={styles.bookPreviewDescription}>{book.author}</Text>

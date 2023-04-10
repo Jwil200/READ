@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView} from 'react-native';
 import { Divider, Dialog, ListItem, Avatar } from "@rneui/themed";
-import { SearchBar, Button} from 'react-native-elements';
+import { SearchBar, Button, Icon} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -48,6 +48,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 5,
     paddingTop: 0,
+    backgroundColor: 'background-basic-color-1'
+    
   },
   grid: {
     width: '100%'
@@ -327,7 +329,8 @@ const Store = ({ navigation }) => {
 
   return (
     <View style={{flex: 1}}>
-      <View style={{flex: 0.9}}>
+      <View style={{flex: 1}}>
+        <View style={{flexDirection: 'row', backgroundColor: 'orange'}}>
         <SearchBar round 
           cancelButtonTitle='X'
           lightTheme
@@ -335,21 +338,30 @@ const Store = ({ navigation }) => {
           inputStyle={{backgroundColor: 'white'}}
           placeholderTextColor={'#g5g5g5'}
           placeholder={'Search'}
+          containerStyle={{
+            backgroundColor: 'orange',
+            width: '90%',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          }}
           inputContainerStyle={{ 
-            backgroundColor: 'white',
+            backgroundColor: '#fff',
           }} 
           value={search}
           onChangeText={(text) => setSearch(text)}
           onClear={(text) => setSearch('')}
         />
-        <Button 
+        <Icon 
+          name='filter'
+          type='font-awesome'
+          color='black'
+          onPress={() => setVisible(true)}
           title="Filter Genre" 
-          onPress={filterBooks}
-          buttonStyle={{ 
-            backgroundColor: 'blue', 
-            borderRadius: 10, 
-          }}
-          />
+          containerStyle={{paddingTop: 10, marginTop: 10, marginRight: 5, marginLeft: 5 }}
+          style={{paddingTop: 10, marginTop: 10, marginRight: 10 }}
+        />
+
+        </View>
         <FlatList
           data={componentList}
           renderItem={ComponentItem}

@@ -4,7 +4,7 @@ import { Header, Divider, Tile, Switch, Icon } from "@rneui/themed";
 import { Button } from 'react-native-elements/dist/buttons/Button.js';
 import { colors, SearchBar } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import SettingsOption from '../components/settingsOptions.js';
+import SettingsOption from '../../components/settingsOptions.js';
 import auth from '@react-native-firebase/auth';
 const styles = StyleSheet.create({
   rowContainer: {
@@ -56,11 +56,6 @@ const Settings = ({navigation}) => {
     {
       title: "Audio Settings",
       icon: "volume-up",
-      type: "nav"
-    },
-    {
-      title: "Accessibility",
-      icon: "universal-access",
       type: "nav"
     },
     {
