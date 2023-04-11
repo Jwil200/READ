@@ -34,7 +34,7 @@ const getFilterVisibility = navigation => { //Visibility toggle for filter depen
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="PDFTest"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
