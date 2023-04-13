@@ -1,9 +1,8 @@
 // App.js
 import * as React from 'react';
-import { Image } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Icon } from 'react-native-elements';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import Dashboard from './pages/dashboard';
@@ -14,16 +13,10 @@ import BookPreview from './pages/bookPreview';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart.js';
 import Checkout from './pages/checkout';
-import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
+import UserProfile from './components/userProfile';
 
 const Stack = createStackNavigator();
-
-const getFilterVisibility = navigation => { //Visibility toggle for filter depending on current tab.
-  let isDashboard = (typeof(navigation.getState().routes[1]) === 'undefined' || typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');
-  let currPage = isDashboard ? null : navigation.getState().routes[1].state.history[1].key;
-  return isDashboard ? isDashboard : !(currPage.includes('Cart') || currPage.includes('Settings'));
-}
 
 function MyStack() {
   return (
@@ -84,15 +77,14 @@ function MyStack() {
         ),
         headerLeft: null, 
         headerRight: () => (
-          getFilterVisibility(navigation) ? 
-          <Icon
-            style={{ paddingRight: 10}}
-            name='filter-alt'
-            color='#fff'
-            onPress={() => navigation.navigate('FilterModal')} 
-          />
-          :
-          null
+          <View style={{flexDirection:'row'}} >
+          <TouchableOpacity onPress={() => navigation.navigate('UserProfile')}>
+            <Image
+              style={{width: 30, height: 30, marginRight: 10, borderRadius: 75}}
+              source={{ uri: 'https://picsum.photos/200' }}
+            />
+          </TouchableOpacity>
+          </View>
         )})}
        />
       <Stack.Screen 
@@ -103,15 +95,14 @@ function MyStack() {
          headerLeft: null
        }}
       />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen 
-        name="FilterModal"
-        component={FilterModal}
+      <Stack.Screen 
+        name="UserProfile"
+        component={UserProfile}
         options={{
           title: null,
-         headerLeft: null
-         }}  />
-      </Stack.Group>
+          headerBackTitle: 'Back'
+          }}  
+        />
       <Stack.Screen 
        name="Store" 
        component={Store} 

@@ -59,6 +59,7 @@ const Item = ({ item }) => (
      progress={item.progress}
      isRecent={item.isRecent}
      isFavorite={item.isFavorite}
+     timesOpened={item.timesOpened}
  />
   </View>
 );

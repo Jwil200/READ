@@ -15,13 +15,14 @@ const BookTile = (props) => {
       width={'100%'}
       height={200}
       onPress={() => navigation.navigate('BookPreview', {props})}
+      disabled={props.disabled}
     >
+      {!props.disabled ? 
       <LinearProgress
         value={props.progress}
         variant="determinate"
       />
-
-      
+      : null}
       
     </Tile>
   );
