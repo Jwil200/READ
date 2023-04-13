@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect, useRef } from "react";
 import {
   Platform,
   StyleSheet,
@@ -10,105 +10,112 @@ import {
   Alert,
 } from "react-native";
 
-import { DocumentView, RNPdftron } from "react-native-pdftron";
+import VoiceBar from "../components/voiceBar";
 
-type Props = {};
-export default class PDFTest extends Component<Props> {
-  // If you are using TypeScript, use `constructor(props: Props) {`
-  // Otherwise, use:
-  constructor(props) {
-    super(props);
+import { DocumentView, RNPdftron, PDFViewCtrl, Config } from "@pdftron/react-native-pdf";
 
-    // Uses the platform to determine if storage permisions have been automatically granted.
-    // The result of this check is placed in the component's state.
-    // this.state = {
-    //   permissionGranted: Platform.OS === 'ios' ? true : false
-    // };
-
-    RNPdftron.initialize("Insert commercial license key here after purchase");
-    RNPdftron.enableJavaScript(true);
-  }
-
-  // Uses the platform to determine if storage permissions need to be requested.
-  // componentDidMount() {
-  //   if (Platform.OS === 'android') {
-  //     this.requestStoragePermission();
-  //   }
-  // }
-
-  // Requests storage permissions for Android and updates the component's state using
-  // the result.
-  // async requestStoragePermission() {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       this.setState({
-  //         permissionGranted: true
-  //       });
-  //       console.log("Storage permission granted");
-  //     } else {
-  //       this.setState({
-  //         permissionGranted: false
-  //       });
-  //       console.log("Storage permission denied");
-  //     }
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  // }
-
-  onLeadingNavButtonPressed = () => {
-    console.log("leading nav button pressed");
-    if (Platform.OS === "ios") {
-      Alert.alert(
-        "App",
-        "onLeadingNavButtonPressed",
-        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-        { cancelable: true }
-      );
-    } else {
-      BackHandler.exitApp();
-    }
-  };
-
-  render() {
-    // If the component's state indicates that storage permissions have not been granted,
-    // a view is loaded prompting users to grant these permissions.
-    // if (!this.state.permissionGranted) {
-    //   return (
-    //     <View style={styles.container}>
-    //       <Text>
-    //         Storage permission required.
-    //       </Text>
-    //     </View>
-    //   )
-    // }
-
-    const path =
-      "https://pdftron.s3.amazonaws.com/downloads/pl/PDFTRON_mobile_about.pdf";
-
-    return (
-      <DocumentView
-        document={path}
-        showLeadingNavButton={true}
-        leadingNavButtonIcon={
-          Platform.OS === "ios"
-            ? "ic_close_black_24px.png"
-            : "ic_arrow_back_white_24dp"
-        }
-        onLeadingNavButtonPressed={this.onLeadingNavButtonPressed}
-      />
-    );
-  }
-}
+import firestore from '@react-native-firebase/firestore';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
+  main_body_container: {
+      backgroundColor: '#fff'
+  },
+  voice_box_container: {
+      height: '10%',
+      width: '100%',
+      position: 'absolute',
+      alignItems: 'center',
+      bottom: 0
   },
 });
+
+const PDFTest = (props) => {
+  //const [ref, setRef] = useState(null);
+  const ref = useRef(null);
+  const [bookData, setBookData] = useState(null);
+
+  useEffect(() => {
+    RNPdftron.initialize("Insert commercial license key here after purchase");
+    RNPdftron.enableJavaScript(true);
+    let data = {};
+    firestore()
+      .collection("Books")
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          if (doc._data.Name === "Ginger the Giraffe") {
+            let contents = [];
+            doc._data.Content.forEach(line => {
+              line.replace(/([.?!])\s*(?=[A-Z])/g, "$1|").split("|").forEach(e => {
+                contents.push(e);
+              });
+            });
+            doc._data.Content = contents;
+            setBookData(doc._data);
+          }
+        })
+      });
+    console.log(data);
+  }, []);
+
+  const removeTags = (str) => {
+    if ((str===null) || (str===''))
+        return false;
+    else
+        str = str.toString();
+    return str.replace( /(<([^>]+)>)/ig, '');
+  }
+
+  const highlightLine = (pos) => {
+    ref.current.startSearchMode(bookData.Content[pos], false, false);
+  }
+  
+  const path = bookData ? bookData.Link : "https://www.cdc.gov/ncbddd/actearly/documents/amazing_me_final_version_508.pdf";
+
+    return (
+      bookData
+      ? <>
+          <DocumentView
+            ref={(c) => ref.current = c}
+            document={path}
+            onLoadComplete={() => highlightLine(0)}
+            disabledElements={Object.values(Config.Buttons)}
+          />
+        <View style={styles.voice_box_container}>
+          <VoiceBar 
+            textArray={bookData.Content}
+            next={highlightLine}
+          />
+        </View>
+        </>
+      : <Text>Sorry!</Text>
+    );
+}
+export default PDFTest;
+
+/*
+<View style={styles.voice_box_container}>
+          <VoiceBar 
+            textArray={bookData.Content}
+            next={() => {}}
+          />
+        </View>
+*/
+
+/*
+  const onLeadingNavButtonPressed = () => {
+    ref.startSearchMode("Joey", false, false);
+    console.log("Starting Selection!");
+    
+    this._viewer.selectAll().then(() => {
+      this._viewer.getPageCount().then((pageCount) => {
+        for (let i = 1; i <= pageCount; i++) {
+          this._viewer.getSelection(i).then((e) => {
+            console.log(this.removeTags(e.html));
+          });
+        }
+      });
+    });
+    
+  };
+*/
