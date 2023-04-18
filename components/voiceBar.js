@@ -156,6 +156,18 @@ const VoiceBar = (props) => {
     const respText = useRef("Waiting...");
     const [isListening, setListening] = useState(false); // Could consolidate into one state object with setState
 
+    const fullText = [];
+    props.textArray.forEach((e, index) => {
+        fullText[index] = [];
+        e.split(" ").forEach(word => {
+            if (!isLetter(word.charAt(0))) word = word.substring(1);
+            if (!isLetter(word.charAt(word.length - 1))) word = word.substring(0, word.length - 1);
+            fullText[index].push(word.toLowerCase());
+        });
+    });
+
+    //console.log(fullText);
+
     useEffect(() => {
         if (isInitialMount.current) return;
         pos.current = position;
@@ -164,7 +176,7 @@ const VoiceBar = (props) => {
             respText.current = "Waiting...";
             setDummy(dummy + 1);
         }, 2000);
-        props.next();
+        props.next(position);
     }, [position]);
 
     useEffect(() => {
@@ -209,7 +221,8 @@ const VoiceBar = (props) => {
                         let p = pos.current;
                         console.log("Final: " + texts + "\n");
                         console.log("Position: " + p);
-                        let isSame = isSimilar(texts, props.textArray[p]);
+                        console.log(fullText[p]);
+                        let isSame = isSimilar(texts, fullText[p]);
                         console.log("Same?: " + isSame);
                         if (!isSame) return;
                         console.log("Spoken and input match!");

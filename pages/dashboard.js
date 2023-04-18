@@ -65,6 +65,7 @@ const Item = ({ item }) => (
       description={item.bookDes}
       content={item.content}
       favorite={item.favorite}
+      link={item.link}
     />
   </View>
 );
@@ -127,7 +128,8 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
-          const { Name, Author, Description, Cover, Content, Favorite } = documentSnapshot.data();
+          console.log(documentSnapshot.data());
+          const { Name, Author, Description, Cover, Content, Favorite, Link } = documentSnapshot.data();
           bookDetails.push({
             _id: documentSnapshot.id,
             bookName: Name,
@@ -135,7 +137,8 @@ const Dashboard = ({ navigation }) => {
             bookDes: Description,
             coverUrl:  Cover,
             content: Content,
-            favorite: Favorite
+            favorite: Favorite,
+            link: Link
           })
         })
       });
@@ -176,14 +179,15 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover, Content } = doc.data();
+          const { Name, Author, Description, Cover, Content, Link } = doc.data();
           bookDetails.push({
             _id: doc.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
             coverUrl:  Cover,
-            content: Content
+            content: Content,
+            link: Link
           })
         })
       });

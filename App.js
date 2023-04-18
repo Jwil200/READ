@@ -26,6 +26,7 @@ import PurchaseHistory from './pages/settings/purchaseHistory';
 import About from './pages/settings/about';
 
 
+import PDFTest from './pages/pdfTest'
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -208,6 +209,14 @@ function MyStack() {
             headerShown:false
         }}
       /> */}
+      <Stack.Screen 
+        name="PDFTest" 
+        component={PDFTest} 
+        options={{
+            title: 'PDFTest',
+            headerShown:false
+        }}
+      />
     </Stack.Navigator>
   );
 }
