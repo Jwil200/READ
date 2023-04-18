@@ -36,14 +36,23 @@ buildscript {
 }
 def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
 
+def REACT_NATIVE_VERSION = new File(['node', '--print',"JSON.parse(require('fs').readFileSync(require.resolve('react-native/package.json'), 'utf-8')).version"].execute(null, rootDir).text.trim())
+
 allprojects {
+<<<<<<< HEAD
         configurations.all {
+=======
+    configurations.all {
+>>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
         resolutionStrategy {
             // Remove this override in 0.65+, as a proper fix is included in react-native itself.
             force "com.facebook.react:react-native:" + REACT_NATIVE_VERSION
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
     repositories {
         mavenLocal()
         maven {
@@ -65,4 +74,14 @@ allprojects {
         }
         maven { url 'https://www.jitpack.io' }
     }
+}
+
+android {
+  packagingOptions {
+      pickFirst 'lib/x86/libc++_shared.so'
+      pickFirst 'lib/x86_64/libc++_shared.so'
+      pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+      pickFirst 'lib/arm64-v8a/libc++_shared.so'
+  }
+  rootProject.ext.ffmpegKitPackage = "video"
 }

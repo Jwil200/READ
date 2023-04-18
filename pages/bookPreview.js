@@ -90,9 +90,6 @@ const toggleFavorite = async () => {
   }
 
 
-
-
-
  
 
   return (
@@ -123,6 +120,7 @@ const toggleFavorite = async () => {
       </View>
 
     {book.progress == 0.00 ? (
+<<<<<<< HEAD
       <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />    ) : (
         <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
         )}
@@ -134,6 +132,17 @@ const toggleFavorite = async () => {
       
 
     </View>
+=======
+      <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
+    ) : (
+      <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
+    )}
+    {book.progress == 0.00 ? (
+      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+    ) : (
+      <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+    )}
+>>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
   </ScrollView>
   );
 }
