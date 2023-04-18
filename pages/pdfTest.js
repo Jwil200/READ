@@ -9,12 +9,10 @@ import {
   NativeModules,
   Alert,
 } from "react-native";
-
-import VoiceBar from "../components/voiceBar";
-
 import { DocumentView, RNPdftron, PDFViewCtrl, Config } from "@pdftron/react-native-pdf";
-
 import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/core';
+import VoiceBar from "../components/voiceBar";
 
 const styles = StyleSheet.create({
   main_body_container: {
@@ -33,6 +31,8 @@ const PDFTest = (props) => {
   //const [ref, setRef] = useState(null);
   const ref = useRef(null);
   const [bookData, setBookData] = useState(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     RNPdftron.initialize("Insert commercial license key here after purchase");
@@ -80,6 +80,7 @@ const PDFTest = (props) => {
             document={path}
             onLoadComplete={() => highlightLine(0)}
             disabledElements={Object.values(Config.Buttons)}
+            onLeadingNavButtonPressed={() => navigation.navigate("Dashboard")}
           />
         <View style={styles.voice_box_container}>
           <VoiceBar 
