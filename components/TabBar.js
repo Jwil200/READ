@@ -62,7 +62,7 @@ const TabNavigator = () => {
         options={({route}) => ({
           tabBarStyle: {
             display: getTabBarVisibility(route),
-            backgroundColor: 'green',
+            backgroundColor: '#00579d',
           },
           tabBarIcon: ({color, size}) => (
             <Ionicons name="home-outline" color={color} size={size} />
@@ -75,7 +75,7 @@ const TabNavigator = () => {
         options={{
           animation:'slide_from_bottom',
           tabBarStyle: {
-            backgroundColor: 'orange',
+            backgroundColor: '#66bc8b',
           },
           tabBarIcon: ({color, size}) => (
             <Ionicons name="book-outline" color={color} size={size} />
@@ -90,7 +90,7 @@ const TabNavigator = () => {
         options={{
           animation:'fade',
           tabBarStyle: {
-            backgroundColor: '#FFDE00',
+            backgroundColor: '#f29716',
           },
           tabBarBadge: getBadgeNumberForRoute(),
           tabBarBadgeStyle: {backgroundColor: 'yellow'},
@@ -105,7 +105,7 @@ const TabNavigator = () => {
         options={{
           animation:'fade',
           tabBarStyle: {
-            backgroundColor: 'red',
+            backgroundColor: '#fbdf5e',
           },
           tabBarIcon: ({color, size}) => (
             <Ionicons name="settings-outline" color={color} size={size} />

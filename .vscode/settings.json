@@ -1,5 +1,7 @@
 {
     "java.project.sourcePaths": [
         "components"
-    ]
+],
+"java.configuration.updateBuildConfiguration": "interactive"
+
 }

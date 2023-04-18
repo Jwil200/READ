@@ -78,33 +78,29 @@ const Dashboard = ({ navigation }) => {
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [updateFavorite, setUpdateFavorite] = useState(false);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
  
-  const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection
-    
-    const list = [];
+  const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection   
+    const nameList = [];
     await db
     .collection('Users/' + currentUid + '/Library')
     .where('inLibrary', '==', true)
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(documentSnapshot => {
-        list.push(documentSnapshot.id)
+        nameList.push(documentSnapshot.id)
       })
     })
+    console.log('Name list: ', nameList)
 
-    let nameList = list.filter( e => e !== "Temp" );//nameList holds the a list of of books that has matching parameters
-
-    
     let bookDetails = [];//book details will hold the objects from /library
     
     let progressList = [];//word count, book progress
 
     if(nameList.length != 0){
-      console.log("What is in the namelist:  ", nameList);//console test
+      //console.log("What is in the namelist:  ", nameList);//console test
       //pushes word count and progress to the proglist array
       await db
       .collection('Users/' + currentUid + '/Library')
@@ -119,7 +115,8 @@ const Dashboard = ({ navigation }) => {
           })
         })
       });
-      console.log("What is in the progress list:  ", progressList);//console test
+      console.log("What is in the namelist:  ", nameList);//console test
+      //console.log("What is in the progress list:  ", progressList);//console test
       //pushes other book details to bookDetails array
       await db
       .collection('Books')
@@ -127,19 +124,22 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
-          const { Name, Author, Description, Cover, Content, Favorite } = documentSnapshot.data();
-          bookDetails.push({
+          const { Name, Author, Description, Cover, Content, Favorite, Link } = documentSnapshot.data();          bookDetails.push({
             _id: documentSnapshot.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
             coverUrl:  Cover,
             content: Content,
-            favorite: Favorite
+            favorite: Favorite,
+            link: Link
           })
         })
       });
+      bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
 
+      //console.log('Book Details: ', bookDetails)
+      //console.log('prog list: ', progressList)
       let mergedArray = []//Merge progressList with bookDetails
       for(let i = 0; i < nameList.length; i++){
         let obj1 = bookDetails[i]
@@ -152,49 +152,133 @@ const Dashboard = ({ navigation }) => {
     }
   setBooks(bookDetails);//or set an empty list  
   } 
-  
 
-  const getFavoriteBooks = async () => {//For getting favorite books
-    const list = [];
+  const getRecentBooks = async () => {//For getting recent books  
+    const nameList = [];
     await db
     .collection('Users/' + currentUid + '/Library')
-    .where('Favorite', '==', true)
+    .where('Progress', '!=', 0)
+    .limit(3)
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        list.push(doc.id)
+        nameList.push(doc.id)
       })
     });
-
-    let nameList = list.filter( e => e._id !== "Temp" );//bootleg solution to remove test code
-
     let bookDetails = [];
+    let progressList = [];
+
     if(nameList.length != 0){
+      await db
+      .collection('Users/' + currentUid + '/Library')
+      .where('bookTitle', 'in', nameList)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const { WordCount, Progress} = doc.data();
+          progressList.push({
+            wordCount: WordCount,
+            progress: Progress
+          })
+        })
+      });
+
       await db
       .collection('Books')
       .where('Name', 'in', nameList)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover, Content } = doc.data();
-          bookDetails.push({
+          const { Name, Author, Description, Cover, Content, Link } = doc.data();          bookDetails.push({
             _id: doc.id,
             bookName: Name,
             authorName: Author,
             bookDes: Description,
             coverUrl:  Cover,
-            content: Content
+            content: Content,
+            link: Link
           })
         })
       });
-    setFavorite(bookDetails)
+      bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
+
+      let mergedArray = []//Merge progressList with bookDetails
+      for(let i = 0; i < nameList.length; i++){
+        let obj1 = bookDetails[i]
+        let obj2 = progressList[i]
+        let mergedObj = Object.assign(obj1, obj2)
+        mergedArray.push(mergedObj)
       }
+    setRecent(mergedArray);
+    }
+  setRecent(bookDetails);
+  }
+
+  const getFavoriteBooks = async () => {//For getting favorite books
+    const nameList = [];
+    await db
+    .collection('Users/' + currentUid + '/Library')
+    .where('Favorite', '==', true)
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        nameList.push(doc.id)
+      })
+    });
+
+    let bookDetails = [];
+    let progressList = [];
+
+    if(nameList.length != 0){
+      await db
+      .collection('Users/' + currentUid + '/Library')
+      .where('bookTitle', 'in', nameList)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const { WordCount, Progress} = doc.data();
+          progressList.push({
+            wordCount: WordCount,
+            progress: Progress
+          })
+        })
+      });
+      
+      await db
+      .collection('Books')
+      .where('Name', 'in', nameList)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const { Name, Author, Description, Cover, Content, Link } = doc.data();          bookDetails.push({
+            _id: doc.id,
+            bookName: Name,
+            authorName: Author,
+            bookDes: Description,
+            coverUrl:  Cover,
+            content: Content,
+            link: Link
+          })
+        })
+      });
+      bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
+
+      let mergedArray = []//Merge progressList with bookDetails
+      for(let i = 0; i < nameList.length; i++){
+        let obj1 = bookDetails[i]
+        let obj2 = progressList[i]
+        let mergedObj = Object.assign(obj1, obj2)
+        mergedArray.push(mergedObj)
+      }
+    setFavorite(mergedArray);
+      }
+  setFavorite(bookDetails);
   }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async() => {
       setIsLoading(true);
-      await Promise.all([getLibraryBooks(), getFavoriteBooks()])
+      await Promise.all([getLibraryBooks(), getFavoriteBooks(), getRecentBooks()])
       setIsLoading(false);
     });
     return () => {
@@ -207,11 +291,11 @@ const Dashboard = ({ navigation }) => {
     _id: 1,
     jsx: 
       <View style={styles.container}>
-        <Text style={styles.title}>Recent</Text>
+        <Text style={styles.title}>Continue Reading</Text>
         <Divider style={styles.divider} />
         {
           (recent.length == 0)
-          ? <Text style={styles.emptyText}>You haven't read anything recently.</Text>
+          ? <Text style={styles.emptyText}>You have no books open right Now</Text>
           : <FlatList style={styles.grid}
               data={recent}
               numColumns={3}

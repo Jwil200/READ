@@ -1,10 +1,8 @@
 import * as React from 'react';
-import {Image} from 'react-native';
-import {Icon} from 'react-native-elements';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { LogBox } from 'react-native';
-
 import Login from './pages/login';
 import Checkout from './pages/checkout';
 import Signup from './pages/signup';
@@ -14,7 +12,6 @@ import BookPreview from './pages/bookPreview';
 import Store from './pages/store';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart';
-import FilterModal from './components/filterModal';
 import TabBar from './components/TabBar';
 import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
@@ -25,16 +22,13 @@ import NotificationSettings from './pages/settings/notificationSettings';
 import PurchaseHistory from './pages/settings/purchaseHistory';
 import About from './pages/settings/about';
 
+import PDFTest from './pages/pdfTest.js'
 
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const Stack = createNativeStackNavigator();
 
-const getFilterVisibility = navigation => { //Visibility toggle for filter depending on current tab.
-  let isDashboard = (typeof(navigation.getState().routes[1]) === 'undefined' || typeof(navigation.getState().routes[1].state) === 'undefined' || typeof(navigation.getState().routes[1].state.history[1]) === 'undefined');  let currPage = isDashboard ? null : navigation.getState().routes[1].state.history[1].key;
-  return isDashboard ? isDashboard : !(currPage.includes('Cart') || currPage.includes('Settings'));
-}
 
 
 function MyStack() {
@@ -64,11 +58,15 @@ function MyStack() {
           headerLeft: null, 
         }}
       />
-      <Stack.Screen
-        name="UserProfile"
-        component={UserProfile}
-        options={{  title: 'User Profile' }}
+      <Stack.Screen 
+        name="PDFTest" 
+        component={PDFTest} 
+        options={{
+            title: 'PDFTest',
+            headerShown:false
+        }}
       />
+
       <Stack.Screen 
        name="Dashboard" 
        component={Dashboard} 
@@ -90,9 +88,17 @@ function MyStack() {
        component={BookPreview} 
        options={{
           title: 'Book Preview',
-          headerBackTitle:'Dashboard'
+          //headerBackTitle:'Dashboard'
        }}
       />
+        <Stack.Screen 
+        name="UserProfile"
+        component={UserProfile}
+        options={{
+          title: null,
+          headerBackTitle: 'Back'
+          }}  
+        />
       <Stack.Screen
        name="Tabbar" 
        component={TabBar} 
@@ -102,15 +108,14 @@ function MyStack() {
         ),
         headerLeft: null, 
         headerRight: () => (
-          getFilterVisibility(navigation) ? 
-          <Icon
-              style={{ paddingRight: 10}}
-              name='filter-alt'
-              color='#fff'
-              onPress={() => navigation.navigate('FilterModal')} 
-          />
-          :
-          null
+          <View style={{flexDirection:'row'}} >
+          <TouchableOpacity onPress={() => navigation.navigate('UserProfile')}>
+            <Image
+              style={{width: 30, height: 30, marginRight: 10, borderRadius: 75}}
+              source={{ uri: 'https://picsum.photos/200' }}
+            />
+          </TouchableOpacity>
+          </View>
         )})}
 
        />
@@ -123,15 +128,7 @@ function MyStack() {
          headerLeft: null 
        }}
       />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen 
-        name="FilterModal"
-        component={FilterModal}
-        options={{
-          title: null,
-         headerLeft: null
-         }}  />
-      </Stack.Group>
+
       <Stack.Screen 
        name="Store" 
        component={Store} 
@@ -145,7 +142,7 @@ function MyStack() {
        component={BookStorePreview} 
        options={{
           title: 'Book Preview',
-          headerBackTitle:'Back'
+          //headerBackTitle:'Back'
        }}
       />
       <Stack.Screen 
@@ -200,14 +197,6 @@ function MyStack() {
             headerShown:false
         }}
       />
-      {/* <Stack.Screen 
-        name="Stats" 
-        component={Stats} 
-        options={{
-            title: 'Stats',
-            headerShown:false
-        }}
-      /> */}
     </Stack.Navigator>
   );
 }

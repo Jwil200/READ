@@ -68,9 +68,10 @@ const toggleFavorite = async () => {
 
   
   //console tests
-  console.log('Book details', book)
-  console.log('word Count: ', book.wordCount)
-  console.log("Book progres", book.progress)
+  //console.log('Book details', book)
+  //console.log('word Count: ', book.wordCount)
+  //console.log("Book progres", book.progress)
+  console.log("Book link", book.link)
   
   const removeBook = async() => {//changes the inLibrary to false for this book
     await db
@@ -111,13 +112,12 @@ const toggleFavorite = async () => {
     {book.progress == 0.00 ? (
       <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
     ) : (
-      <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
+      <Text style={styles.bookPreviewProgress}>Progress: {book.progress*100}% Complete</Text>
     )}
     {book.progress == 0.00 ? (
-      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('Book View', {book})} />
-    ) : (
-      <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('Book View', {book})} />
-    )}
+      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />    ) : (
+        <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+        )}
   </ScrollView>
   );
 }

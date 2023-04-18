@@ -86,18 +86,27 @@ const Signup = () => {
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Settings')
-          .doc('Temp')
+          .doc('Settings')
           .set({
-            Name: 'Temp'
+            DarkMode: 'False',
+            Notifications: 'True',
+            Language: 'English',
+            Font: 'Default',
+            FontSize: 'Default',
+            TextToSpeech: 'False',
+            TextToSpeechLanguage: 'English',
           })
 
           db// adds User Statistics subcollection
           .collection('Users')
           .doc(currentuser.uid)
           .collection('Stats')
-          .doc('Temp')
+          .doc('Stats')
           .set({
-            Name: 'Temp'
+            Name: displayname,
+            TimeTimeSpentReading: 0,
+            TotalBooksRead: 0,
+            TotalWordsRead: 0,
           })
 
           db// adds a user purchase history subcollection
