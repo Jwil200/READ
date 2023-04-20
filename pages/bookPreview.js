@@ -111,9 +111,9 @@ const toggleFavorite = async () => {
       <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
     )}
     {book.progress == 0.00 ? (
-      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
     ) : (
-      <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+      <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
     )}
   </ScrollView>
   );

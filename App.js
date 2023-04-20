@@ -24,9 +24,7 @@ import AccountSettings from './pages/settings/accountSettings';
 import NotificationSettings from './pages/settings/notificationSettings';
 import PurchaseHistory from './pages/settings/purchaseHistory';
 import About from './pages/settings/about';
-
-
-import PDFTest from './pages/pdfTest'
+import BookInstance from './pages/bookInstance'
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -210,10 +208,10 @@ function MyStack() {
         }}
       /> */}
       <Stack.Screen 
-        name="PDFTest" 
-        component={PDFTest} 
+        name="BookInstance" 
+        component={BookInstance} 
         options={{
-            title: 'PDFTest',
+            title: 'BookInstance',
             headerShown:false
         }}
       />
