@@ -69,11 +69,11 @@ const UserProfile = () => {
       <Divider style={styles.divider} />
 
 
-          <Text style={styles.statText}>Your Statistics (Last 7 Days)</Text>
+          <Text style={styles.statText}>Your Statistics (Last 7 Days) 📈</Text>
           <Divider style={styles.divider2} />
           <Text style={styles.descriptionText}>250 Words Read, 2 Books Completed</Text>
           <Divider style={styles.divider2} />
-          <Text style={styles.statText}>This Week's Goals</Text>
+          <Text style={styles.statText}>This Week's Goals 🚀</Text>
           <Divider style={styles.divider2} />
 
           <View style={{ flex: 1, flexDirection: "row"}}>
@@ -89,7 +89,7 @@ const UserProfile = () => {
           </View>
 
           <Divider style={styles.divider} />
-          <Text style={styles.statText2}>Your Most Read Book</Text>
+          <Text style={styles.statText2}>📚 Your Most Read Book 📚</Text>
           <Divider style={styles.divider} />
 
 
@@ -105,7 +105,7 @@ const UserProfile = () => {
 
           <Text style={styles.descriptionText2}>{mostReadBook.title}</Text>
           <Divider style={styles.divider} />
-          <Text style={styles.statText}>You are 8 books away from unlocking your FREE book!{'\n'}</Text> 
+          <Text style={styles.statText}>You are 8 books away from unlocking your FREE book! ⭐{'\n'}</Text> 
           <ProgressButton 
           progress={80}
           text="2 Book(s) Left!"

@@ -22,6 +22,7 @@ export default StyleSheet.create({
     },
     bookPreviewContainer:{
       padding: 10,
+      height: 900
     },
     bookTitle:{
       fontSize: 26,
@@ -133,5 +134,38 @@ export default StyleSheet.create({
       alignSelf: "stretch",
       borderColor: "#ccc",
       borderBottomWidth: 1,
-    }
+    },
+    progress:{
+      alignSelf: 'center',
+      padding: 10,
+    },
+    divider: {
+      width: '90%',
+      alignSelf: 'center'
+    },
+    divider2: {
+      width: '60%',
+      marginTop: 10,
+      alignSelf: 'left'
+    },
+    statText: {
+      paddingTop: 15,
+      alignSelf: 'left',
+      fontSize: 16,
+      fontWeight: 'bold',
+      letterSpacing: 0.5,
+    },
+    statText2: {
+      padding: 15,
+      alignSelf: 'center',
+      fontSize: 16,
+      fontWeight: 'bold',
+      letterSpacing: 0.5,
+    },
+    descriptionText: { 
+      padding: 15,
+      alignSelf: 'left',
+      fontSize: 16,
+      letterSpacing: 0.5
+    },
   });
