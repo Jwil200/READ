@@ -74,7 +74,7 @@ const PDFTest = ({route, navigation}) => {
             document={path}
             onLoadComplete={() => highlightLine(0)}
             disabledElements={Object.values(Config.Buttons)}
-            onLeadingNavButtonPressed={() => navigation.navigate("Dashboard")}
+            onLeadingNavButtonPressed={() => navigation.navigate("Tabbar")}
             hideScrollbars={true}
             reflowOrientation={Config.ReflowOrientation.Horizontal} 
             layoutMode={Config.LayoutMode.Single}

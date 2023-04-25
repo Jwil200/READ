@@ -1,11 +1,9 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, Image, StyleSheet, ScrollView} from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView,} from 'react-native';
 import { Divider } from '@rneui/themed';
 import { Button } from '@rneui/base';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ProgressButton } from 'react-native-progress-button';
-import { bookData } from "../assets/books.js"; //dummy data for books
-import BookTile from "../components/bookTile.js"; //dummy book tile
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
@@ -106,18 +104,18 @@ const getName = async() => {
     setIsLoading(false);
   }, []);
 
-  const CircularProgress = () => (
+  const CircularProgress = ({text, progress}) => (
     <AnimatedCircularProgress
       padding={10}
       size={100}
       width={10}
-      fill={20}
+      fill={progress}
       tintColor="#00e0ff"
       backgroundColor="#3d5875">
       {
         () => (
           <Text style={{textAlign: 'center'}}>
-            {"hello"}
+            {text}
           </Text>
         )
       }
@@ -161,7 +159,7 @@ const getName = async() => {
 
           <Text style={styles.statText}>Your Statistics (Last 7 Days)</Text>
           <Divider style={styles.divider2} />
-          <Text style={styles.descriptionText}>250 Words Read, 2 Books Completed</Text>
+          <Text style={styles.descriptionText}> {bookData.TotalWordsRead} Words Read, {bookData.TotalBooksRead} Books Completed</Text>
           <Divider style={styles.divider2} />
           <Text style={styles.statText}>This Week's Goals</Text>
           <Divider style={styles.divider2} />
@@ -169,7 +167,7 @@ const getName = async() => {
           <View style={{ flex: 1, flexDirection: "row"}}>
             <CircularProgress
               text= {'250/700\nWords'}
-              progress= {30}/>
+              progress= {300/400 * 100}/>
             <CircularProgress
               text= {'2/5\nBooks'}
               progress= {40}/>
@@ -184,12 +182,10 @@ const getName = async() => {
 
 
           <View style={styles.item}>
-            <BookTile 
-            key={"i" + bookData._id}
-            coverUrl={bookData.Image} 
-            title= {bookData.bookTitle}
-            disabled={true}
-            />
+          <Image
+            style={styles.image}
+            source={{ uri: bookData.Image }}
+        />
           </View>
 
 
@@ -234,6 +230,10 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
+  },
+  image : {
+    width: 100,
+    height: 150,
   },
   nameText: {
     paddingTop: 10,

@@ -21,8 +21,9 @@ import AccountSettings from './pages/settings/accountSettings';
 import NotificationSettings from './pages/settings/notificationSettings';
 import PurchaseHistory from './pages/settings/purchaseHistory';
 import About from './pages/settings/about';
-
+import ResultPage from './pages/resultPage';
 import PDFTest from './pages/pdfTest.js'
+import AnimationTest from './pages/animationTest.js'
 
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -34,7 +35,7 @@ const Stack = createNativeStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Login"
+      initialRouteName="Tabbar"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -56,6 +57,14 @@ function MyStack() {
         options={{
           title: 'Login',
           headerLeft: null, 
+        }}
+      />
+      <Stack.Screen
+        name="AnimaitonTest"
+        component={AnimationTest}
+        options={{
+          title: 'AnimationTest',
+          headerLeft: null,
         }}
       />
       <Stack.Screen 
@@ -83,6 +92,7 @@ function MyStack() {
           headerLeft: null
        }}
       />
+      
       <Stack.Screen 
        name="BookPreview" 
        component={BookPreview} 
@@ -119,6 +129,7 @@ function MyStack() {
         )})}
 
        />
+
 
       <Stack.Screen 
        name="Settings" 
@@ -160,6 +171,11 @@ function MyStack() {
           { title: 'Voice' },
           { headerLeft: null } 
         }
+      />
+      <Stack.Screen
+        name="ResultPage"
+        component={ResultPage}
+        options={{  title: 'Result' }}
       />
       <Stack.Screen 
        name="Checkout" 

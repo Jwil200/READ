@@ -21,11 +21,11 @@ export default StyleSheet.create({
       backgroundColor: '#fff'
     },
     bookPreviewContainer:{
-      padding: 20 
+      padding: 10, 
     },
     bookPreviewImage: {
       width: 300,
-      height: 400,
+      height: 300,
       alignSelf: 'center',
       borderRadius: 10,
       marginBottom: 10,
@@ -98,8 +98,7 @@ export default StyleSheet.create({
       top: 5,
       right: 15,
     },
-  
-  
+    
     appButtonContainer: {
       elevation: 8,
       backgroundColor: "#009688",
@@ -164,7 +163,41 @@ export default StyleSheet.create({
       alignSelf: "stretch",
       borderColor: "#ccc",
       borderBottomWidth: 1,
-    }
+    },
+  progress:{
+    alignSelf: 'center',
+    padding: 10,
+  },
+  divider: {
+    width: '90%',
+    alignSelf: 'center'
+  },
+  divider2: {
+    width: '60%',
+    marginTop: 10,
+    alignSelf: 'left'
+  },
+  statText: {
+    paddingTop: 15,
+    alignSelf: 'left',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  statText2: {
+    padding: 15,
+    alignSelf: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  descriptionText: { 
+    padding: 15,
+    alignSelf: 'left',
+    fontSize: 16,
+    letterSpacing: 0.5
+  },
+
 
   
   });

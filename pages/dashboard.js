@@ -65,6 +65,8 @@ const Item = ({ item }) => (
       description={item.bookDes}
       content={item.content}
       favorite={item.favorite}
+      link={item.link}
+
     />
   </View>
 );

@@ -6,6 +6,9 @@ import { SearchBar, Button, Icon} from 'react-native-elements';
 import BookStoreTile from "../components/bookStoreTile.js";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import DarkModeContext from '../components/DarkModeContext.js';
+
+
 
 
 

@@ -3,6 +3,8 @@ import { Animated, StyleSheet, View, Text, PermissionsAndroid } from 'react-nati
 import { Divider, Button } from '@rneui/themed';
 import LiveAudioStream from 'react-native-live-audio-stream';
 import { ASSEMBLY_AI_API_KEY } from "@env";
+import playGoodJobAnimation from '../components/goodJobAnimation'; // Update the import path to the location of your GoodJobAnimation component
+
 
 // How similar two strings have to be in order to pass
 // If there is less than 10 words defaults to 50%
@@ -225,6 +227,7 @@ const VoiceBar = (props) => {
                         let isSame = isSimilar(texts, fullText[p]);
                         console.log("Same?: " + isSame);
                         if (!isSame) return;
+                        
                         console.log("Spoken and input match!");
                         setPosition(p + 1);
                         break;
@@ -242,6 +245,7 @@ const VoiceBar = (props) => {
                 }
             };
             LiveAudioStream.start();
+
         }
         else {
             LiveAudioStream.stop();

@@ -2,13 +2,14 @@
 import React, { useState, useEffect} from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Tile } from "@rneui/themed";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import styles from '../assets/styles';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import OrangeButton from '../assets/orangeButton';
+import { Tile, Divider } from "@rneui/themed";
+import { ProgressButton } from 'react-native-progress-button';
+
 
 
 const BookPreview = (props) => {
@@ -105,19 +106,34 @@ const toggleFavorite = async () => {
         <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteIcon}>
           <Icon name={isFavorite ? 'heart' : 'heart-o'} size={50} color="#FFA500" />
         </TouchableOpacity>
-    </View>
+    
     <Text style={styles.bookTitle}>{book.title}</Text>
     <Text style={styles.bookPreviewDescription}>{book.author}</Text>
     <Text style={styles.bookPreviewDescription}>{book.description}</Text>
-    {book.progress == 0.00 ? (
-      <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
-    ) : (
-      <Text style={styles.bookPreviewProgress}>Progress: {book.progress*100}% Complete</Text>
-    )}
+    <View style={styles.progress}>
+        <Text style={styles.bookPreviewProgress}>Progress:</Text>
+       <ProgressButton 
+          progress={book.progress * 100}
+          text={book.progress*100 + "% Complete"}
+          buttonState="progress"
+          useNativeDriver= {true}
+          progressColor="#00579d"
+          textStyle={{color: 'black', fontSize: 16, fontWeight: 'bold', letterSpacing: 0.5,}}
+          />        
+      </View>
+
     {book.progress == 0.00 ? (
       <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />    ) : (
         <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
         )}
+    <Divider />
+    <Text style={styles.statText2}>🏆 Achievements For {book.title}: </Text>
+   
+      <Text style={styles.statText2}>📖 Words Read: {book.wordCount} </Text> 
+      <Text style={styles.statText2}>⏰ Time Read: {book.timeRead} </Text>
+      
+
+    </View>
   </ScrollView>
   );
 }

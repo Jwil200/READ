@@ -6,29 +6,34 @@ import { colors, SearchBar } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import SettingsOption from '../../components/settingsOptions.js';
 import auth from '@react-native-firebase/auth';
-const styles = StyleSheet.create({
-  rowContainer: {
-    height: 60,
-    flexDirection: "row",
-    alignItems: 'center',
-    backgroundColor: '#d3d3d3',
-    marginTop: 10,
-    elevation: 10,
-    shadowColor: '#52006A',
-  },
-  icon: {
-    margin: 5,
-    marginLeft: 5
-  },
-  text: {
-  },
-  divider: {
-    width: '98%',
-    marginVertical: 5,
-  },
-});
+import DarkModeContext from '../../components/DarkModeContext.js';
+import { useContext } from 'react';
 
 const Settings = ({navigation}) => {
+  const { isDarkModeEnabled, setIsDarkModeEnabled } = useContext(DarkModeContext);
+  const dynamicStyles = StyleSheet.create({
+    rowContainer: {
+      height: 60,
+      flexDirection: "row",
+      alignItems: 'center',
+      backgroundColor: isDarkModeEnabled ? '#424242' : '#d3d3d3',
+      marginTop: 10,
+      elevation: 10,
+      shadowColor: '#52006A',
+    },
+    icon: {
+      margin: 5,
+      marginLeft: 5
+    },
+    text: {
+      color: isDarkModeEnabled ? '#ffffff' : '#000000',
+  
+    },
+    divider: {
+      width: '98%',
+      marginVertical: 5,
+    },
+  });
   const signOut = () => {
     auth()
       .signOut()
@@ -83,11 +88,23 @@ const Settings = ({navigation}) => {
       navigation: navigation
     }
   ]
-  i = 0
+   let i = 0
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: isDarkModeEnabled ? '#303030' : '#ffffff' }}>
       <View style={{flexDirection: 'column'}}>
-      {settingOptions.map(e => <SettingsOption styles={styles} navigation={e.navigation} icon={e.icon} title={e.title} isSwitch={e.type === "toggle"} screenName={e.screenName} key={"o" + (++i)}/>)}
+      {settingOptions.map((e, index) => (
+        <SettingsOption
+          styles={dynamicStyles}
+          navigation={e.navigation}
+          icon={e.icon}
+          title={e.title}
+          isSwitch={e.type === "toggle"}
+          screenName={e.screenName}
+          key={`o${index}`}
+          setIsDarkModeEnabled={e.title === 'Dark Mode' ? setIsDarkModeEnabled : undefined}
+
+        />
+      ))}
       </View>
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Button 
@@ -103,9 +120,10 @@ const Settings = ({navigation}) => {
           }}
           onPress={() => signOut()}
         />
-        <Text style={{marginTop:30, fontSize:17, marginBottom: 20}}> {'\u00A9'}Read 2022 </Text>
+        <Text style={{marginTop:30, fontSize:17, marginBottom: 20, color: isDarkModeEnabled ? '#ffffff' : '#000000'}}> {'\u00A9'}Read 2022 </Text>
       </View>
     </ScrollView>
   );
-} 
+};
+
 export default Settings;
