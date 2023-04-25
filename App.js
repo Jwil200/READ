@@ -25,7 +25,7 @@ import ResultPage from './pages/resultPage';
 import PDFTest from './pages/pdfTest.js'
 import AnimationTest from './pages/animationTest.js'
 
-import PDFTest from './pages/pdfTest'
+import BookInstance from './pages/bookInstance'
 
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
@@ -214,8 +214,6 @@ function MyStack() {
             headerShown:false
         }}
       />
-<<<<<<< HEAD
-=======
       {/* <Stack.Screen 
         name="Stats" 
         component={Stats} 
@@ -225,14 +223,13 @@ function MyStack() {
         }}
       /> */}
       <Stack.Screen 
-        name="PDFTest" 
-        component={PDFTest} 
+        name="BookInstance" 
+        component={BookInstance} 
         options={{
-            title: 'PDFTest',
+            title: 'BookInstance',
             headerShown:false
         }}
       />
->>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
     </Stack.Navigator>
   );
 }

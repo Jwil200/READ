@@ -4,12 +4,14 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Sound from 'react-native-sound';
 
 
-const ResultPage = () => {//props) => {
+const ResultPage = ({route, navigation}) => {//props) => {
+  const results = {...route.params};
+  console.log(results);
   const dummyCorrectWords = 50;
   const dummyIncorrectWords = 5;
   const dummyTimeRead = 120;
   const dummyPagesRead = 20;
-  const dummyLinesRead = 100;
+  const dummyLinesRead = results.linesRead;
 
  
 

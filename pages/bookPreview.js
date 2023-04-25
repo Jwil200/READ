@@ -13,6 +13,7 @@ import { ProgressButton } from 'react-native-progress-button';
 
 
 const BookPreview = (props) => {
+  console.log(props);
   const book = props.route.params.props;
   const db = firestore();
   const currentUid = auth().currentUser.uid;
@@ -82,9 +83,7 @@ const toggleFavorite = async () => {
       inLibrary: false
     })
     .then(() => {
-      console.log('Book removed from your library!!')
-      navigation.navigate('Tabbar');
-
+      console.log('Book removed from your library!!');
     })
     Alert.alert("Book Removed from your Library")
   }
@@ -103,46 +102,24 @@ const toggleFavorite = async () => {
         <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteIcon}>
           <Icon name={isFavorite ? 'heart' : 'heart-o'} size={50} color="#FFA500" />
         </TouchableOpacity>
-    
+    </View>
     <Text style={styles.bookTitle}>{book.title}</Text>
     <Text style={styles.bookPreviewDescription}>{book.author}</Text>
     <Text style={styles.bookPreviewDescription}>{book.description}</Text>
     <View style={styles.progress}>
-        <Text style={styles.bookPreviewProgress}>Progress:</Text>
-       <ProgressButton 
-          progress={book.progress * 100}
-          text={book.progress*100 + "% Complete"}
-          buttonState="progress"
-          useNativeDriver= {true}
-          progressColor="#00579d"
-          textStyle={{color: 'black', fontSize: 16, fontWeight: 'bold', letterSpacing: 0.5,}}
-          />        
+        <Text style={styles.bookPreviewProgress}>Progress:</Text>       
       </View>
 
     {book.progress == 0.00 ? (
-<<<<<<< HEAD
-      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />    ) : (
-        <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
-        )}
-    <Divider />
-    <Text style={styles.statText2}>🏆 Achievements For {book.title}: </Text>
-   
-      <Text style={styles.statText2}>📖 Words Read: {book.wordCount} </Text> 
-      <Text style={styles.statText2}>⏰ Time Read: {book.timeRead} </Text>
-      
-
-    </View>
-=======
       <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
     ) : (
       <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
     )}
     {book.progress == 0.00 ? (
-      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+      <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
     ) : (
-      <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('PDFTest', {book})} />
+      <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
     )}
->>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
   </ScrollView>
   );
 }

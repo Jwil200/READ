@@ -3,7 +3,7 @@ import { Animated, StyleSheet, View, Text, PermissionsAndroid } from 'react-nati
 import { Divider, Button } from '@rneui/themed';
 import LiveAudioStream from 'react-native-live-audio-stream';
 import { ASSEMBLY_AI_API_KEY } from "@env";
-import playGoodJobAnimation from '../components/goodJobAnimation'; // Update the import path to the location of your GoodJobAnimation component
+import GoodJobAnimation from './goodJobAnimation'; // Update the import path to the location of your GoodJobAnimation component
 
 
 // How similar two strings have to be in order to pass
@@ -152,7 +152,6 @@ const VoiceBar = (props) => {
     const isInitialMount = useRef(true);
     const ws = useRef(null);
     
-    const [position, setPosition] = useState(0); // Which sentence are we on
     const [dummy, setDummy] = useState(0);
     const pos = useRef(0);
     const respText = useRef("Waiting...");
@@ -172,14 +171,14 @@ const VoiceBar = (props) => {
 
     useEffect(() => {
         if (isInitialMount.current) return;
-        pos.current = position;
+        pos.current = props.position;
         respText.current = "Good!";
         setTimeout(() => {
             respText.current = "Waiting...";
             setDummy(dummy + 1);
         }, 2000);
-        props.next(position);
-    }, [position]);
+        props.next(props.position);
+    }, [props.position]);
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -229,7 +228,7 @@ const VoiceBar = (props) => {
                         if (!isSame) return;
                         
                         console.log("Spoken and input match!");
-                        setPosition(p + 1);
+                        props.setPosition(p + 1);
                         break;
                     case "SessionBegins":
                         console.log("Established connection to AssemblyAI");
@@ -255,7 +254,7 @@ const VoiceBar = (props) => {
         }
     }, [isListening]);
 
-    return (
+    return (<>
         <View style={styles.container}>
             <Button 
                 style={styles.button}
@@ -278,6 +277,6 @@ const VoiceBar = (props) => {
                 style={styles.text}
             >{respText.current}</Text>
         </View>
-    );
+    </>);
 };
 export default VoiceBar;

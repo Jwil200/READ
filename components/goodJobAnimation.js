@@ -3,6 +3,8 @@ import { View, StyleSheet, Animated, Dimensions, Image } from 'react-native';
 import Sound from 'react-native-sound'; // Import react-native-sound
 
 const GoodJobAnimation = ({ visible }) => {
+  console.log(`==== GOOD JOB RENDER ${visible} ====\nWindow Height: ${windowHeight}`);
+
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;
   const opacityValue = useRef(new Animated.Value(0)).current;
@@ -14,6 +16,7 @@ const GoodJobAnimation = ({ visible }) => {
       opacityValue.setValue(0);
 
       // Start animation
+      console.log("Animation Start!!")
       Animated.parallel([
         Animated.spring(scaleValue, {
           toValue: 1,
@@ -47,11 +50,10 @@ const GoodJobAnimation = ({ visible }) => {
         }).start();
       }, 3000);
     }
-  }, [visible, scaleValue, opacityValue]);
+  });
 
   return (
     <View style={styles.container}>
-      {visible && (
         <Animated.View
           style={[
             styles.imageContainer,
@@ -66,7 +68,6 @@ const GoodJobAnimation = ({ visible }) => {
             style={styles.image}
           />
         </Animated.View>
-      )}
     </View>
   );
 };
@@ -81,6 +82,7 @@ const styles = StyleSheet.create({
     left: windowWidth / 2 - 100,
     width: 200,
     height: 200,
+    zIndex: 20
   },
   imageContainer: {
     justifyContent: 'center',

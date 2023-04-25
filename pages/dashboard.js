@@ -66,10 +66,6 @@ const Item = ({ item }) => (
       content={item.content}
       favorite={item.favorite}
       link={item.link}
-<<<<<<< HEAD
-
-=======
->>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
     />
   </View>
 );
@@ -129,13 +125,9 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
-<<<<<<< HEAD
-          const { Name, Author, Description, Cover, Content, Favorite, Link } = documentSnapshot.data();          bookDetails.push({
-=======
           console.log(documentSnapshot.data());
           const { Name, Author, Description, Cover, Content, Favorite, Link } = documentSnapshot.data();
           bookDetails.push({
->>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
             _id: documentSnapshot.id,
             bookName: Name,
             authorName: Author,
@@ -200,12 +192,8 @@ const Dashboard = ({ navigation }) => {
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
-<<<<<<< HEAD
-          const { Name, Author, Description, Cover, Content, Link } = doc.data();          bookDetails.push({
-=======
           const { Name, Author, Description, Cover, Content, Link } = doc.data();
           bookDetails.push({
->>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
             _id: doc.id,
             bookName: Name,
             authorName: Author,
