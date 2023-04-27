@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, ImageBackground, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Sound from 'react-native-sound';
+import OrangeButton from '../assets/orangeButton';
 
 
 const ResultPage = ({route, navigation}) => {//props) => {
@@ -12,6 +13,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
   const dummyTimeRead = 120;
   const dummyPagesRead = 20;
   const dummyLinesRead = results.linesRead;
+
 
  
 
@@ -58,13 +60,14 @@ const ResultPage = ({route, navigation}) => {//props) => {
               {(fill) => <Text style={styles.progressText}>{Math.round(progress)}%</Text>}
             </AnimatedCircularProgress>
           </View>
-            <Text style={styles.titleText}>Results</Text>
+        <Text style={styles.titleText}>Results</Text>
             
-          <Text style={styles.corectWordsText}>Correct Words: {dummyCorrectWords}</Text>
-          <Text style={styles.incorrectWordsText}>Incorrect Words: {dummyIncorrectWords}</Text>
-          <Text style={styles.timeReadText}>Reading Time: {dummyTimeRead} seconds</Text>
-          <Text style={styles.pagesReadText}> Pages Read {dummyPagesRead}</Text>
+        <Text style={styles.corectWordsText}>Correct Words: {dummyCorrectWords}</Text>
+        <Text style={styles.incorrectWordsText}>Incorrect Words: {dummyIncorrectWords}</Text>
+        <Text style={styles.timeReadText}>Reading Time: {dummyTimeRead} seconds</Text>
+        <Text style={styles.pagesReadText}> Pages Read {dummyPagesRead}</Text>
         <Text style={styles.linesReadText}>Lines Read: {dummyLinesRead} seconds</Text>
+        <OrangeButton style={styles.OrangeButton} title = "Back to Dashboard" size = 'sm' onPress={() => navigation.navigate('Tabbar')}></OrangeButton>
         </View>
       </ImageBackground>
      
@@ -74,45 +77,40 @@ const ResultPage = ({route, navigation}) => {//props) => {
 
 const styles = StyleSheet.create({
     titleText: {
-        top: 10,
         fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
         fontSize: 20,
-        color: 'white',
+        color: 'black',
         textAlign: 'center',
-        },
+    },
     container: {
-      flex: 1,
+        flex: 1,
     },
     backgroundImage: {
-      flex: 1,
-      width: '100%',
-      height: '25%',
-      resizeMode: 'cover',
+        flex: 1,
+        width: '100%',
+        height: '25%',
+        resizeMode: 'cover',
     },
     contentContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 16,
-      backgroundColor: 'rgba(0, 0, 0, 0.4)', // Add a transparent black background to the content
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     progressContainer: {
       marginVertical: 16,
     },
     progressText: {
-      fontSize: 20,
-      color: 'white',
-      textAlign: 'center',
+        fontSize: 20,
+        color: 'black',
+        textAlign: 'center',
     },
     corectWordsText: {
-        top: 10,
-    fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
-      fontSize: 20,
-      color: 'blue',
-      textAlign: 'center',
+        fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
+        fontSize: 20,
+        color: 'blue',
+        textAlign: 'center',
     },
     pagesReadText: {
-        top: 10,
         fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
         fontSize: 20,
         color: 'blue',
@@ -120,46 +118,46 @@ const styles = StyleSheet.create({
         },
 
     incorrectWordsText: {
-        top: 10,
         fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
-      fontSize: 20,
-      color: '#ff4d4f',
-      textAlign: 'center',
+        fontSize: 20,
+        color: '#ff4d4f',
+        textAlign: 'center',
     },
     timeReadText: {
-        top: 10,
         fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
-      fontSize: 20,
-      color: 'green',
-      textAlign: 'center',
+        fontSize: 20,
+        color: 'green',
+        textAlign: 'center',
     },
     linesReadText: {
-        top: 10,
         fontFamily: 'serif', // 'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy
         fontSize: 20,
         color: 'red',
         textAlign: 'center',
     },
     dividerContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 16,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 16,
     },
     dividerLine: {
-      flex: 1,
-      height: 1,
-      backgroundColor: 'white',
+        flex: 1,
+        height: 1,
+        backgroundColor: 'black',
     },
     dividerTitle: {
-      fontSize: 18,
-      color: 'white',
-      marginHorizontal: 16,
+        fontSize: 18,
+        color: 'black',
+        marginHorizontal: 16,
     },
     text: {
-      fontSize: 16,
-      color: 'white',
-      marginVertical: 8,
+        fontSize: 16,
+        color: 'black',
+        marginVertical: 8,
     },
+    OrangeButton: {
+        
+    }
   });
 
 export default ResultPage;

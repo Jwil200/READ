@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Image, Text  } from 'react-native';
 import Sound from 'react-native-sound'; // Import react-native-sound
 
-const keepGoingAnimation = ({ visible }) => {
+const TryAgainAnimation = ({ visible }) => {
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;
   const opacityValue = useRef(new Animated.Value(0)).current;
@@ -28,7 +28,7 @@ const keepGoingAnimation = ({ visible }) => {
       ]).start();
 
       // Play sound
-      const sound = new Sound(require('../assets/ding-sound-effect.mp3'), (error) => {
+      const sound = new Sound(require('../assets/app-error.mp3'), (error) => {
         if (error) {
           console.log('Failed to load the sound', error);
           return;
@@ -38,7 +38,7 @@ const keepGoingAnimation = ({ visible }) => {
         });
       });
 
-      // Hide animation after 2 seconds
+      // Hide animation after 3 seconds
       setTimeout(() => {
         Animated.timing(opacityValue, {
           toValue: 0,
@@ -52,20 +52,20 @@ const keepGoingAnimation = ({ visible }) => {
   return (
     <View style={styles.container}>
       {visible && (
-        <Animated.View
-          style={[
+    <Animated.View
+      style={[
             styles.textContainer,
-            {
-              transform: [{ scale: scaleValue }],
-              opacity: opacityValue,
-            },
-          ]}
-        >
-          <Text style={styles.text}>Keep Going!</Text>
-        </Animated.View>
+        {
+          transform: [{ scale: scaleValue }],
+          opacity: opacityValue,
+        },
+      ]}
+    >
+          <Text style={styles.text}>Try Again</Text>
+    </Animated.View>
       )}
-    </View>
-  );
+</View>
+);
 };
 
 const windowWidth = Dimensions.get('window').width;
@@ -92,6 +92,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'uppercase',
   },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 0,
+    bottom: 200
+  },
+  image: {
+    width: 250,
+    height: 250,
+    resizeMode: 'contain', // Preserve aspect ratio
+
+  },
 });
 
-export default keepGoingAnimation;
+export default TryAgainAnimation;

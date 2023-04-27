@@ -36,7 +36,7 @@ const Stack = createNativeStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="Tabbar"
+      initialRouteName="AnimaitonTest"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {

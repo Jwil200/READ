@@ -41,7 +41,7 @@ const GoodJobAnimation = ({ visible }) => {
         });
       });
 
-      // Hide animation after 2 seconds
+      // Hide animation after 3 seconds
       setTimeout(() => {
         Animated.timing(opacityValue, {
           toValue: 0,

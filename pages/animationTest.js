@@ -1,18 +1,13 @@
 import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
 import GoodJobAnimation from '../components/goodJobAnimation';
-import KeepGoingAnimation from '../components/keepGoingAnimation';
-
+import TryAgainAnimation from '../components/tryAgainAnimation';
 
 const MyComponent = () => {
-    const renderGoodJobAnimation = (visible) => {
-        return <GoodJobAnimation visible={visible} />;
-      };
     
       return (
         <View>
-          {/* Render GoodJobAnimation with visible prop set to true */}
-          {renderGoodJobAnimation(true)}
-          {renderGoodJobAnimation(false)}
+            <TryAgainAnimation visible={true} />
+            <TryAgainAnimation visible={false} />
         </View>
       );
 };

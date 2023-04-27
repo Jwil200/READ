@@ -197,6 +197,9 @@ export default StyleSheet.create({
     fontSize: 16,
     letterSpacing: 0.5
   },
+  orangeButton: {
+   padding: 10,
+  }
 
 
   
