@@ -14,7 +14,7 @@ import { DocumentView, RNPdftron, PDFViewCtrl, Config } from "@pdftron/react-nat
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import VoiceBar from "../components/voiceBar";
-import GoodJobAnimation from '../components/goodJobAnimation';
+import BadgeAnimation from '../components/badgeAnimation';
 
 const styles = StyleSheet.create({
   main_body_container: {
@@ -37,6 +37,8 @@ const BookInstance = ({route, navigation}) => {
   const [bookData, setBookData] = useState(null);
   const [position, setPosition] = useState(0);
   const initialPosition = useRef(0);
+  const previousPosition = useRef(0);
+  const pressedOnce = useRef(false);
 
   useEffect(() => {
     RNPdftron.initialize("Insert commercial license key here after purchase");
@@ -77,12 +79,19 @@ const BookInstance = ({route, navigation}) => {
   
   const path = bookData ? bookData.link : "https://www.cdc.gov/ncbddd/actearly/documents/amazing_me_final_version_508.pdf";
 
+  console.log("Test Results " + (previousPosition.current != position))
   console.log("Test Results " + (initialPosition.current != position))
+
+  let pageChanged = false;
+  if (previousPosition.current != position) {
+    pageChanged = true;
+    previousPosition.current = position;
+  }
 
   return (
     bookData
     ? <>
-      <GoodJobAnimation visible={initialPosition.current != position} />
+      <BadgeAnimation visible={(initialPosition.current != position)} variant={"correct"} />
       <DocumentView
         ref={(c) => ref.current = c}
         document={path}
@@ -92,8 +101,13 @@ const BookInstance = ({route, navigation}) => {
           //test();
           console.log(position)
           if (position == 0) {
-            highlightLine(1)
-            setPosition(1)
+            highlightLine(1);
+            setPosition(1);
+          }
+          else if (!pressedOnce.current) {
+            highlightLine(1);
+            setPosition(1);
+            pressedOnce.current = true;
           }
           else {
             navigation.navigate("ResultPage", {"linesRead": position});

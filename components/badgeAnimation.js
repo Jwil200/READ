@@ -1,22 +1,34 @@
 import React, { useRef, useEffect } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Image } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions, Image, Text  } from 'react-native';
 import Sound from 'react-native-sound'; // Import react-native-sound
 
-const GoodJobAnimation = ({ visible }) => {
-  console.log(`==== GOOD JOB RENDER ${visible} ====\nWindow Height: ${windowHeight}`);
+const variants = {
+  correct: {
+    sound: require('../assets/correct-answer-sound-effect-19.mp3'),
+    image: require('../assets/Great.png'),
+  },
+  incorrect: {
+    sound: require('../assets/app-error.mp3'),
+    image: require(''),
+  }
+}
+
+const BadgeAnimation = ({ visible, variant }) => {
+  if (!variants[variant])
+    variant = "correct"
 
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;
   const opacityValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    console.log(`Badge Animation ${variant}: ${visible}`);
     if (visible) {
       // Reset animation values
       scaleValue.setValue(0);
       opacityValue.setValue(0);
 
       // Start animation
-      console.log("Animation Start!!")
       Animated.parallel([
         Animated.spring(scaleValue, {
           toValue: 1,
@@ -31,7 +43,7 @@ const GoodJobAnimation = ({ visible }) => {
       ]).start();
 
       // Play sound
-      const sound = new Sound(require('../assets/correct-answer-sound-effect-19.mp3'), (error) => {
+      const sound = new Sound(variants[variant].sound, (error) => {
         if (error) {
           console.log('Failed to load the sound', error);
           return;
@@ -64,7 +76,7 @@ const GoodJobAnimation = ({ visible }) => {
           ]}
         >
           <Image
-            source={require('../assets/Great.png')} 
+            source={variants[variant].image} 
             style={styles.image}
           />
         </Animated.View>
@@ -84,6 +96,19 @@ const styles = StyleSheet.create({
     height: 200,
     zIndex: 20
   },
+  textContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'orange',
+    borderRadius: 20,
+    padding: 20,
+  },
+  text: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
   imageContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -98,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GoodJobAnimation;
+export default BadgeAnimation;
