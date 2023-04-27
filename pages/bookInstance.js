@@ -77,10 +77,12 @@ const BookInstance = ({route, navigation}) => {
   
   const path = bookData ? bookData.link : "https://www.cdc.gov/ncbddd/actearly/documents/amazing_me_final_version_508.pdf";
 
+  console.log("Test Results " + (initialPosition.current != position))
+
   return (
     bookData
     ? <>
-      <GoodJobAnimation visible={initialPosition != position} />
+      <GoodJobAnimation visible={initialPosition.current != position} />
       <DocumentView
         ref={(c) => ref.current = c}
         document={path}
@@ -88,7 +90,14 @@ const BookInstance = ({route, navigation}) => {
         disabledElements={Object.values(Config.Buttons)}
         onLeadingNavButtonPressed={() => {
           //test();
-          navigation.navigate("ResultPage", {"linesRead": position});
+          console.log(position)
+          if (position == 0) {
+            highlightLine(1)
+            setPosition(1)
+          }
+          else {
+            navigation.navigate("ResultPage", {"linesRead": position});
+          }
         }}
         hideScrollbars={true}
         reflowOrientation={Config.ReflowOrientation.Horizontal} 

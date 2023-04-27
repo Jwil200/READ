@@ -36,7 +36,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
         sound.release();
       }
     };
-    }, []);  
+    }, []);
 
   return (
     <View style={styles.container}>
@@ -154,9 +154,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
         marginVertical: 8,
-    },
-    OrangeButton: {
-        
     }
   });
 
