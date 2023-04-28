@@ -36,7 +36,7 @@ const Stack = createNativeStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="AnimaitonTest"
+      initialRouteName="AnimationTest"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -47,6 +47,14 @@ function MyStack() {
           fontWeight: 'bold',
         },
       }}>
+              <Stack.Screen
+        name="AnimaitonTest"
+        component={AnimationTest}
+        options={{
+          title: 'AnimationTest',
+          headerLeft: null,
+        }}
+      />
       <Stack.Screen 
         name="Signup" 
         component={Signup} 
@@ -60,14 +68,7 @@ function MyStack() {
           headerLeft: null, 
         }}
       />
-      <Stack.Screen
-        name="AnimaitonTest"
-        component={AnimationTest}
-        options={{
-          title: 'AnimationTest',
-          headerLeft: null,
-        }}
-      />
+
       <Stack.Screen 
         name="PDFTest" 
         component={PDFTest} 

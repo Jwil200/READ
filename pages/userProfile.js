@@ -17,6 +17,8 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [userStats, setUserStats] = useState([]);
 
+  
+
   const getBookData = async () => {//gets the most read book
     try {
       const querySnapshot = await db.collection('Users/' + currentUid + '/Library').get();
@@ -30,12 +32,12 @@ const UserProfile = () => {
   const getUserStats = async() => {//gets user book stats
     let data = [];
     try {
-      const querySnapshot = await db.collection('Users/' + currentUid + '/Stats').get()
-      .then(querySnapshot => {
-        const { TotalWordsRead, TotalBooksRead, TotalTimeSpentReading, Name } = querySnapshot.docs[0].data();
+      await db.collection('Users/' + currentUid + '/Stats').get()
+      .then(documentSnapshot => {
+        const { TotalWordsRead, TotalBooksRead, TotalTimeSpentReading, Name } = documentSnapshot.docs[0].data();
         data.push({TotalWords: TotalWordsRead, TotalBooks: TotalBooksRead, TotalTimeSpent: TotalTimeSpentReading, Name: Name});
       })
-
+      console.log('User Stats:', data)
       setUserStats(data);
 
     }
@@ -50,6 +52,7 @@ const UserProfile = () => {
       .then(querySnapshot => {
         const { bookTitle, TimesRead, Name } = querySnapshot.docs[0].data();
         const data = ({bookTitle: bookTitle, timesOpened: TimesRead});
+        console.log(data);
         getBookImage(data);
       })
     }
