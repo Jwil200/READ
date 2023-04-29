@@ -4,8 +4,6 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Sound from 'react-native-sound';
 import OrangeButton from '../assets/orangeButton';
 import PerfectScoreAnimation from '../components/perfectScoreAnimation';
-import { useNavigation } from '@react-navigation/core';
-import GoodJobAnimation from '../components/goodJobAnimation';
 
 
 const ResultPage = ({route, navigation}) => {//props) => {

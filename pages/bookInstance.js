@@ -14,8 +14,7 @@ import { DocumentView, RNPdftron, PDFViewCtrl, Config } from "@pdftron/react-nat
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import VoiceBar from "../components/voiceBar";
-import GoodJobAnimation from '../components/goodJobAnimation';
-
+import PerfectScoreAnimation from "../components/perfectScoreAnimation";
 const styles = StyleSheet.create({
   main_body_container: {
       backgroundColor: '#fff'
@@ -91,7 +90,7 @@ const BookInstance = ({route, navigation}) => {
   return (
     bookData
     ? <>
-      <GoodJobAnimation visible={initialPosition.current != position} />
+      <PerfectScoreAnimation visible={initialPosition.current != position} />
       <DocumentView
         ref={(c) => ref.current = c}
         document={path}
