@@ -22,6 +22,8 @@ import NotificationSettings from './pages/settings/notificationSettings';
 import PurchaseHistory from './pages/settings/purchaseHistory';
 import About from './pages/settings/about';
 import ResultPage from './pages/resultPage';
+import PDFTest from './pages/pdfTest.js'
+import AnimationTest from './pages/animationTest.js'
 
 import BookInstance from './pages/bookInstance'
 
