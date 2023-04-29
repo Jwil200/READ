@@ -22,8 +22,6 @@ import NotificationSettings from './pages/settings/notificationSettings';
 import PurchaseHistory from './pages/settings/purchaseHistory';
 import About from './pages/settings/about';
 import ResultPage from './pages/resultPage';
-import PDFTest from './pages/pdfTest.js'
-import AnimationTest from './pages/animationTest.js'
 
 import BookInstance from './pages/bookInstance'
 
@@ -36,7 +34,7 @@ const Stack = createNativeStackNavigator();
 function MyStack() {
   return (
     <Stack.Navigator
-      initialRouteName="AnimationTest"
+      initialRouteName="Tabbar"
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
@@ -47,14 +45,7 @@ function MyStack() {
           fontWeight: 'bold',
         },
       }}>
-              <Stack.Screen
-        name="AnimaitonTest"
-        component={AnimationTest}
-        options={{
-          title: 'AnimationTest',
-          headerLeft: null,
-        }}
-      />
+
       <Stack.Screen 
         name="Signup" 
         component={Signup} 
@@ -66,15 +57,6 @@ function MyStack() {
         options={{
           title: 'Login',
           headerLeft: null, 
-        }}
-      />
-
-      <Stack.Screen 
-        name="PDFTest" 
-        component={PDFTest} 
-        options={{
-            title: 'PDFTest',
-            headerShown:false
         }}
       />
 

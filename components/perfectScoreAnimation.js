@@ -1,23 +1,20 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, StyleSheet, Animated, Dimensions, Text } from 'react-native';
-import Lottie from 'lottie-react-native';
+import { View, StyleSheet, Animated, Dimensions, Text, TouchableOpacity } from 'react-native';
+import LottieView from 'lottie-react-native';
 import Sound from 'react-native-sound';
 
 const PerfectScoreAnimation = ({ visible }) => {
   console.log(`==== PERFECT SCORE RENDER ${visible} ====\nWindow Height: ${windowHeight}`);
 
-  const [isVisible, setIsVisible] = useState(visible);
 
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;
   const opacityValue = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    setIsVisible(visible);
-  }, [visible]);
+ 
 
   useEffect(() => {
-    if (isVisible) {
+    if (visible) {
       // Reset animation values
       scaleValue.setValue(0);
       opacityValue.setValue(0);
@@ -69,13 +66,13 @@ const PerfectScoreAnimation = ({ visible }) => {
           },
         ]}
       >
-        <Lottie
+        <LottieView
           source={require('../assets/Confetti2.json')}
-          autoPlay
+        autoPlay
           loop={false}
           style={styles.animation}
         />
-        <Lottie
+        <LottieView
           source={require('../assets/award.json')}
           autoPlay
           loop={false}

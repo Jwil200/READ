@@ -2,12 +2,27 @@ import React, { useRef, useEffect } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Image, Text  } from 'react-native';
 import Sound from 'react-native-sound'; // Import react-native-sound
 
-const TryAgainAnimation = ({ visible }) => {
+const variants = {
+  correct: {
+    sound: require('../assets/correct-answer-sound-effect-19.mp3'),
+    image: require('../assets/Great.png'),
+  },
+  incorrect: {
+    sound: require('../assets/app-error.mp3'),
+    image: require(''),
+  }
+}
+
+const BadgeAnimation = ({ visible, variant }) => {
+  if (!variants[variant])
+    variant = "correct"
+
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;
   const opacityValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    console.log(`Badge Animation ${variant}: ${visible}`);
     if (visible) {
       // Reset animation values
       scaleValue.setValue(0);
@@ -28,7 +43,7 @@ const TryAgainAnimation = ({ visible }) => {
       ]).start();
 
       // Play sound
-      const sound = new Sound(require('../assets/app-error.mp3'), (error) => {
+      const sound = new Sound(variants[variant].sound, (error) => {
         if (error) {
           console.log('Failed to load the sound', error);
           return;
@@ -47,25 +62,26 @@ const TryAgainAnimation = ({ visible }) => {
         }).start();
       }, 3000);
     }
-  }, [visible, scaleValue, opacityValue]);
+  });
 
   return (
     <View style={styles.container}>
-      {visible && (
-    <Animated.View
-      style={[
-            styles.textContainer,
-        {
-          transform: [{ scale: scaleValue }],
-          opacity: opacityValue,
-        },
-      ]}
-    >
-          <Text style={styles.text}>Try Again</Text>
-    </Animated.View>
-      )}
-</View>
-);
+        <Animated.View
+          style={[
+            styles.imageContainer,
+            {
+              transform: [{ scale: scaleValue }],
+              opacity: opacityValue,
+            },
+          ]}
+        >
+          <Image
+            source={variants[variant].image} 
+            style={styles.image}
+          />
+        </Animated.View>
+    </View>
+  );
 };
 
 const windowWidth = Dimensions.get('window').width;
@@ -78,6 +94,7 @@ const styles = StyleSheet.create({
     left: windowWidth / 2 - 100,
     width: 200,
     height: 200,
+    zIndex: 20
   },
   textContainer: {
     justifyContent: 'center',
@@ -106,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TryAgainAnimation;
+export default BadgeAnimation;

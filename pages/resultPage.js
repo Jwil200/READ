@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, ImageBackground, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Sound from 'react-native-sound';
 import OrangeButton from '../assets/orangeButton';
+import PerfectScoreAnimation from '../components/perfectScoreAnimation';
+import { useNavigation } from '@react-navigation/core';
+import GoodJobAnimation from '../components/goodJobAnimation';
 
 
 const ResultPage = ({route, navigation}) => {//props) => {
@@ -13,6 +16,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
   const dummyTimeRead = 120;
   const dummyPagesRead = 20;
   const dummyLinesRead = results.linesRead;
+
 
 
  
@@ -40,6 +44,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
 
   return (
     <View style={styles.container}>
+
         
       <ImageBackground
         source={require('../assets/kid-readinn.jpg')} // use a png/jpg or a url 
@@ -67,9 +72,17 @@ const ResultPage = ({route, navigation}) => {//props) => {
         <Text style={styles.timeReadText}>Reading Time: {dummyTimeRead} seconds</Text>
         <Text style={styles.pagesReadText}> Pages Read {dummyPagesRead}</Text>
         <Text style={styles.linesReadText}>Lines Read: {dummyLinesRead} seconds</Text>
-        <OrangeButton style={styles.OrangeButton} title = "Back to Dashboard" size = 'sm' onPress={() => navigation.navigate('Tabbar')}></OrangeButton>
+        <PerfectScoreAnimation visible={true} />
+
+        <View style={styles.buttonContainer}>
+            <OrangeButton title = "Back to Dashboard" size = 'sm' onPress={() => navigation.navigate('Tabbar')}></OrangeButton>
         </View>
+
+
+        </View>
+
       </ImageBackground>
+
      
     </View>
   );
@@ -154,7 +167,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'black',
         marginVertical: 8,
-    }
+    },
+
   });
 
 export default ResultPage;

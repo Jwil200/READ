@@ -3,7 +3,7 @@ import { Animated, StyleSheet, View, Text, PermissionsAndroid } from 'react-nati
 import { Divider, Button } from '@rneui/themed';
 import LiveAudioStream from 'react-native-live-audio-stream';
 import { ASSEMBLY_AI_API_KEY } from "@env";
-import GoodJobAnimation from './goodJobAnimation'; // Update the import path to the location of your GoodJobAnimation component
+
 
 
 // How similar two strings have to be in order to pass

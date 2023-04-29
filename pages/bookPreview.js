@@ -106,9 +106,6 @@ const toggleFavorite = async () => {
     <Text style={styles.bookTitle}>{book.title}</Text>
     <Text style={styles.bookPreviewDescription}>{book.author}</Text>
     <Text style={styles.bookPreviewDescription}>{book.description}</Text>
-    <View style={styles.progress}>
-        <Text style={styles.bookPreviewProgress}>Progress:</Text>       
-      </View>
 
     {book.progress == 0.00 ? (
       <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>

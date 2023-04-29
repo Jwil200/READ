@@ -1,12 +1,6 @@
 {
     "java.project.sourcePaths": [
         "components"
-<<<<<<< HEAD
-],
-"java.configuration.updateBuildConfiguration": "interactive"
-
-=======
     ],
     "java.configuration.updateBuildConfiguration": "interactive"
->>>>>>> 178d88c (Fixed up voice, pdf view, and connection to the book preview)
 }
