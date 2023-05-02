@@ -9,6 +9,7 @@ import { ASSEMBLY_AI_API_KEY } from "@env";
 // How similar two strings have to be in order to pass
 // If there is less than 10 words defaults to 50%
 const PERCENT_SIMILAR = 0.70;
+const PERFECT_SCORE = 0.90;
 
 // Options for LiveAudioStream
 const options = {
@@ -124,6 +125,7 @@ function similarity(s1, s2, longer, shorter, longerLength) {
 
 // This can generate some false positives.
 function isSimilar(spoken, text) {
+    // We set a limit variable here, as the limit should be reduced for shorter sentences.
     let limit = PERCENT_SIMILAR;
     
     let s1 = "";
@@ -141,19 +143,20 @@ function isSimilar(spoken, text) {
 
     let percentSame = similarity(s1, s2, longer, shorter, longerLength);
     console.log(percentSame);
-
-    if (percentSame >= limit) {
-        return true;
-    }
-    return false;
+    return [(percentSame >= limit), (percentSame >= PERFECT_SCORE)];
 }
 
 const VoiceBar = (props) => {
+    console.log("---VoiceBar---");
+    console.log(props.readingData);
     const isInitialMount = useRef(true);
     const ws = useRef(null);
     
     const [dummy, setDummy] = useState(0);
-    const pos = useRef(0);
+    const rData = useRef({});
+    rData.current = props.readingData;
+    console.log(rData.current.position);
+    const incorrectCounter = useRef(0);
     const respText = useRef("Waiting...");
     const [isListening, setListening] = useState(false); // Could consolidate into one state object with setState
 
@@ -171,14 +174,13 @@ const VoiceBar = (props) => {
 
     useEffect(() => {
         if (isInitialMount.current) return;
-        pos.current = props.position;
         respText.current = "Good!";
         setTimeout(() => {
             respText.current = "Waiting...";
             setDummy(dummy + 1);
         }, 2000);
-        props.next(props.position);
-    }, [props.position]);
+        props.next(props.readingData.position);
+    }, [props.readingData.position]);
 
     useEffect(() => {
         if (isInitialMount.current) {
@@ -219,16 +221,36 @@ const VoiceBar = (props) => {
                             if (!isLetter(word.charAt(word.length - 1))) word = word.substring(0, word.length - 1);
                             return word.toLowerCase();
                         });
-                        let p = pos.current;
+                        console.log(rData.current);
+                        let p = rData.current.position;
                         console.log("Final: " + texts + "\n");
                         console.log("Position: " + p);
                         console.log(fullText[p]);
-                        let isSame = isSimilar(texts, fullText[p]);
+                        let [isSame, isPerfect] = isSimilar(texts, fullText[p]);
                         console.log("Same?: " + isSame);
-                        if (!isSame) return;
-                        
+                        if (!isSame)
+                            incorrectCounter.current += 1;
+                        if (!isSame && incorrectCounter.current < 3) {
+                            props.setReadingData({
+                                ...rData.current,
+                                incorrect: rData.current.incorrect + 1,
+                                variant: ((incorrectCounter.current == 2) ? "oneMore" : "incorrect")
+                            })
+                            return;
+                        }
+                        let augmentIncorrect = false;
+                        if (incorrectCounter.current == 3) {
+                            incorrectCounter.current = 0;
+                            augmentIncorrect = true;
+                        }
                         console.log("Spoken and input match!");
-                        props.setPosition(p + 1);
+                        props.setReadingData({
+                            ...rData.current,
+                            position: p + 1,
+                            correct: rData.current.correct + 1,
+                            variant: "correct",
+                            incorrect: (augmentIncorrect ? rData.current.incorrect + 1 : rData.current.incorrect)
+                        });
                         break;
                     case "SessionBegins":
                         console.log("Established connection to AssemblyAI");

@@ -9,19 +9,21 @@ import PerfectScoreAnimation from '../components/perfectScoreAnimation';
 const ResultPage = ({route, navigation}) => {//props) => {
   const results = {...route.params};
   console.log(results);
-  const dummyCorrectWords = 50;
-  const dummyIncorrectWords = 5;
-  const dummyTimeRead = 120;
-  const dummyPagesRead = 20;
-  const dummyLinesRead = results.linesRead;
+  const sentencesCorrect = results.correct;
+  const sentencesIncorrect = results.incorrect;
+  const sentencesRead = results.position;
+  const total = results.total;
 
 
 
  
 
-  const progress = (dummyCorrectWords / (dummyCorrectWords + dummyIncorrectWords)) * 100;
+  const progress = (sentencesRead / total) * 100;
 
   useEffect(() => {
+    if (sentencesIncorrect === 0)
+      return;
+
     // Play sound when the page is first rendered
     const sound = new Sound(require('../assets/correct-ding2.mp3'), (error) => {
       if (error) {
@@ -65,12 +67,12 @@ const ResultPage = ({route, navigation}) => {//props) => {
           </View>
         <Text style={styles.titleText}>Results</Text>
             
-        <Text style={styles.corectWordsText}>Correct Words: {dummyCorrectWords}</Text>
-        <Text style={styles.incorrectWordsText}>Incorrect Words: {dummyIncorrectWords}</Text>
-        <Text style={styles.timeReadText}>Reading Time: {dummyTimeRead} seconds</Text>
-        <Text style={styles.pagesReadText}> Pages Read {dummyPagesRead}</Text>
-        <Text style={styles.linesReadText}>Lines Read: {dummyLinesRead} seconds</Text>
-        <PerfectScoreAnimation visible={true} />
+        <Text style={styles.corectWordsText}>Correct Sentences: {sentencesCorrect}</Text>
+        <Text style={styles.incorrectWordsText}>Incorrect Sentences: {sentencesIncorrect}</Text>
+        <Text style={styles.timeReadText}>Sentences Read: {sentencesRead}</Text>
+        {
+          (sentencesIncorrect === 0) ? <PerfectScoreAnimation visible={true}/> : ""
+        }
 
         <View style={styles.buttonContainer}>
             <OrangeButton title = "Back to Dashboard" size = 'sm' onPress={() => navigation.navigate('Tabbar')}></OrangeButton>

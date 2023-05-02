@@ -9,13 +9,24 @@ const variants = {
   },
   incorrect: {
     sound: require('../assets/app-error.mp3'),
-    image: require(''),
+    image: require('../assets/TryAgain.png'),
+  },
+  none: {
+    sound: require('../assets/correct-answer-sound-effect-19.mp3'),
+    image: require('../assets/Great.png'),
+  },
+  oneMore: {
+    sound: require('../assets/app-error.mp3'),
+    image: require('../assets/1More.png'),
   }
 }
 
-const BadgeAnimation = ({ visible, variant }) => {
+const BadgeAnimation = (props) => {
+  let variant = props.variant;
   if (!variants[variant])
-    variant = "correct"
+    variant = "none"
+
+  let visible = !(variant === "none");
 
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;

@@ -15,6 +15,8 @@ import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/core';
 import VoiceBar from "../components/voiceBar";
 import PerfectScoreAnimation from "../components/perfectScoreAnimation";
+import BadgeAnimation from "../components/badgeAnimation";
+
 const styles = StyleSheet.create({
   main_body_container: {
       backgroundColor: '#fff'
@@ -34,8 +36,14 @@ const BookInstance = ({route, navigation}) => {
   const ref = useRef(null);
   const testPos = useRef(0);
   const [bookData, setBookData] = useState(null);
-  const [position, setPosition] = useState(0);
-  const initialPosition = useRef(0);
+  const [readingData, setReadingData] = useState({
+    position: 0,
+    correct: 0,
+    incorrect: 0,
+    variant: "none"
+  });
+  const previousData = useRef({...readingData});
+  const initialPosition = 0;
   const previousPosition = useRef(0);
   const pressedOnce = useRef(false);
 
@@ -54,6 +62,11 @@ const BookInstance = ({route, navigation}) => {
     setBookData(book_data);
     //console.log(data);
   }, []);
+
+  useEffect(() => {
+    // Use effect occurs after render, so this will save the 'previous' set of data for comparisons.
+    previousData.current = {...readingData};
+  }, [readingData]);
 
   const removeTags = (str) => {
     if ((str===null) || (str===''))
@@ -78,39 +91,20 @@ const BookInstance = ({route, navigation}) => {
   
   const path = bookData ? bookData.link : "https://www.cdc.gov/ncbddd/actearly/documents/amazing_me_final_version_508.pdf";
 
-  console.log("Test Results " + (previousPosition.current != position))
-  console.log("Test Results " + (initialPosition.current != position))
-
-  let pageChanged = false;
-  if (previousPosition.current != position) {
-    pageChanged = true;
-    previousPosition.current = position;
-  }
-
   return (
     bookData
     ? <>
-      <PerfectScoreAnimation visible={initialPosition.current != position} />
+      {readingData.variant === "perfect" 
+        ? <PerfectScoreAnimation visible={true} />
+        : <BadgeAnimation variant={readingData.variant}/>
+      }
       <DocumentView
         ref={(c) => ref.current = c}
         document={path}
         onLoadComplete={() => highlightLine(0)}
         disabledElements={Object.values(Config.Buttons)}
         onLeadingNavButtonPressed={() => {
-          //test();
-          console.log(position)
-          if (position == 0) {
-            highlightLine(1);
-            setPosition(1);
-          }
-          else if (!pressedOnce.current) {
-            highlightLine(1);
-            setPosition(1);
-            pressedOnce.current = true;
-          }
-          else {
-            navigation.navigate("ResultPage", {"linesRead": position});
-          }
+          navigation.navigate("ResultPage", {...readingData, "total": bookData.content.length});
         }}
         hideScrollbars={true}
         reflowOrientation={Config.ReflowOrientation.Horizontal} 
@@ -138,8 +132,8 @@ const BookInstance = ({route, navigation}) => {
         <VoiceBar 
           textArray={bookData.content}
           next={highlightLine}
-          position={position}
-          setPosition={setPosition}
+          readingData={readingData}
+          setReadingData={setReadingData}
         />
       </View>
       </>
