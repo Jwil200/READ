@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, Switch } from 'react-native';
+import DarkModeContext from '../../components/DarkModeContext';
 
 const NotificationSettings = ({ navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
+  const { isDarkModeEnabled } = useContext(DarkModeContext);
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -12,6 +14,26 @@ const NotificationSettings = ({ navigation }) => {
     });
     return () => {unsubscribe};
 }, [navigation]);
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: isDarkModeEnabled ? '#303030' : '#fff',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: isDarkModeEnabled ? '#444' : '#ccc',
+  },
+  label: {
+    fontSize: 16,
+    color: isDarkModeEnabled ? 'white' : 'black',
+  },
+});
   return (
     <View style={styles.container}>
       <View style={styles.row}>
@@ -48,23 +70,6 @@ const NotificationSettings = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  label: {
-    fontSize: 16,
-  },
-});
+
 
 export default NotificationSettings;

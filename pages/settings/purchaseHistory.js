@@ -1,70 +1,79 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FlatList, StyleSheet, View, Text, Switch, ActivityIndicator, ScrollView } from 'react-native';
 import { Card, Icon, } from 'react-native-elements';
+import DarkModeContext from '../../components/DarkModeContext';
 
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 5,
-      backgroundColor: '#fff',
-    },
-    bookTitle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      width: 150,
-      marginBottom: 5,
-      marginTop: 10,
-    },
-    coverImage: {
-      width: 100,
-      height: 140,
-      resizeMode: 'cover',
-      marginBottom: 10,
-      marginTop: 0,
-    },
-    bookPrice: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginLeft: 10,
-      alignSelf: 'center',
-    },
-    title: {
-      fontSize: 12,
-      textAlign: 'left',
-      width: '80%',
-    },
-    item: {
-      width: "60%",
-      marginLeft: 10,
-      alignItems: "flex-start",
-    },
-    text: {
-      fontSize: 12,
-      alignSelf: 'flex-start',
-      letterSpacing:0,
-      paddingTop: 0,
-      paddingRight: 0,
-      marginLeft: 0,
-    },
-  });
+
   
 
 const PurchaseHistory = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [bookData, setBookData] = useState([]);
+    const { isDarkModeEnabled } = useContext(DarkModeContext);
 
     const toLocaleDateString = (date) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return date.toLocaleDateString(undefined, options);
         };
+        const styles = StyleSheet.create({
+          container: {
+            flex: 1,
+            padding: 5,
+            backgroundColor: isDarkModeEnabled ? '#303030' : 'white',
+          },
+          bookTitle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            width: 150,
+            marginBottom: 5,
+            marginTop: 10,
+            color: isDarkModeEnabled ? 'white' : '#303030',
+          },
+          coverImage: {
+            width: 100,
+            height: 140,
+            resizeMode: 'cover',
+            marginBottom: 10,
+            marginTop: 0,
+            backgroundColor: isDarkModeEnabled ? '#303030' : 'white',
+          },
+          bookPrice: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            marginLeft: 10,
+            alignSelf: 'center',
+            color: isDarkModeEnabled ? 'white' : '#303030',
+          },
+          title: {
+            fontSize: 12,
+            textAlign: 'left',
+            width: '80%',
+            color: isDarkModeEnabled ? '#303030' : 'white',
+          },
+          item: {
+            width: "60%",
+            marginLeft: 10,
+            alignItems: "flex-start",
+            backgroundColor: isDarkModeEnabled ? 'white' : '#303030',
+          },
+          text: {
+            fontSize: 12,
+            alignSelf: 'flex-start',
+            letterSpacing:0,
+            paddingTop: 0,
+            paddingRight: 0,
+            marginLeft: 0,
+            color: isDarkModeEnabled ? 'white' : '#303030',
+          },
+        });
 
     const Item = ({ item }) => (
-        <Card style={{ flexDirection: 'column', elevation: 10, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }  }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', }}> 
-          <View style={{ flexDirection: 'column' }}>
+        <Card style={{ flexDirection: 'column', backgroundColor: isDarkModeEnabled ? '#303030' : 'white', elevation: 10, shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 2, shadowOffset: { width: 0, height: 1 }  }}>
+        <View style={{ flexDirection: 'row',backgroundColor: isDarkModeEnabled ? '#303030' : 'white',  justifyContent: 'space-between', alignItems: 'center', }}> 
+          <View style={{ flexDirection: 'column', backgroundColor: isDarkModeEnabled ? '#303030' : 'white',  }}>
             <Text style={styles.bookTitle} numberOfLines={2} ellipsizeMode="tail">{item.title}</Text>
             <Text style={styles.text}>Date Purchased: {item.date}</Text>
           </View>

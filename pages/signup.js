@@ -107,6 +107,9 @@ const Signup = () => {
             TimeTimeSpentReading: 0,
             TotalBooksRead: 0,
             TotalWordsRead: 0,
+            SentencesRead: 0,
+            IncorrectSentencesRead: 0,
+            CorrectSentencesRead: 0,
           })
 
           db// adds a user purchase history subcollection

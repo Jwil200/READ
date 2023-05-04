@@ -113,6 +113,7 @@ export default StyleSheet.create({
       borderRadius: 100,
       paddingVertical: 15,
       paddingHorizontal: 12,
+      zIndex: 2,
     },
     appButtonText: {
       fontSize: 18,

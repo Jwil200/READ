@@ -1,5 +1,5 @@
 // components/bookStorePreview.js *Based on bookPreview.js currently
-import React,  { useEffect, useState  } from 'react';
+import React,  { useEffect, useState, useContext  } from 'react';
 import { ScrollView, View, Text, Alert, Image } from 'react-native';
 import { Tile } from "@rneui/themed";
 import styles from '../assets/styles';
@@ -7,6 +7,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { useNavigation } from '@react-navigation/core';
 import OrangeButton from '../assets/orangeButton';
+import DarkModeContext from '../components/DarkModeContext';
 
 
 const BookStorePreview = (props) => {
@@ -14,6 +15,7 @@ const BookStorePreview = (props) => {
     const db = firestore();
     const currentUid = auth().currentUser.uid;
     const navigation = useNavigation();
+    const { isDarkModeEnabled } = useContext(DarkModeContext);
 
     const[isCheck, setCheck] = useState(false);
 
@@ -82,8 +84,8 @@ const BookStorePreview = (props) => {
   }, [])
       
   return (
-    <ScrollView style={styles.bookPreviewContainer}>
-    <View style={{alignItems: 'center'}}>
+    <ScrollView style={{padding: 10, backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
+    <View style={{alignItems: 'center', backgroundColor: isDarkModeEnabled ? '#303030': 'white'}}>
     <Image  
           source={{uri: book.coverUrl}}
           style={styles.bookPreviewImage}
@@ -91,14 +93,10 @@ const BookStorePreview = (props) => {
       />
             
     </View>
-    <Text style={styles.bookTitle}>{book.title}</Text>
-    <Text style={styles.bookPreviewDescription}>{book.author}</Text>
-    <Text style={styles.bookPreviewDescription}>{book.description}</Text>
-    {book.progress == 0.00 ? (
-      <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
-    ) : (
-      <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
-    )}
+    <Text style={{ fontSize: 26, paddingBottom: 10, color: isDarkModeEnabled ? 'white' : 'black'}}>{book.title}</Text>
+    <Text style={{color: isDarkModeEnabled ? 'white' : 'black'}}>{book.author}</Text>
+    <Text style={{color: isDarkModeEnabled ? 'white' : 'black'}}>{book.description}</Text>
+
       {(isCheck) ? 
           <OrangeButton 
           title="Add to Library" 

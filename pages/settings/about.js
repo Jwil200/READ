@@ -1,7 +1,57 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { StyleSheet, View, Image, Text, ScrollView } from 'react-native';
+import DarkModeContext from '../../components/DarkModeContext';
 
 const About = () => {
+const { isDarkModeEnabled } = useContext(DarkModeContext);
+const styles = StyleSheet.create({
+  scrollViewContent: {
+    alignItems: 'center',
+
+  },
+  container: {
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    backgroundColor: isDarkModeEnabled ? '#303030' : '#fff',
+  },
+  blackContainer: {
+     paddingHorizontal: 20,
+    paddingVertical: 30,
+    backgroundColor: 'black',
+    color: isDarkModeEnabled ? 'white' : 'black',
+    },
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: isDarkModeEnabled ? 'white' : 'black',
+  },
+  subHeading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+    color: isDarkModeEnabled ? 'white' : 'black',
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 20,
+    textAlign: 'justify',
+    color: isDarkModeEnabled ? 'white' : 'black',
+  },
+  imageContainer: {
+    alignItems: 'center',
+    marginVertical: -10,
+  },
+  image: {
+    width: 150,
+    height: 100,
+    resizeMode: 'contain',
+
+  },
+});
+
     return (
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.container}>
@@ -30,47 +80,6 @@ const About = () => {
       );
     };
     
-    const styles = StyleSheet.create({
-      scrollViewContent: {
-        alignItems: 'center',
-      },
-      container: {
-        paddingHorizontal: 20,
-        paddingVertical: 30,
-        backgroundColor: 'white',
-      },
-      blackContainer: {
-         paddingHorizontal: 20,
-        paddingVertical: 30,
-        backgroundColor: 'black',
-        },
-      heading: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-      },
-      subHeading: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginTop: 20,
-        marginBottom: 10,
-      },
-      text: {
-        fontSize: 16,
-        lineHeight: 24,
-        marginBottom: 20,
-        textAlign: 'justify',
-      },
-      imageContainer: {
-        alignItems: 'center',
-        marginVertical: -10,
-      },
-      image: {
-        width: 150,
-        height: 100,
-        resizeMode: 'contain',
 
-      },
-    });
 
 export default About;

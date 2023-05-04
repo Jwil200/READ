@@ -1,5 +1,5 @@
 // components/store.js *Based from dashboard.js at the moment
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { ActivityIndicator , StyleSheet, View, Text, FlatList, ScrollView} from 'react-native';
 import { Divider, Dialog, ListItem, Avatar } from "@rneui/themed";
 import { SearchBar, Button, Icon} from 'react-native-elements';
@@ -108,6 +108,7 @@ const Store = ({ navigation }) => {
   const[selectedGenre, setSelectedGenre] = useState("")
   const[filteredBooks, setFilteredBooks] = useState("")
   const[isLoading, setIsLoading] = useState(true);
+  const{isDarkModeEnabled} = useContext(DarkModeContext);
 
   let recentData = 0;
 
@@ -279,7 +280,7 @@ const Store = ({ navigation }) => {
           <Divider style={styles.divider} />
           {
                 (justForYou.length == 0)
-                ? <Text style={styles.emptyText}>No Popular books currently.</Text>
+                ? <Text style={{ color: "white", marginTop: 10, color: isDarkModeEnabled ? 'white' : 'black', }}>No Popular books currently.</Text>
             : <FlatList style={styles.grid}
                     data={justForYou}
                 numColumns={3}
@@ -331,7 +332,7 @@ const Store = ({ navigation }) => {
   }
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
       <View style={{flex: 1}}>
         <View style={{flexDirection: 'row', backgroundColor: 'orange'}}>
         <SearchBar round 

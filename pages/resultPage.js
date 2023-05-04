@@ -4,16 +4,51 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import Sound from 'react-native-sound';
 import OrangeButton from '../assets/orangeButton';
 import PerfectScoreAnimation from '../components/perfectScoreAnimation';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 
 const ResultPage = ({route, navigation}) => {//props) => {
-  const results = {...route.params};
-  console.log(results);
-  const sentencesCorrect = results.correct;
-  const sentencesIncorrect = results.incorrect;
-  const sentencesRead = results.position;
-  const total = results.total;
+    const results = {...route.params};
+    console.log(results);
+    const sentencesCorrect = results.correct;
+    const sentencesIncorrect = results.incorrect;
+    const sentencesRead = results.position;
+    const total = results.total;
+    const bookCover = results.bookCover;
 
+    const db = firestore();
+    const currentUid = auth().currentUser.uid;
+
+    const updateStats = async () => {//update all book related stats
+        const userRef = await db.collection('Users').doc(currentUid).collection("Stats").doc("Stats");
+        const bookref = await db.collection('Users').doc(currentUid).collection("Library").doc(results.bookTitle);
+
+        const updatedProgress = (sentencesRead / total);
+
+
+        await bookref.update({//update book stats
+            Progress: updatedProgress,
+            TotalSentenceCount: total,
+            CorrectSentenceCount: sentencesCorrect,
+            IncorrectSentenceCount: sentencesIncorrect,
+        });
+
+        await userRef.update({//update user stats
+            SentenesRead: firestore.FieldValue.increment(sentencesRead),
+            CorrectSentencesRead: firestore.FieldValue.increment(sentencesCorrect),
+
+        });
+
+        if(sentencesRead == total){//if book was completed, update the fields accordiningly
+            console.log("Book Completed");
+            await bookref.update({
+                Completed: true,
+                TimesRead: firestore.FieldValue.increment(1),
+            });
+        }
+
+    }
 
 
  
@@ -21,6 +56,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
   const progress = (sentencesRead / total) * 100;
 
   useEffect(() => {
+    updateStats();
     if (sentencesIncorrect === 0)
       return;
 
@@ -39,7 +75,9 @@ const ResultPage = ({route, navigation}) => {//props) => {
         sound.stop();
         sound.release();
       }
+
     };
+  
     }, []);
 
   return (
@@ -47,11 +85,13 @@ const ResultPage = ({route, navigation}) => {//props) => {
 
         
       <ImageBackground
-        source={require('../assets/kid-readinn.jpg')} // use a png/jpg or a url 
+        source={{uri: bookCover}} // use a png/jpg or a url 
         style={styles.backgroundImage}
       >
         <View style={styles.contentContainer}>
+        <Text style={styles.titleText}>Completion </Text>
           <View style={styles.progressContainer}>
+
             <AnimatedCircularProgress
               size={120}
               width={8}
@@ -102,7 +142,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '25%',
-        resizeMode: 'cover',
+        resizeMode: 'contain',
     },
     contentContainer: {
         flex: 1,

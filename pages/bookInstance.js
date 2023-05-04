@@ -40,7 +40,9 @@ const BookInstance = ({route, navigation}) => {
     position: 0,
     correct: 0,
     incorrect: 0,
-    variant: "none"
+    variant: "none",
+    bookTitle: route.params.book.title,
+    bookCover: route.params.book.coverUrl,
   });
   const previousData = useRef({...readingData});
   const initialPosition = 0;

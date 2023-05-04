@@ -1,5 +1,5 @@
 // components/cart.js *Based from store.js
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { StyleSheet, View, Text, FlatList, Alert, ActivityIndicator, ScrollView, TouchableOpacity} from 'react-native';
 import { Divider } from "@rneui/themed";
 import { Card, Icon, } from 'react-native-elements';
@@ -7,6 +7,7 @@ import { usePaymentSheet, StripeProvider, useStripe, CardField } from '@stripe/s
 import OrangeButton from '../assets/orangeButton.js';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import DarkModeContext from '../components/DarkModeContext.js';
 
 import axios  from 'axios';
 
@@ -15,91 +16,7 @@ const db = firestore()
 const currentUid = auth().currentUser.uid
 
 
-const styles = StyleSheet.create({
-  bookTitle: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: 'bold',
-    width: '10%',
-    marginTop: 10,
-    marginLeft: 10,
 
-  },
-  coverImage: {
-    width: 100,
-    height: 140,
-    resizeMode: 'cover',
-    marginBottom: 10,
-    marginTop: 0,
-  },
-  bookPrice: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginLeft: 10,
-    
-  },
-  bookAuthor: {
-
-  },
-  screen: {
-    height: '100%',
-    width: '100%',
-    paddingTop: 25,
-    backgroundColor: '#fff'
-  },
-  container: {
-    flex: 1,
-    display: "flex",
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    paddingTop: 0
-  },
-  grid: {
-    width: '100%'
-  },
-  item: {
-    width: "39%",
-    alignItems: "center",
-    margin: -20,
-    backgroundColor: '#e9eef1',
-  },
-  title: {
-    fontSize: 24,
-    textAlign: 'left',
-    width: '100%',
-    paddingTop: 10
-  },
-  divider: {
-    width: '98%',
-    marginVertical: 5,
-  },
-  emptyText: {
-    color: "grey",
-    marginTop: 10,
-    textAlignVer: 'center'
-  },
-  checkoutButton: {
-    justifyContent: 'center',
-    paddingHorizontal: 10
-  },
-  card: {
-    flexDirection: 'row',
-    width: '50%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  cartText: {
-    fontSize: 16,
-    alignSelf: 'flex-end',
-    position: 'absolute',
-    letterSpacing:0,
-    paddingTop: 0,
-    paddingRight: 0,
-    marginLeft: 110,
-    
-  },
-});
 
 
 const Cart = ({ navigation }) => {
@@ -110,6 +27,94 @@ const Cart = ({ navigation }) => {
   const [checkoutAmount, setCheckoutAmount] = useState(1);
   const [ready, setReady] = useState(false);
   const {initPaymentSheet, presentPaymentSheet } = usePaymentSheet();
+  const { isDarkModeEnabled } = useContext(DarkModeContext);
+
+  const styles = StyleSheet.create({
+    bookTitle: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: 'bold',
+      width: '10%',
+      marginTop: 10,
+      marginLeft: 10,
+  
+    },
+    coverImage: {
+      width: 100,
+      height: 140,
+      resizeMode: 'cover',
+      marginBottom: 10,
+      marginTop: 0,
+    },
+    bookPrice: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      marginLeft: 10,
+      
+    },
+    bookAuthor: {
+  
+    },
+    screen: {
+      height: '100%',
+      width: '100%',
+      paddingTop: 25,
+      backgroundColor: '#fff'
+    },
+    container: {
+      flex: 1,
+      display: "flex",
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 10,
+      paddingTop: 0
+    },
+    grid: {
+      width: '100%'
+    },
+    item: {
+      width: "39%",
+      alignItems: "center",
+      margin: -20,
+      backgroundColor: '#e9eef1',
+    },
+    title: {
+      fontSize: 24,
+      textAlign: 'left',
+      width: '100%',
+      paddingTop: 10,
+      color: isDarkModeEnabled ? 'white' : 'black',
+    },
+    divider: {
+      width: '98%',
+      marginVertical: 5,
+    },
+    emptyText: {
+      color: "grey",
+      marginTop: 10,
+      textAlignVer: 'center'
+    },
+    checkoutButton: {
+      justifyContent: 'center',
+      paddingHorizontal: 10
+    },
+    card: {
+      flexDirection: 'row',
+      width: '50%',
+      justifyContent: 'space-between',
+      paddingHorizontal: 10,
+    },
+    cartText: {
+      fontSize: 16,
+      alignSelf: 'flex-end',
+      position: 'absolute',
+      letterSpacing:0,
+      paddingTop: 0,
+      paddingRight: 0,
+      marginLeft: 110,
+      
+    },
+  });
  
 
   //get cart books
@@ -341,11 +346,15 @@ const initializePaymentSheet = async (totalAmount) => {
       libraryRef.doc(name).set({
         bookTitle: name,
         Progress: 0,
-        WordCount: 0,
+        TotalSentenceCount: 0,
+        CorrectSentenceCount: 0,
+        IncorrectSentenceCount: 0,
         inLibrary: true,
         Favorite: false,
         TimesRead: 0,
-        PurchaseDate: date
+        PurchaseDate: date,
+        Completed: false,
+
       }).then(() => {
         console.log("Book added to library!");
       }
@@ -400,10 +409,10 @@ const initializePaymentSheet = async (totalAmount) => {
 
   if(bookData.length == 0){
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
         <View style={{flexDirection: 'column'}}>
           <Icon name="cart" type='ionicon' size={100} color="#FFA500"/>
-         <Text style={{textalign: 'center'}}>Your cart is empty!</Text>
+         <Text style={{textalign: 'center', color: isDarkModeEnabled ? 'white' : 'black'}}>Your cart is empty!</Text>
         </View>
       </View>
     );
@@ -411,7 +420,7 @@ const initializePaymentSheet = async (totalAmount) => {
   } else {
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: isDarkModeEnabled? '#303030' : 'white'}}>
       <StripeProvider publishableKey={'pk_test_51MnuFXEtUzCDwLJQuJqtaWMuaCfWONYj3xWD0XKGTkFJgxbAu7w2UzcXmyhPIDtvvNC7LQYtvkK6qi8cjtBbBtNb00g8oYHhMV'}>
         <View style={{flex: 0.95}}>
           <FlatList

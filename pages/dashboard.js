@@ -1,11 +1,11 @@
 // components/dashboard.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { ActivityIndicator, StyleSheet, View, Text, FlatList} from 'react-native';
 import { Divider } from "@rneui/themed";
 import BookTile from "../components/bookTile";
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-
+import DarkModeContext from '../components/DarkModeContext';
 
 const styles = StyleSheet.create({
   screen: {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'left',
     width: '100%',
-    paddingTop: 10
+    paddingTop: 10,
   },
   divider: {
     width: '98%',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     color: "grey",
-    marginTop: 10
+    marginTop: 10,
   },
   favoriteIcon: {
     position: 'absolute',
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
   },
 
 });
+
 
 const Item = ({ item }) => (
   <View style={[styles.item, {marginBottom: 0, height: 150}]}>
@@ -79,10 +80,12 @@ const Dashboard = ({ navigation }) => {
   const[favorite, setFavorite] = useState([]);
   const[recent, setRecent] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { isDarkModeEnabled } = useContext(DarkModeContext);
   
   const db = firestore();
   const currentUid = auth().currentUser.uid;
- 
+
+
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection   
     const nameList = [];
     await db
@@ -295,11 +298,11 @@ const Dashboard = ({ navigation }) => {
     _id: 1,
     jsx: 
       <View style={styles.container}>
-        <Text style={styles.title}>Continue Reading</Text>
+        <Text style={{fontSize: 24, textAlign: 'left', width: '100%', paddingTop: 10, color: isDarkModeEnabled ? 'white' : 'black'}}>Continue Reading</Text>
         <Divider style={styles.divider} />
         {
           (recent.length == 0)
-          ? <Text style={styles.emptyText}>You have no books open right Now</Text>
+          ? <Text style={{ color: "grey", marginTop: 10, color: isDarkModeEnabled ? 'white' : 'black'}}>You have no books open right Now</Text>
           : <FlatList style={styles.grid}
               data={recent}
               numColumns={3}
@@ -314,11 +317,11 @@ const Dashboard = ({ navigation }) => {
     _id: 2,
     jsx: 
       <View style={styles.container}>
-        <Text style={styles.title}>Favorites</Text>
+        <Text style={ {fontSize: 24, textAlign: 'left', width: '100%', paddingTop: 10, color: isDarkModeEnabled ? 'white' : 'black'}}>Favorites</Text>
         <Divider style={styles.divider} />
         {
           (favorite.length == 0)
-          ? <Text style={styles.emptyText}>You don't have anything favorited.</Text>
+          ? <Text style={{color: "grey", marginTop: 10, color: isDarkModeEnabled ? 'white' : 'black'}}>You don't have anything favorited.</Text>
           : <FlatList style={styles.grid}
               data={favorite}
               numColumns={3}
@@ -333,11 +336,11 @@ const Dashboard = ({ navigation }) => {
     _id: 3,
     jsx:
       <View style={styles.container}>
-        <Text style={styles.title}>All</Text>
+        <Text style={{ fontSize: 24, textAlign: 'left', width: '100%', paddingTop: 10, color: isDarkModeEnabled? 'white' : 'black'}}>All</Text>
         <Divider style={styles.divider} />
         {
           (bookData.length == 0)
-          ? <Text style={styles.emptyText}>You don't have any books in your library.</Text>
+          ? <Text style={{color: "grey", marginTop: 10, color: isDarkModeEnabled ? 'white': 'black'}}>You don't have any books in your library.</Text>
           : <FlatList style={styles.grid}
               data={bookData}
               numColumns={3}
@@ -357,7 +360,7 @@ const Dashboard = ({ navigation }) => {
   }
 
   return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
         <View style={{flex: 1}}>
           <FlatList
             data={componentList}

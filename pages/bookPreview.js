@@ -1,5 +1,5 @@
 // components/bookPreview.js, what the user is taken to when they tap on a book.
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useContext} from 'react';
 import { ScrollView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -9,6 +9,7 @@ import auth from '@react-native-firebase/auth';
 import OrangeButton from '../assets/orangeButton';
 import { Tile, Divider } from "@rneui/themed";
 import { ProgressButton } from 'react-native-progress-button';
+import DarkModeContext from '../components/DarkModeContext';
 
 
 
@@ -18,9 +19,15 @@ const BookPreview = (props) => {
   const db = firestore();
   const currentUid = auth().currentUser.uid;
   const navigation = useNavigation();
+  const { isDarkModeEnabled } = useContext(DarkModeContext);
 
   const [isFavorite, setISFavorite] = useState(book.favorite);
   const [isLoading, setIsLoading] = useState(false);
+
+  const dynamicStyles = {
+    backgroundColor: isDarkModeEnabled ? '#303030' : 'white',
+    color: isDarkModeEnabled ? 'white' : 'black',
+  };
 
   useEffect(() => {
     fetchFavoriteStatus();
@@ -92,7 +99,7 @@ const toggleFavorite = async () => {
  
 
   return (
-    <ScrollView style={styles.bookPreviewContainer}>
+    <ScrollView style={{padding: 10, backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
     <View style={{alignItems: 'center'}}>
     <Image  
           source={{uri: book.coverUrl}}
@@ -103,14 +110,14 @@ const toggleFavorite = async () => {
           <Icon name={isFavorite ? 'heart' : 'heart-o'} size={50} color="#FFA500" />
         </TouchableOpacity>
     </View>
-    <Text style={styles.bookTitle}>{book.title}</Text>
-    <Text style={styles.bookPreviewDescription}>{book.author}</Text>
-    <Text style={styles.bookPreviewDescription}>{book.description}</Text>
+    <Text style={[styles.bookTitle, {color: dynamicStyles.color}]}>{book.title}</Text>
+    <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.author}</Text>
+    <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.description}</Text>
 
     {book.progress == 0.00 ? (
       <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
     ) : (
-      <Text style={styles.bookPreviewProgress}>Progress: {book.progress}% Complete</Text>
+      <Text style={styles.bookPreviewProgress}>Progress: {book.progress * 100}% Complete</Text>
     )}
     {book.progress == 0.00 ? (
       <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />

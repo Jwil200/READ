@@ -25,6 +25,8 @@ import ResultPage from './pages/resultPage';
 
 import BookInstance from './pages/bookInstance'
 
+import DarkModeProvider from './components/DarkModeProvider';
+
 LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 const Stack = createNativeStackNavigator();
@@ -218,8 +220,10 @@ function MyStack() {
 }
 export default function App() {
   return (
+    <DarkModeProvider>
     <NavigationContainer>
       <MyStack />
     </NavigationContainer>
+    </DarkModeProvider>
   );
 }
