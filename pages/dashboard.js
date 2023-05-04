@@ -58,15 +58,7 @@ const Item = ({ item }) => (
   <View style={[styles.item, {marginBottom: 0, height: 150}]}>
     <BookTile 
       key={"i" + item._id} 
-      progress={item.progress}
-      wordCount = {item.wordCount}
-      coverUrl={item.coverUrl} 
-      title={item.bookName}
-      author={item.authorName}
-      description={item.bookDes}
-      content={item.content}
-      favorite={item.favorite}
-      link={item.link}
+      {...item} // pass the entire item object as props
     />
   </View>
 );
@@ -87,7 +79,11 @@ const Dashboard = ({ navigation }) => {
 
 
   const getLibraryBooks = async() =>{//getting books ID from the user/library subcollection   
-    const nameList = [];
+    let nameList = [];//Gets a NameList of all the books in the user's library
+    let bookDetails = [];//book details will hold the objects from /library
+    let progressList = [];//book details will hold the objects from /library
+
+
     await db
     .collection('Users/' + currentUid + '/Library')
     .where('inLibrary', '==', true)
@@ -97,55 +93,43 @@ const Dashboard = ({ navigation }) => {
         nameList.push(documentSnapshot.id)
       })
     })
-    console.log('Name list: ', nameList)
+    .catch(error => {
+      console.log("Error getting book ID's:", error);
+    });
 
-    let bookDetails = [];//book details will hold the objects from /library
-    
-    let progressList = [];//word count, book progress
 
     if(nameList.length != 0){
-      //console.log("What is in the namelist:  ", nameList);//console test
-      //pushes word count and progress to the proglist array
       await db
       .collection('Users/' + currentUid + '/Library')
       .where('bookTitle', 'in', nameList)
       .get()
       .then(querySnapshot => {
-        querySnapshot.forEach(document =>{
-          const { WordCount, Progress} = document.data();
-          progressList.push({
-            wordCount: WordCount,
-            progress: Progress
-          })
-        })
+        querySnapshot.forEach(documentSnapshot => {
+          progressList.push(documentSnapshot.data()); // push each document data into the array
+        });
+        progressList.sort((a, b) => (a.bookTitle > b.bookTitle) ? 1 : -1);//sort them by book name
+        //console.log("Sorted Progress List:", progressList);
+      })
+      .catch(error => {
+        console.log("Error getting book details:", error);
       });
-      console.log("What is in the namelist:  ", nameList);//console test
-      //console.log("What is in the progress list:  ", progressList);//console test
-      //pushes other book details to bookDetails array
+
       await db
       .collection('Books')
       .where('Name', 'in', nameList)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
-          console.log(documentSnapshot.data());
-          const { Name, Author, Description, Cover, Content, Favorite, Link } = documentSnapshot.data();
-          bookDetails.push({
-            _id: documentSnapshot.id,
-            bookName: Name,
-            authorName: Author,
-            bookDes: Description,
-            coverUrl:  Cover,
-            content: Content,
-            favorite: Favorite,
-            link: Link
-          })
-        })
+          bookDetails.push(documentSnapshot.data()); // push each document data into the array
+        });
+        bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);//sort them by book name
+        //console.log("Sorted Book Details:", bookDetails);
+      })
+      .catch(error => {
+        console.log("Error getting book details:", error);
       });
-      bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
 
-      //console.log('Book Details: ', bookDetails)
-      //console.log('prog list: ', progressList)
+
       let mergedArray = []//Merge progressList with bookDetails
       for(let i = 0; i < nameList.length; i++){
         let obj1 = bookDetails[i]
@@ -153,14 +137,18 @@ const Dashboard = ({ navigation }) => {
         let mergedObj = Object.assign(obj1, obj2)
         mergedArray.push(mergedObj)
       }
-
+      console.log("Merged Array:", mergedArray);
     setBooks(mergedArray);//set the merged list
     }
   setBooks(bookDetails);//or set an empty list  
   } 
 
+
   const getRecentBooks = async () => {//For getting recent books  
-    const nameList = [];
+    let nameList = [];
+    let bookDetails = [];
+    let progressList = [];
+
     await db
     .collection('Users/' + currentUid + '/Library')
     .where('Progress', '!=', 0)
@@ -171,43 +159,39 @@ const Dashboard = ({ navigation }) => {
         nameList.push(doc.id)
       })
     });
-    let bookDetails = [];
-    let progressList = [];
 
     if(nameList.length != 0){
       await db
-      .collection('Users/' + currentUid + '/Library')
+      .collection('Users/' + currentUid + '/Library')//Gets the word count and progress
       .where('bookTitle', 'in', nameList)
       .get()
       .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const { WordCount, Progress} = doc.data();
-          progressList.push({
-            wordCount: WordCount,
-            progress: Progress
-          })
-        })
+        querySnapshot.forEach(documentSnapshot => {
+          progressList.push(documentSnapshot.data()); // push each document data into the array
+        });
+        progressList.sort((a, b) => (a.bookTitle > b.bookTitle) ? 1 : -1);//sort them by book name
+        //console.log("Sorted Progress List:", progressList);
+      })
+      .catch(error => {
+        console.log("Error getting book details:", error);
       });
 
+      
       await db
       .collection('Books')
       .where('Name', 'in', nameList)
       .get()
       .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover, Content, Link } = doc.data();
-          bookDetails.push({
-            _id: doc.id,
-            bookName: Name,
-            authorName: Author,
-            bookDes: Description,
-            coverUrl:  Cover,
-            content: Content,
-            link: Link
-          })
-        })
+        querySnapshot.forEach(documentSnapshot => {
+          bookDetails.push(documentSnapshot.data()); // push each document data into the array
+        });
+        bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
+        //console.log("Sorted Book Details:", bookDetails);
+      })
+      .catch(error => {
+        console.log("Error getting book details:", error);
       });
-      bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
+
 
       let mergedArray = []//Merge progressList with bookDetails
       for(let i = 0; i < nameList.length; i++){
@@ -215,14 +199,17 @@ const Dashboard = ({ navigation }) => {
         let obj2 = progressList[i]
         let mergedObj = Object.assign(obj1, obj2)
         mergedArray.push(mergedObj)
+        setRecent(mergedArray);
       }
-    setRecent(mergedArray);
     }
   setRecent(bookDetails);
   }
 
   const getFavoriteBooks = async () => {//For getting favorite books
-    const nameList = [];
+    let nameList = [];
+    let bookDetails = [];
+    let progressList = [];
+
     await db
     .collection('Users/' + currentUid + '/Library')
     .where('Favorite', '==', true)
@@ -233,8 +220,6 @@ const Dashboard = ({ navigation }) => {
       })
     });
 
-    let bookDetails = [];
-    let progressList = [];
 
     if(nameList.length != 0){
       await db
@@ -242,13 +227,14 @@ const Dashboard = ({ navigation }) => {
       .where('bookTitle', 'in', nameList)
       .get()
       .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const { WordCount, Progress} = doc.data();
-          progressList.push({
-            wordCount: WordCount,
-            progress: Progress
-          })
-        })
+        querySnapshot.forEach(documentSnapshot => {
+          progressList.push(documentSnapshot.data()); // push each document data into the array
+        });
+        progressList.sort((a, b) => (a.bookTitle > b.bookTitle) ? 1 : -1);//sort them by book name
+        //console.log("Sorted Progress List:", progressList);
+      })
+      .catch(error => {
+        console.log("Error getting book details:", error);
       });
       
       await db
@@ -256,19 +242,15 @@ const Dashboard = ({ navigation }) => {
       .where('Name', 'in', nameList)
       .get()
       .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const { Name, Author, Description, Cover, Content, Link } = doc.data();          bookDetails.push({
-            _id: doc.id,
-            bookName: Name,
-            authorName: Author,
-            bookDes: Description,
-            coverUrl:  Cover,
-            content: Content,
-            link: Link
-          })
-        })
+        querySnapshot.forEach(documentSnapshot => {
+          bookDetails.push(documentSnapshot.data()); // push each document data into the array
+        });
+        bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
+        //console.log("Sorted Book Details:", bookDetails);
+      })
+      .catch(error => {
+        console.log("Error getting book details:", error);
       });
-      bookDetails.sort((a, b) => (a.bookName > b.bookName) ? 1 : -1);
 
       let mergedArray = []//Merge progressList with bookDetails
       for(let i = 0; i < nameList.length; i++){
@@ -276,8 +258,8 @@ const Dashboard = ({ navigation }) => {
         let obj2 = progressList[i]
         let mergedObj = Object.assign(obj1, obj2)
         mergedArray.push(mergedObj)
+        setFavorite(mergedArray);
       }
-    setFavorite(mergedArray);
       }
   setFavorite(bookDetails);
   }
@@ -285,7 +267,7 @@ const Dashboard = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async() => {
       setIsLoading(true);
-      await Promise.all([getLibraryBooks(), getFavoriteBooks(), getRecentBooks()])
+      await Promise.all([getLibraryBooks(), getRecentBooks(), getFavoriteBooks()])
       setIsLoading(false);
     });
     return () => {

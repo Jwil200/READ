@@ -1,45 +1,36 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, Image, StyleSheet, ScrollView,} from 'react-native';
+import { ActivityIndicator, View, Text, Image, StyleSheet, ScrollView,} from 'react-native';
 import { Divider } from '@rneui/themed';
 import { Button } from '@rneui/base';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ProgressButton } from 'react-native-progress-button';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
 
 const db = firestore()
 const currentUid = auth().currentUser.uid
 
 
+
+
 const UserProfile = () => {
-  const [Name, setName] = useState('');
   const [bookData, setBookData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userStats, setUserStats] = useState([]);
+  const navigation = useNavigation();
 
   
-
-  const getBookData = async () => {//gets the most read book
-    try {
-      const querySnapshot = await db.collection('Users/' + currentUid + '/Library').get();
-      const data = querySnapshot.docs.map(doc => doc.data());
-      setBooks(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const getUserStats = async() => {//gets user book stats
+  const getUserStats = async() => {//Gets User Statistics
     let data = [];
     try {
-      await db.collection('Users/' + currentUid + '/Stats').get()
+      await db.collection('Users').doc(currentUid).collection('Stats').doc('Stats').get()
       .then(documentSnapshot => {
-        const { TotalWordsRead, TotalBooksRead, TotalTimeSpentReading, Name } = documentSnapshot.docs[0].data();
-        data.push({TotalWords: TotalWordsRead, TotalBooks: TotalBooksRead, TotalTimeSpent: TotalTimeSpentReading, Name: Name});
-      })
-      console.log('User Stats:', data)
-      setUserStats(data);
+        data = documentSnapshot.data();
+        console.log('User Stats:', data)//console logs data
 
+      })
+      setUserStats(data);
     }
     catch (error) {
       console.log(error);
@@ -47,12 +38,12 @@ const UserProfile = () => {
   }
 
   const getMostRead = async() => {
+    let data = [];
     try{
       await db.collection('Users/' + currentUid + '/Library').orderBy("TimesRead", "desc").limit(1).get()
-      .then(querySnapshot => {
-        const { bookTitle, TimesRead, Name } = querySnapshot.docs[0].data();
-        const data = ({bookTitle: bookTitle, timesOpened: TimesRead});
-        console.log(data);
+      .then(documentSnapshot => {
+        data = documentSnapshot.docs[0].data();
+        console.log("Most Read: ", data.SentencesRead);
         getBookImage(data);
       })
     }
@@ -61,16 +52,14 @@ const UserProfile = () => {
     }
   }
 
-  const getBookImage = async(data) => {
-    console.log(data.bookTitle);
+  const getBookImage = async(data) => {// Gets Book cover URL from Books/Library collection
     try {
       await db.collection('Books').where("Name", "==", data.bookTitle).get()
       .then(querySnapshot => {
         const { Cover } = querySnapshot.docs[0].data();
         data.Image = Cover;
-        console.log(Cover);
+        console.log("Book Cover: ", Cover);
       })
-      console.log(data)
       setBookData(data);
     }
     catch (error) {
@@ -79,33 +68,14 @@ const UserProfile = () => {
 
   }
 
-const getName = async() => {
-  console.log('here')
-  try {
-    await db.collection('Users').doc(currentUid).get()
-    .then(doc => {
-      const data = doc.data();
-      setName(data.name);
-      console.log(data.name);
-    })
-  }
-  catch (error) {
-    console.log(error);
-  }
-
-}
-
-
-
-
-
   useEffect(() => {
-    setIsLoading(true);
-    getUserStats();
-    getMostRead();
-    getName();
-    setIsLoading(false);
-  }, []);
+    const unsubscribe = navigation.addListener('focus', () => {
+      setIsLoading(true);
+      Promise.all([getUserStats(), getMostRead()]);
+      setIsLoading(false);
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const CircularProgress = ({text, progress}) => (
     <AnimatedCircularProgress
@@ -124,7 +94,13 @@ const getName = async() => {
       }
     </AnimatedCircularProgress>
   );
-
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
   return (
     <ScrollView>
     <View style={styles.container}>
@@ -135,7 +111,7 @@ const getName = async() => {
           source={{ uri: 'https://picsum.photos/200' }}
         />
 
-        <Text style={styles.nameText}>{Name}</Text>
+        <Text style={styles.nameText}>{userStats.Name}</Text>
 
       <View style={styles.button}>
         <Button
@@ -162,7 +138,7 @@ const getName = async() => {
 
           <Text style={styles.statText}>Your Statistics (Last 7 Days)</Text>
           <Divider style={styles.divider2} />
-          <Text style={styles.descriptionText}> {bookData.TotalWordsRead} Words Read, {bookData.TotalBooksRead} Books Completed</Text>
+          <Text style={styles.descriptionText}> {bookData.SentencesRead} Lines Read, {bookData.TotalBooksRead} Books Completed</Text>
           <Divider style={styles.divider2} />
           <Text style={styles.statText}>This Week's Goals</Text>
           <Divider style={styles.divider2} />
@@ -207,6 +183,7 @@ const getName = async() => {
     </View>
     </ScrollView>
   );
+        
 };
 
 const styles = StyleSheet.create({

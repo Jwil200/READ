@@ -28,7 +28,7 @@ const BookTile = (props) => {
    <View style={{ elevation: 10}}>
     <Tile
       featured = {false}
-      imageSrc={{ uri: props.coverUrl }}
+      imageSrc={{ uri: props.Cover }}
       imageProps={{ resizeMode: "cover" }}
       width={110}
       height={height || 200}
@@ -44,7 +44,7 @@ const BookTile = (props) => {
       <LinearProgress
         color='blue'
         trackColor='red'
-        value={props.progress}
+        value={props.Progress}
         variant="determinate"
         style={{ position: 'absolute', bottom: 50, left: 0, right: 0, width: 110 }}
       />

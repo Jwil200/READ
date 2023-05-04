@@ -21,7 +21,7 @@ const BookPreview = (props) => {
   const navigation = useNavigation();
   const { isDarkModeEnabled } = useContext(DarkModeContext);
 
-  const [isFavorite, setISFavorite] = useState(book.favorite);
+  const [isFavorite, setISFavorite] = useState(book.Favorite);
   const [isLoading, setIsLoading] = useState(false);
 
   const dynamicStyles = {
@@ -37,7 +37,7 @@ const BookPreview = (props) => {
     try {
       setIsLoading(true);
       db.collection('Users/' + currentUid + '/Library')
-        .doc(book.title)
+        .doc(book.bookTitle)
         .get()
         .then((doc) => {
           if (doc.exists) {
@@ -55,7 +55,7 @@ const toggleFavorite = async () => {
   if(isFavorite) {
     await db
     .collection('Users/' + currentUid + '/Library')
-    .doc(book.title)
+    .doc(book.bookTitle)
     .update({
       Favorite: false
       });
@@ -66,7 +66,7 @@ const toggleFavorite = async () => {
   else {
     await db
     .collection('Users/' + currentUid + '/Library')
-    .doc(book.title)
+    .doc(book.bookTitle)
     .update({
       Favorite: true,
     });
@@ -85,7 +85,7 @@ const toggleFavorite = async () => {
   const removeBook = async() => {//changes the inLibrary to false for this book
     await db
     .collection('Users/' + currentUid + '/Library')
-    .doc(book.title)
+    .doc(book.bookTitle)
     .update({
       inLibrary: false
     })
@@ -102,7 +102,7 @@ const toggleFavorite = async () => {
     <ScrollView style={{padding: 10, backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
     <View style={{alignItems: 'center'}}>
     <Image  
-          source={{uri: book.coverUrl}}
+          source={{uri: book.Cover}}
           style={styles.bookPreviewImage}
           resizeMode="contain"
       />
@@ -110,16 +110,16 @@ const toggleFavorite = async () => {
           <Icon name={isFavorite ? 'heart' : 'heart-o'} size={50} color="#FFA500" />
         </TouchableOpacity>
     </View>
-    <Text style={[styles.bookTitle, {color: dynamicStyles.color}]}>{book.title}</Text>
-    <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.author}</Text>
-    <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.description}</Text>
+    <Text style={[styles.bookTitle, {color: dynamicStyles.color}]}>{book.bookTitle}</Text>
+    <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.Author}</Text>
+    <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.Description}</Text>
 
-    {book.progress == 0.00 ? (
+    {book.Progress == 0.00 ? (
       <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
     ) : (
-      <Text style={styles.bookPreviewProgress}>Progress: {book.progress * 100}% Complete</Text>
+      <Text style={styles.bookPreviewProgress}>Progress: {book.Progress * 100}% Complete</Text>
     )}
-    {book.progress == 0.00 ? (
+    {book.Progress == 0.00 ? (
       <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
     ) : (
       <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />

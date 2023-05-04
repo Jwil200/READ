@@ -41,8 +41,8 @@ const BookInstance = ({route, navigation}) => {
     correct: 0,
     incorrect: 0,
     variant: "none",
-    bookTitle: route.params.book.title,
-    bookCover: route.params.book.coverUrl,
+    bookTitle: route.params.book.bookTitle,
+    bookCover: route.params.book.Cover,
   });
   const previousData = useRef({...readingData});
   const initialPosition = 0;
@@ -54,12 +54,12 @@ const BookInstance = ({route, navigation}) => {
     RNPdftron.enableJavaScript(true);
     let book_data = {...route.params.book};
     let contents = [];
-    book_data.content.forEach(line => {
+    book_data.Content.forEach(line => {
       line.replace(/([.?!])\s*(?=[A-Z])/g, "$1|").split("|").forEach(e => {
         contents.push(e);
       });
     });
-    book_data.content = contents;
+    book_data.Content = contents;
     console.log(book_data);
     setBookData(book_data);
     //console.log(data);
@@ -79,19 +79,19 @@ const BookInstance = ({route, navigation}) => {
   }
 
   const test = () => {
-    ref.current.startSearchMode(bookData.content[testPos.current], false, false);
-    console.log(`Index: ${testPos.current} | Content: ${bookData.content[testPos.current]}`);
+    ref.current.startSearchMode(bookData.Content[testPos.current], false, false);
+    console.log(`Index: ${testPos.current} | Content: ${bookData.Content[testPos.current]}`);
     testPos.current += 1;
-    if (testPos.current >= bookData.content.length)
+    if (testPos.current >= bookData.Content.length)
       testPos.current -= 1;
   }
 
   const highlightLine = (pos) => {
-    let text = bookData.content[pos];
+    let text = bookData.Content[pos];
     ref.current.startSearchMode(text, false, false);
   }
   
-  const path = bookData ? bookData.link : "https://www.cdc.gov/ncbddd/actearly/documents/amazing_me_final_version_508.pdf";
+  const path = bookData ? bookData.Link : "https://www.cdc.gov/ncbddd/actearly/documents/amazing_me_final_version_508.pdf";
 
   return (
     bookData
@@ -106,7 +106,7 @@ const BookInstance = ({route, navigation}) => {
         onLoadComplete={() => highlightLine(0)}
         disabledElements={Object.values(Config.Buttons)}
         onLeadingNavButtonPressed={() => {
-          navigation.navigate("ResultPage", {...readingData, "total": bookData.content.length});
+          navigation.navigate("ResultPage", {...readingData, "total": bookData.Content.length});
         }}
         hideScrollbars={true}
         reflowOrientation={Config.ReflowOrientation.Horizontal} 
@@ -132,7 +132,7 @@ const BookInstance = ({route, navigation}) => {
       />
       <View style={styles.voice_box_container}>
         <VoiceBar 
-          textArray={bookData.content}
+          textArray={bookData.Content}
           next={highlightLine}
           readingData={readingData}
           setReadingData={setReadingData}
