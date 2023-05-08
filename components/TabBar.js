@@ -14,8 +14,7 @@ import auth from '@react-native-firebase/auth';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-
-function getBadgeNumberForRoute() {//Updates the badge numbers in the bottom tab navigator
+const TabNavigator = () => {
   const [badgeNumber, setBadgeNumber] = useState(0);
 
   useEffect(() => {
@@ -23,31 +22,17 @@ function getBadgeNumberForRoute() {//Updates the badge numbers in the bottom tab
     const unsubscribe = firestore()
       .collection('Users/' + currentUid + '/Cart')
       .onSnapshot(querySnapshot => {
-        setBadgeNumber(querySnapshot.size - 1);
+        setBadgeNumber(querySnapshot.size);
       });
-
     return () => unsubscribe();
   }, []);
-  return badgeNumber;
-}
 
+  const badgeStyle = {
+    tabBarBadge: badgeNumber,
+    tabBarBadgeStyle: {backgroundColor: 'yellow'}
+  };
 
-// const HomeStack = () => {
-//   return (
-//     <Stack.Navigator>
-//       <Stack.Screen
-//         name="Home"
-//         component={Dashboard}
-//         options={{headerShown: false}}
-//       />
-
-//     </Stack.Navigator>
-//   );
-// };
-
-const TabNavigator = () => {
   return (
-
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
@@ -80,20 +65,17 @@ const TabNavigator = () => {
           tabBarIcon: ({color, size}) => (
             <Ionicons name="book-outline" color={color} size={size} />
           ),
-
-    }}
-        
+        }}
       />
-       <Tab.Screen
+      <Tab.Screen
         name="Cart"
         component={Cart}
         options={{
+          ...((badgeNumber === 0) ? {} : tabBarStyle),
           animation:'fade',
           tabBarStyle: {
             backgroundColor: '#f29716',
           },
-          tabBarBadge: getBadgeNumberForRoute(),
-          tabBarBadgeStyle: {backgroundColor: 'yellow'},
           tabBarIcon: ({color, size}) => (
             <Ionicons name="cart-outline" color={color} size={size} />
           ),
@@ -111,10 +93,8 @@ const TabNavigator = () => {
             <Ionicons name="settings-outline" color={color} size={size} />
           ),
         }}
-      />
-      
+      />  
     </Tab.Navigator>
-
   );
 };
 

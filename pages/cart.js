@@ -15,8 +15,87 @@ import axios  from 'axios';
 const db = firestore()
 const currentUid = auth().currentUser.uid
 
+const styles = StyleSheet.create({
+  bookTitle: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    width: '10%',
+    marginTop: 10,
+    marginLeft: 10,
 
-
+  },
+  coverImage: {
+    width: 100,
+    height: 140,
+    resizeMode: 'cover',
+    marginBottom: 10,
+    marginTop: 0,
+  },
+  bookPrice: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    marginLeft: 10,
+    
+  },
+  screen: {
+    height: '100%',
+    width: '100%',
+    paddingTop: 25,
+    backgroundColor: '#fff'
+  },
+  container: {
+    flex: 1,
+    display: "flex",
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    paddingTop: 0
+  },
+  grid: {
+    width: '100%'
+  },
+  item: {
+    width: "39%",
+    alignItems: "center",
+    margin: -20,
+    backgroundColor: '#e9eef1',
+  },
+  title: {
+    fontSize: 24,
+    textAlign: 'left',
+    width: '100%',
+    paddingTop: 10
+  },
+  divider: {
+    width: '98%',
+    marginVertical: 5,
+  },
+  emptyText: {
+    color: "grey",
+    marginTop: 10,
+    textAlignVer: 'center'
+  },
+  checkoutButton: {
+    justifyContent: 'center',
+    paddingHorizontal: 10
+  },
+  card: {
+    flexDirection: 'row',
+    width: '50%',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  cartText: {
+    fontSize: 16,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    letterSpacing:0,
+    paddingTop: 0,
+    paddingRight: 0,
+    marginLeft: 110,
+  },
+});
 
 
 const Cart = ({ navigation }) => {
@@ -26,96 +105,7 @@ const Cart = ({ navigation }) => {
   const[isLoading, setIsLoading] = useState(true);
   const [checkoutAmount, setCheckoutAmount] = useState(1);
   const [ready, setReady] = useState(false);
-  const {initPaymentSheet, presentPaymentSheet } = usePaymentSheet();
-  const { isDarkModeEnabled } = useContext(DarkModeContext);
-
-  const styles = StyleSheet.create({
-    bookTitle: {
-      flex: 1,
-      fontSize: 16,
-      fontWeight: 'bold',
-      width: '10%',
-      marginTop: 10,
-      marginLeft: 10,
-  
-    },
-    coverImage: {
-      width: 100,
-      height: 140,
-      resizeMode: 'cover',
-      marginBottom: 10,
-      marginTop: 0,
-    },
-    bookPrice: {
-      fontSize: 30,
-      fontWeight: 'bold',
-      marginLeft: 10,
-      
-    },
-    bookAuthor: {
-  
-    },
-    screen: {
-      height: '100%',
-      width: '100%',
-      paddingTop: 25,
-      backgroundColor: '#fff'
-    },
-    container: {
-      flex: 1,
-      display: "flex",
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 10,
-      paddingTop: 0
-    },
-    grid: {
-      width: '100%'
-    },
-    item: {
-      width: "39%",
-      alignItems: "center",
-      margin: -20,
-      backgroundColor: '#e9eef1',
-    },
-    title: {
-      fontSize: 24,
-      textAlign: 'left',
-      width: '100%',
-      paddingTop: 10,
-      color: isDarkModeEnabled ? 'white' : 'black',
-    },
-    divider: {
-      width: '98%',
-      marginVertical: 5,
-    },
-    emptyText: {
-      color: "grey",
-      marginTop: 10,
-      textAlignVer: 'center'
-    },
-    checkoutButton: {
-      justifyContent: 'center',
-      paddingHorizontal: 10
-    },
-    card: {
-      flexDirection: 'row',
-      width: '50%',
-      justifyContent: 'space-between',
-      paddingHorizontal: 10,
-    },
-    cartText: {
-      fontSize: 16,
-      alignSelf: 'flex-end',
-      position: 'absolute',
-      letterSpacing:0,
-      paddingTop: 0,
-      paddingRight: 0,
-      marginLeft: 110,
-      
-    },
-  });
- 
+  const {initPaymentSheet, presentPaymentSheet } = usePaymentSheet(); 
 
   //get cart books
   const Item = ({ item }) => (
@@ -137,61 +127,32 @@ const Cart = ({ navigation }) => {
           </Text>
         </Text>
         <Icon
-        name='close-o'
-        type='evilicon'
-        color='red'
-        onPress={() => {
-          Alert.alert(
-            'Remove Item',
-            'Remove from cart?',
-            [
-              {
-                text: 'Cancel',
-                style: 'cancel'
-              },
-              {
-                text: 'OK',
-                onPress: () => {
-                  removeBook(item.bookName);
-                  // handle remove action here
+          name='close-o'
+          type='evilicon'
+          color='red'
+          onPress={() => {
+            Alert.alert(
+              'Remove Item',
+              'Remove from cart?',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel'
+                },
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    removeBook(item.bookName);
+                    // handle remove action here
+                  }
                 }
-              }
-            ],
-            { cancelable: false }
-          )
-        }
-      }
-      containerStyle={{ position: 'absolute', top: -6, right: 0 }}
-      />
+              ],
+              { cancelable: false }
+            )
+          }}
+          containerStyle={{ position: 'absolute', top: -6, right: 0 }}
+        />
       </View>
-      {/* <View style={styles.item}> */}
-        {/* <BookStoreTile 
-        coverUrl={item.coverUrl}
-        author={item.authorName}
-        description={item.bookDes}
-        key={"i" + item._id} 
-        id={item._id}
-        title= {item.bookName}
-        price={item.price}
-        isRecent={item.isRecent}
-        rating={item.rating}
-        isAddedtoCart={item.isAddedtoCart}
-        disabled={true}
-        /> */}
-      {/* </View> */}
-  
-        {/* <Text style={styles.cartText}>
-          <Text style={styles.bookPrice}>
-            {item.bookName}{"\n"}
-          </Text>
-          <Text style={styles.h2}>
-            {item.authorName}{"\n"}{"\n"}
-          </Text>
-  
-          <Text style={styles.bookPrice}>
-            ${item.price}
-          </Text>
-        </Text> */}
     </Card>
   );
   
@@ -205,14 +166,13 @@ const Cart = ({ navigation }) => {
     getCartBooks();
   }
   
-  const getCheckoutAmount = async() =>{
+  const getCheckoutAmount = async () => {
     await db
     .collection('Users/' + currentUid + '/Cart')
     .where('Name', '!=', 'Temp')
     .onSnapshot(querySnapshot => {
       let totalAmount = 0;
       querySnapshot.forEach(doc => {
-        
         const item = doc.data()
         console.log(item.Name, ' ' , item.Price)
         totalAmount += parseFloat(item.Price);

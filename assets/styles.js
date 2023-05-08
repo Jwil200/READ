@@ -201,7 +201,4 @@ export default StyleSheet.create({
   orangeButton: {
    padding: 10,
   }
-
-
-  
-  });
+});

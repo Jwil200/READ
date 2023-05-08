@@ -8,7 +8,6 @@ const BookTile = (props) => {
   const [height, setHeight] = useState(0);
   const [isLongPress, setIsLongPress] = useState(false);
 
-
   const handleImageLoad = ({ nativeEvent }) => {
     setHeight(nativeEvent.height);
   };
@@ -18,10 +17,6 @@ const BookTile = (props) => {
       navigation.navigate('BookPreview', { props });
     }, 1000); // Wait for 1 second before navigating
   };
-
-
-
-
   
   return (
 

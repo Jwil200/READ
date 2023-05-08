@@ -266,7 +266,6 @@ const VoiceBar = (props) => {
                 }
             };
             LiveAudioStream.start();
-
         }
         else {
             LiveAudioStream.stop();

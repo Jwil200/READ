@@ -13,7 +13,6 @@ import Store from './pages/store';
 import BookStorePreview from './pages/bookStorePreview';
 import Cart from './pages/cart';
 import TabBar from './components/TabBar';
-import VoiceTest from './pages/voiceTest';
 import Onboarding from './pages/onboarding';
 import UserProfile from './pages/userProfile';
 import Settings from './pages/settings/settings';
@@ -148,15 +147,6 @@ function MyStack() {
         options={{
             title: 'Your Cart',
         }}
-      />
-
-      <Stack.Screen 
-        name="Book View" 
-        component={VoiceTest} 
-        options={
-          { title: 'Voice' },
-          { headerLeft: null } 
-        }
       />
       <Stack.Screen
         name="ResultPage"

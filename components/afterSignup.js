@@ -9,16 +9,16 @@ const Welcome = () => {
   return (
     <View style={styles.container2}>
       <Text
-      style={{textAlign:'center'}}>
+        style={{textAlign:'center'}}
+      >
         Account has been created! 
       </Text>
-
       <Text 
         style={styles.loginText}
-        onPress={() => navigation.navigate('Login')}>
+        onPress={() => navigation.navigate('Login')}
+      >
         Tap here to log in!
-        </Text> 
-
+        </Text>
     </View>
   );
 }

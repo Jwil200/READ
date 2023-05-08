@@ -44,9 +44,7 @@ const BookInstance = ({route, navigation}) => {
     bookTitle: route.params.book.bookTitle,
     bookCover: route.params.book.Cover,
   });
-  const previousData = useRef({...readingData});
   const initialPosition = 0;
-  const previousPosition = useRef(0);
   const pressedOnce = useRef(false);
 
   useEffect(() => {
@@ -64,11 +62,6 @@ const BookInstance = ({route, navigation}) => {
     setBookData(book_data);
     //console.log(data);
   }, []);
-
-  useEffect(() => {
-    // Use effect occurs after render, so this will save the 'previous' set of data for comparisons.
-    previousData.current = {...readingData};
-  }, [readingData]);
 
   const removeTags = (str) => {
     if ((str===null) || (str===''))
