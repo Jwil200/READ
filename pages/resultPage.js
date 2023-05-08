@@ -36,7 +36,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
         });
 
         await userRef.update({//update user stats
-            SentenesRead: firestore.FieldValue.increment(sentencesRead),
+            SentencesRead: firestore.FieldValue.increment(sentencesRead),
             CorrectSentencesRead: firestore.FieldValue.increment(sentencesCorrect),
 
         });
@@ -46,6 +46,9 @@ const ResultPage = ({route, navigation}) => {//props) => {
             await bookref.update({
                 Completed: true,
                 TimesRead: firestore.FieldValue.increment(1),
+            });
+            await userRef.update({
+                TotalBooksRead: firestore.FieldValue.increment(1),
             });
         }
 
@@ -98,7 +101,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
                     tintColor="lightgreen" // Blue color for correct words
                     back
                     backgroundColor="grey" // Red color for incorrect words
-                    backgroundWidth = {15}
+                    backgroundWidth = {5}
                     lineCap="round"
                     rotation={0}
                 arcSweepAngle={360}
@@ -107,20 +110,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
                 </AnimatedCircularProgress>
             <Text style={styles.titleText}>Results:</Text>
 
-            <AnimatedCircularProgress
-                    size={150}
-                    width={15}
-                    fill={progress}
-                    tintColor="blue" // Blue color for correct words
-                    back
-                    backgroundColor="red" // Red color for incorrect words
-                    backgroundWidth = {15}
-                    lineCap="round"
-                    rotation={0}
-                arcSweepAngle={360}
-                >
-                {(fill) => <Text style={styles.progressText}>{Math.round(progress)}%</Text>}
-                </AnimatedCircularProgress>
+        
 
     
             
