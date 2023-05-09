@@ -6,6 +6,8 @@ import Sound from 'react-native-sound';
 const PerfectScoreAnimation = ({ visible }) => {
   console.log(`==== PERFECT SCORE RENDER ${visible} ====\nWindow Height: ${windowHeight}`);
 
+  const [isVisible, setVisible] = useState(visible);
+
 
   // Animation values
   const scaleValue = useRef(new Animated.Value(0)).current;
@@ -14,7 +16,7 @@ const PerfectScoreAnimation = ({ visible }) => {
  
 
   useEffect(() => {
-    if (visible) {
+    if (isVisible) {
       // Reset animation values
       scaleValue.setValue(0);
       opacityValue.setValue(0);
@@ -50,12 +52,15 @@ const PerfectScoreAnimation = ({ visible }) => {
           toValue: 0,
           duration: 500,
           useNativeDriver: true,
-        }).start();
+        }).start(({finished}) => {
+          setVisible(false);
+        });
       }, 5000);
     }
   });
 
-  return (
+  return (<>
+    {isVisible ?
     <View style={styles.container}>
       <Animated.View
         style={[
@@ -92,7 +97,9 @@ const PerfectScoreAnimation = ({ visible }) => {
     </Animated.View>
       
     </View>
-  );
+    : ""
+    }
+  </>);
 };
 
 const windowWidth = Dimensions.get('window').width;

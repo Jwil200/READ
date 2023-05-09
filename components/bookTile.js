@@ -39,7 +39,7 @@ const BookTile = (props) => {
       <LinearProgress
         color='blue'
         trackColor='red'
-        value={props.Progress}
+        value={props.Progress/props.Content.length}
         variant="determinate"
         style={{ position: 'absolute', bottom: 50, left: 0, right: 0, width: 110 }}
       />

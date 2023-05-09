@@ -137,7 +137,6 @@ const Dashboard = ({ navigation }) => {
         let mergedObj = Object.assign(obj1, obj2)
         mergedArray.push(mergedObj)
       }
-      console.log("Merged Array:", mergedArray);
     setBooks(mergedArray);//set the merged list
     }
   setBooks(bookDetails);//or set an empty list  
@@ -156,6 +155,7 @@ const Dashboard = ({ navigation }) => {
     .get()
     .then(querySnapshot => {
       querySnapshot.forEach(doc => {
+        console.log(`DOC: ${doc.Completed}`);
         nameList.push(doc.id)
       })
     });

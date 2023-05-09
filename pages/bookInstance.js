@@ -31,45 +31,31 @@ const styles = StyleSheet.create({
 });
 
 const BookInstance = ({route, navigation}) => {
-  console.log(Dimensions.get('window').height);
 
   const ref = useRef(null);
   const testPos = useRef(0);
-  const [bookData, setBookData] = useState(null);
+  const [bookData, setBookData] = useState({...route.params.book});
+  const initialPosition = bookData.Progress;
   const [readingData, setReadingData] = useState({
-    position: 0,
+    position: initialPosition,
     correct: 0,
     incorrect: 0,
     variant: "none",
     bookTitle: route.params.book.bookTitle,
     bookCover: route.params.book.Cover,
   });
-  const initialPosition = 0;
   const pressedOnce = useRef(false);
 
   useEffect(() => {
     RNPdftron.initialize("Insert commercial license key here after purchase");
     RNPdftron.enableJavaScript(true);
-    let book_data = {...route.params.book};
-    let contents = [];
-    book_data.Content.forEach(line => {
-      line.replace(/([.?!])\s*(?=[A-Z])/g, "$1|").split("|").forEach(e => {
-        contents.push(e);
-      });
-    });
-    book_data.Content = contents;
-    console.log(book_data);
-    setBookData(book_data);
-    //console.log(data);
   }, []);
 
-  const removeTags = (str) => {
-    if ((str===null) || (str===''))
-        return false;
-    else
-        str = str.toString();
-    return str.replace( /(<([^>]+)>)/ig, '');
-  }
+  useEffect(() => {
+    if ((readingData.position) === bookData.Content.length) {
+      navigation.navigate("ResultPage", {...readingData, "total": bookData.Content.length, "initial": initialPosition});
+    }
+  }, [readingData]);
 
   const test = () => {
     ref.current.startSearchMode(bookData.Content[testPos.current], false, false);
@@ -89,32 +75,20 @@ const BookInstance = ({route, navigation}) => {
   return (
     bookData
     ? <>
-      {readingData.variant === "perfect" 
-        ? <PerfectScoreAnimation visible={true} />
-        : <BadgeAnimation variant={readingData.variant}/>
-      }
+      { <BadgeAnimation variant={readingData.variant}/> }
       <DocumentView
         ref={(c) => ref.current = c}
         document={path}
-        onLoadComplete={() => highlightLine(0)}
+        onLoadComplete={() => highlightLine(initialPosition)}
         disabledElements={Object.values(Config.Buttons)}
         onLeadingNavButtonPressed={() => {
-          navigation.navigate("ResultPage", {...readingData, "total": bookData.Content.length});
+          navigation.navigate("ResultPage", {...readingData, "total": bookData.Content.length, "initial": initialPosition});
         }}
         hideScrollbars={true}
         reflowOrientation={Config.ReflowOrientation.Horizontal} 
         layoutMode={Config.LayoutMode.Single}
         initialPageNumber={1}
         pageIndicatorEnabled={false}
-        onPageChanged={({previousPageNumber, pageNumber}) => {
-              /*
-              console.log("Prev " + previousPageNumber);
-              console.log("Page " + page);
-              console.log("Curr " + pageNumber);
-              console.log("\n");
-              */
-          //changePage(previousPageNumber);
-        }}
         longPressMenuEnabled={true}
         onLongPressMenuPress = {({longPressMenu, longPressText}) => { 
           console.log('Long press menu item', longPressMenu, 'has been pressed');
@@ -129,6 +103,7 @@ const BookInstance = ({route, navigation}) => {
           next={highlightLine}
           readingData={readingData}
           setReadingData={setReadingData}
+          totalLines={bookData.Content.length}
         />
       </View>
       </>

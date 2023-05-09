@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Image, Text  } from 'react-native';
 import Sound from 'react-native-sound'; // Import react-native-sound
 
@@ -18,6 +18,10 @@ const variants = {
   oneMore: {
     sound: require('../assets/app-error.mp3'),
     image: require('../assets/1More.png'),
+  },
+  goingOn: {
+    sound: require('../assets/app-error.mp3'),
+    image: require('../assets/GoingOn.png'),
   }
 }
 

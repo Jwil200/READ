@@ -6,19 +6,15 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { ProgressButton } from 'react-native-progress-button';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
 
 const db = firestore()
 const currentUid = auth().currentUser.uid
-
-
 
 
 const UserProfile = () => {
   const [bookData, setBookData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userStats, setUserStats] = useState([]);
-  const navigation = useNavigation();
 
   
   const getUserStats = async() => {//Gets User Statistics
@@ -58,7 +54,7 @@ const UserProfile = () => {
       .then(querySnapshot => {
         const { Cover } = querySnapshot.docs[0].data();
         data.Image = Cover;
-        console.log("Book Cover: ", Cover);
+        console.log("Book Details: ", data);
       })
       setBookData(data);
     }
@@ -69,13 +65,11 @@ const UserProfile = () => {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
       setIsLoading(true);
-      Promise.all([getUserStats(), getMostRead()]);
+    getUserStats();
+    getMostRead();
       setIsLoading(false);
-    });
-    return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   const CircularProgress = ({text, progress}) => (
     <AnimatedCircularProgress
@@ -136,20 +130,29 @@ const UserProfile = () => {
       <Divider style={styles.divider} />
 
 
-          <Text style={styles.statText}>Your Statistics (Last 7 Days)</Text>
+          <Text style={styles.statText}>Your Statistics </Text>
           <Divider style={styles.divider2} />
-          <Text style={styles.descriptionText}> {bookData.SentencesRead} Lines Read, {bookData.TotalBooksRead} Books Completed</Text>
+          <View style={styles.container2}>
+            <View style={styles.stat}>
+              <Text style={styles.statNumber}>{userStats.TotalBooksRead}</Text>
+               <Text style={styles.statLabel}>Books Read</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={styles.statNumber}>{userStats.SentencesRead}</Text>
+             <Text style={styles.statLabel}>Sentences</Text>
+            </View>
+          </View>
           <Divider style={styles.divider2} />
           <Text style={styles.statText}>This Week's Goals</Text>
           <Divider style={styles.divider2} />
 
           <View style={{ flex: 1, flexDirection: "row"}}>
             <CircularProgress
-              text= {'250/700\nWords'}
-              progress= {300/400 * 100}/>
+              text={`${userStats.SentencesRead} / 100\nSentences`}              
+              progress= {userStats.SentencesRead/100 * 100}/>
             <CircularProgress
-              text= {'2/5\nBooks'}
-              progress= {40}/>
+              text={`${userStats.TotalBooksRead} / 10\nBooks`}              
+              progress= {userStats.TotalBooksRead/10 * 100}/>
             <CircularProgress
               text= {'30/40\nWPM'}
               progress= {75}/>
@@ -168,7 +171,7 @@ const UserProfile = () => {
           </View>
 
 
-          <Text style={styles.descriptionText2}>{bookData.title}</Text>
+          <Text style={styles.descriptionText2}>{bookData.bookTitle}</Text>
           <Divider style={styles.divider} />
           <Text style={styles.statText}>You are 8 books away from unlocking your FREE book!{'\n'}</Text> 
           <ProgressButton 
@@ -189,6 +192,22 @@ const UserProfile = () => {
 const styles = StyleSheet.create({
   container: {
     height: 1000
+  },
+  container2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+  },
+  stat: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  statLabel: {
+    fontSize: 12,
   },
   header: {
     backgroundColor: '#66bc8b',

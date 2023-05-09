@@ -106,6 +106,7 @@ const Cart = ({ navigation }) => {
   const [checkoutAmount, setCheckoutAmount] = useState(1);
   const [ready, setReady] = useState(false);
   const {initPaymentSheet, presentPaymentSheet } = usePaymentSheet(); 
+  const isDarkModeEnabled = false;
 
   //get cart books
   const Item = ({ item }) => (

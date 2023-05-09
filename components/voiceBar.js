@@ -238,19 +238,30 @@ const VoiceBar = (props) => {
                             })
                             return;
                         }
-                        let augmentIncorrect = false;
-                        if (incorrectCounter.current == 3) {
-                            incorrectCounter.current = 0;
-                            augmentIncorrect = true;
-                        }
                         console.log("Spoken and input match!");
-                        props.setReadingData({
-                            ...rData.current,
-                            position: p + 1,
-                            correct: rData.current.correct + 1,
-                            variant: "correct",
-                            incorrect: (augmentIncorrect ? rData.current.incorrect + 1 : rData.current.incorrect)
-                        });
+                        if (incorrectCounter.current == 3) {
+                            props.setReadingData({
+                                ...rData.current,
+                                position: p + 1,
+                                variant: "goingOn" ,
+                                incorrect: rData.current.incorrect + 1
+                            });
+                        }
+                        else {
+                            props.setReadingData({
+                                ...rData.current,
+                                position: p + 1,
+                                correct: rData.current.correct + 1,
+                                variant: "correct",
+                            });
+                        }
+                        incorrectCounter.current = 0;
+                        if ((p + 1) === props.totalLines) {
+                            LiveAudioStream.stop();
+                            ws.current.send(JSON.stringify({
+                                "terminate_session": true
+                            }));
+                        }
                         break;
                     case "SessionBegins":
                         console.log("Established connection to AssemblyAI");
@@ -294,9 +305,18 @@ const VoiceBar = (props) => {
                 width={2}
                 color='white'
             />
-            <Text 
+            <Button
                 style={styles.text}
-            >{respText.current}</Text>
+                buttonStyle={{ width:150 }}
+                onPress={() => {
+                    props.setReadingData({
+                        ...rData.current,
+                        position: 0,
+                        variant: "none"
+                    });
+                }}
+                buttonSize='md'
+            >Reset!</Button>
         </View>
     </>);
 };

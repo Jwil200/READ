@@ -14,7 +14,7 @@ const ResultPage = ({route, navigation}) => {//props) => {
     console.log(results);
     const sentencesCorrect = results.correct;
     const sentencesIncorrect = results.incorrect;
-    const sentencesRead = results.position;
+    const sentencesRead = results.correct + results.incorrect;
     const total = results.total;
     const bookCover = results.bookCover;
 
@@ -23,13 +23,10 @@ const ResultPage = ({route, navigation}) => {//props) => {
     const userRef = db.collection('Users').doc(currentUid).collection("Stats").doc("Stats");
     const bookref = db.collection('Users').doc(currentUid).collection("Library").doc(results.bookTitle);
 
-    const updateStats = async () => {//update all book related stats
-
-        const updatedProgress = (sentencesRead / total);
-
+    const updateStats = async () => { //update all book related stats
 
         await bookref.update({//update book stats
-            Progress: updatedProgress,
+            Progress: results.position,
             TotalSentenceCount: total,
             CorrectSentenceCount: sentencesCorrect,
             IncorrectSentenceCount: sentencesIncorrect,
@@ -38,109 +35,76 @@ const ResultPage = ({route, navigation}) => {//props) => {
         await userRef.update({//update user stats
             SentenesRead: firestore.FieldValue.increment(sentencesRead),
             CorrectSentencesRead: firestore.FieldValue.increment(sentencesCorrect),
-
         });
 
-        if(sentencesRead == total){//if book was completed, update the fields accordiningly
+        if(results.position >= total){//if book was completed, update the fields accordiningly
             console.log("Book Completed");
             await bookref.update({
+                Progress: 0,
                 Completed: true,
                 TimesRead: firestore.FieldValue.increment(1),
             });
         }
-
     }
 
+    let progress = results.position / total;
+    progress = ((progress < 0) ? 0 : progress) * 100;
 
- 
+    useEffect(() => {
+        updateStats();
+        if (sentencesIncorrect === 0)
+            return;
 
-  const progress = (sentencesRead / total) * 100;
+        // Play sound when the page is first rendered
+        const sound = new Sound(require('../assets/correct-ding2.mp3'), (error) => {
+            if (error) {
+                console.log('Error loading sound: ', error);
+            } else {
+                sound.play();
+            }
+        });
 
-  useEffect(() => {
-    updateStats();
-    if (sentencesIncorrect === 0)
-      return;
-
-    // Play sound when the page is first rendered
-    const sound = new Sound(require('../assets/correct-ding2.mp3'), (error) => {
-      if (error) {
-        console.log('Error loading sound: ', error);
-      } else {
-        sound.play();
-      }
-    });
-
-    // Clean up the sound when the component unmounts
-    return () => {
-      if (sound) {
-        sound.stop();
-        sound.release();
-      }
-
-    };
-  
+        // Clean up the sound when the component unmounts
+        return () => {
+            if (sound) {
+                sound.stop();
+                sound.release();
+            }
+        };
     }, []);
 
-  return (
-    <View style={styles.container}>    
-    <ImageBackground
-        source={{uri: bookCover}} // use a png/jpg or a url 
-        style={styles.backgroundImage}
-    >
-        
-        <View style={styles.contentContainer}>
-          <Text style={styles.bookTitle}>{results.bookTitle}</Text>    
-          <Text style={styles.titleText}>Completion:</Text>
-                <AnimatedCircularProgress
-                    size={150}
-                    width={15}
-                    fill={progress}
-                    tintColor="lightgreen" // Blue color for correct words
-                    back
-                    backgroundColor="grey" // Red color for incorrect words
-                    backgroundWidth = {15}
-                    lineCap="round"
-                    rotation={0}
-                arcSweepAngle={360}
-                >
-                {(fill) => <Text style={styles.progressText}>{Math.round(progress)}%</Text>}
-                </AnimatedCircularProgress>
-            <Text style={styles.titleText}>Results:</Text>
-
-            <AnimatedCircularProgress
-                    size={150}
-                    width={15}
-                    fill={progress}
-                    tintColor="blue" // Blue color for correct words
-                    back
-                    backgroundColor="red" // Red color for incorrect words
-                    backgroundWidth = {15}
-                    lineCap="round"
-                    rotation={0}
-                arcSweepAngle={360}
-                >
-                {(fill) => <Text style={styles.progressText}>{Math.round(progress)}%</Text>}
-                </AnimatedCircularProgress>
-
-    
-            
-                <Text style={styles.corectWordsText}>Correct Sentences: {sentencesCorrect}</Text>
-                <Text style={styles.incorrectWordsText}>Incorrect Sentences: {sentencesIncorrect}</Text>
-                <Text style={styles.timeReadText}>Sentences Read: {sentencesRead}</Text>
-        {
-        (sentencesIncorrect === 0) ? <PerfectScoreAnimation visible={true}/> : ""
-        }
-
-        <View style={styles.buttonContainer}>
-            <OrangeButton title = "Back to Dashboard" size = 'sm' onPress={() => navigation.navigate('Tabbar')}></OrangeButton>
-        </View>
-
-
-        </View>
-
-    </ImageBackground>
-    </View> 
-  );
+    return (<View style={styles.container}>    
+        <ImageBackground
+            source={{uri: bookCover}} // use a png/jpg or a url 
+            style={styles.backgroundImage}
+        >  
+            <View style={styles.contentContainer}>
+                <Text style={styles.bookTitle}>{results.bookTitle}</Text>    
+                <Text style={styles.titleText}>Completion:</Text>
+                    <AnimatedCircularProgress
+                        size={150}
+                        width={15}
+                        fill={progress}
+                        tintColor="lightgreen" // Blue color for correct words
+                        back
+                        backgroundColor="grey" // Red color for incorrect words
+                        backgroundWidth = {15}
+                        lineCap="round"
+                        rotation={0}
+                        arcSweepAngle={360}
+                    >
+                        {(fill) => <Text style={styles.progressText}>{Math.round(progress)}%</Text>}
+                    </AnimatedCircularProgress>
+                    <Text style={styles.corectWordsText}>Correct Sentences: {sentencesCorrect}</Text>
+                    <Text style={styles.incorrectWordsText}>Incorrect Sentences: {sentencesIncorrect}</Text>
+                    <Text style={styles.timeReadText}>Sentences Read: {sentencesRead}</Text>
+                    {((sentencesIncorrect === 0) && (sentencesRead > 0)) ? <PerfectScoreAnimation visible={true}/> : ""}
+                <View style={styles.buttonContainer}>
+                    <OrangeButton title = "Back to Dashboard" size = 'sm' onPress={() => navigation.navigate('Tabbar')}></OrangeButton>
+                </View>
+            </View>
+        </ImageBackground>
+    </View>);
 };
 
 const styles = StyleSheet.create({
@@ -268,6 +232,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         top: 0,
+        marginTop: 10
     },
 
   });

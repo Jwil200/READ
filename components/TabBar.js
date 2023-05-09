@@ -28,7 +28,7 @@ const TabNavigator = () => {
   }, []);
 
   const badgeStyle = {
-    tabBarBadge: badgeNumber,
+    tabBarBadge: badgeNumber - 1,
     tabBarBadgeStyle: {backgroundColor: 'yellow'}
   };
 
@@ -71,7 +71,7 @@ const TabNavigator = () => {
         name="Cart"
         component={Cart}
         options={{
-          ...((badgeNumber === 0) ? {} : tabBarStyle),
+          ...((badgeNumber === 0) ? {} : badgeStyle),
           animation:'fade',
           tabBarStyle: {
             backgroundColor: '#f29716',

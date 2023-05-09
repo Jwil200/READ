@@ -96,7 +96,13 @@ const toggleFavorite = async () => {
   }
 
 
- 
+  let progress = book.Progress;
+  if (book.Completed) {
+    progress = book.Content.length;
+  }
+  else if (book.ReadOnce && progress == 0) {
+    progress = 1;
+  }
 
   return (
     <ScrollView style={{padding: 10, backgroundColor: isDarkModeEnabled ? '#303030' : 'white'}}>
@@ -114,12 +120,12 @@ const toggleFavorite = async () => {
     <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.Author}</Text>
     <Text style={[styles.bookPreviewDescription, {color: dynamicStyles.color}]}>{book.Description}</Text>
 
-    {book.Progress == 0.00 ? (
+    {progress == 0 ? (
       <Text style={styles.bookPreviewProgress}>Progress: Not Yet Started</Text>
     ) : (
-      <Text style={styles.bookPreviewProgress}>Progress: {book.Progress * 100}% Complete</Text>
+      <Text style={styles.bookPreviewProgress}>Progress: {Math.floor((book.Progress/book.Content.length) * 100)}% Complete</Text>
     )}
-    {book.Progress == 0.00 ? (
+    {progress == 0 ? (
       <OrangeButton title="Begin Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
     ) : (
       <OrangeButton title="Continue Reading" size="sm" onPress={() => navigation.navigate('BookInstance', {book})} />
